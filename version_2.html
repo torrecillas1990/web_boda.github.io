@@ -66,8 +66,7 @@
 
         /* --- Header Imágenes (Nombres Fijos) --- */
         .header-text {
-            position: fixed; top: 20%; left: 8%;
-            z-index: 20; display: flex; flex-direction: column; align-items: flex-start;
+            position: fixed; top: 8%; left: 30%; width: 100%; max-height: 150px; z-index: 20; 
         }
         .img-h1 { width: 500px; height: auto; pointer-events: none; }
 
@@ -137,7 +136,7 @@
         .foto-real.active { opacity: 1; transform: translate(-50%, -90%) scale(1); }
 
         .dynamic-section {
-            position: fixed; top: 50%; left: 28%; transform: translate(-50%, -50%) translateY(20px);
+            position: fixed; top: 70%; left: 50%; transform: translate(-50%, -50%) translateY(20px);
             z-index: 20; width: 85%; max-width: 420px; background: rgba(0, 0, 0, 0.75); 
             padding: 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 10px 40px rgba(0,0,0,0.8); text-align: center; 
@@ -241,6 +240,7 @@
             <li><a onclick="jumpToDynamicSection('sec-ceremonia')">La Ceremonia</a></li>
             <li><a onclick="jumpToDynamicSection('sec-celebracion')">La Celebración</a></li>
             <li><a onclick="jumpToDynamicSection('sec-cuestionario')">Confirmación</a></li>
+            <li><a onclick="jumpToDynamicSection('sec-regalo')">¿Nos echas una mano?</a></li>
             <li><a onclick="jumpToDynamicSection('sec-final')">Cuenta Atrás</a></li>
         </ul>
         <p>Diseñado por Manuel Torrecillas - 2026</p>
@@ -299,6 +299,12 @@
         <p style="font-size: 1rem;">Tu confirmación nos ayuda a organizar el día perfecto.</p>
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSfpXBEfxR94WtQaBAf2_7j6LHs19c3V35J_R2LHIJHamQQOkA/viewform?usp=dialog" target="_blank">RELLENAR CUESTIONARIO</a>
     </div>
+	
+	<div id="sec-regalo" class="dynamic-section">
+		<h2 style="font-size: 1.8rem;">¿Nos echas una mano 👋?</h2>
+		<p style="font-size: 1rem;">Nos puedes echar una mano, pero si eres un poco perezoso nuestra cuenta es... 😜</p>
+		<p style="font-size: 1rem;">ES00 1111 2222 3333 4444 5555</p>
+	</div>
 
 	<div id="sec-final" class="dynamic-section">
         <p style="font-size: 2.2rem; font-family: 'Great Vibes'; color: #ffffff; margin-bottom: 20px;">¡Nos vemos en el altar!</p>
@@ -347,14 +353,15 @@
         }
 
         function iniciarLogicaSecciones() {
-            const size = Math.floor(totalFrames / 5);
+            const size = Math.floor(totalFrames / 6);
             scrollStory = [
                 // Añadimos 'fotoId' para saber qué foto real vincular
                 { start: 1, end: size, id: 'sec-intro'}, //fotoId: 'foto-real-1' },
                 { start: size + 1, end: size * 2, id: 'sec-ceremonia'}, //fotoId: 'foto-real-2' },
                 { start: (size * 2) + 1, end: size * 3, id: 'sec-celebracion'}, //fotoId: 'foto-real-3' },
                 { start: (size * 3) + 1, end: size * 4, id: 'sec-cuestionario'}, //fotoId: 'foto-real-4' },
-                { start: (size * 4) + 1, end: totalFrames, id: 'sec-final'}, //fotoId: 'foto-real-5' }
+                { start: (size * 4) + 1, end: size * 5, id: 'sec-regalo'}, //fotoId: 'foto-real-4' },
+                { start: (size * 5) + 1, end: totalFrames, id: 'sec-final'} //fotoId: 'foto-real-5' }
             ];
         }
 		

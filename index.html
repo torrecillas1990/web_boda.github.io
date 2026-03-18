@@ -133,7 +133,19 @@
         #side-menu ul { list-style: none; padding: 0; margin: 0; }
         #side-menu li { margin: 25px 0; }
         
-        #side-menu a {
+        #side-menu p {
+            text-decoration: none;
+            color: #fff;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.6rem;
+            color: #d4af37;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+		
+		#side-menu a {
             text-decoration: none;
             color: #fff;
             font-family: 'Cormorant Garamond', serif;
@@ -174,19 +186,42 @@
             top: 50%; left: 72%; transform: translate(-50%, -50%) scale(0.8);
         }
         .foto-real.active { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-
-        .dynamic-section {
-            position: fixed; top: 50%; left: 28%; transform: translate(-50%, -50%) translateY(20px);
-            z-index: 20; width: 85%; max-width: 420px; background: rgba(0, 0, 0, 0.75); 
-            padding: 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8); text-align: center; 
-            transition: opacity 0.8s ease, transform 0.8s ease; opacity: 0; pointer-events: none;
+		
+        /* --- PANEL INFERIOR (Fondo estático) --- */
+        #bottom-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35dvh; /* Ocupa el último tercio */
+            background: linear-gradient(transparent, rgba(0,0,0,0.5) 20%, rgba(0,0,0,0.5) 100%);
+            z-index: 20;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none; /* Deja pasar clicks si no hay sección activa */
         }
-        .dynamic-section.active { opacity: 1; transform: translate(-50%, -50%) translateY(0); pointer-events: auto; }
+		
+        /* --- SECCIONES (Solo animan el texto) --- */
+        .dynamic-section {
+            position: absolute;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            pointer-events: none;
+        }
+        .dynamic-section.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
 
-        .dynamic-section h2 { font-family: 'Cormorant Garamond', serif; color: #fff; margin-bottom: 10px; }
-        .dynamic-section p { font-family: 'Cormorant Garamond', serif; margin: 5px 0; color: #eee; }
-        .dynamic-section a { display: inline-block; color: #fff; background-color: #990033; text-decoration: none; font-weight: bold; font-family: 'Cormorant Garamond', serif; font-size: 1rem; margin-top: 20px; padding: 12px 25px; border-radius: 30px; transition: 0.3s; }
+        .dynamic-section h2 { font-family: 'Cormorant Garamond', serif; color: #d4af37; font-size: 1.8rem; margin-bottom: 10px; }
+        .dynamic-section p { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #eee; margin: 5px 0; }
+        .dynamic-section a { display: inline-block; color: #fff; background-color: #990033; text-decoration: none; font-weight: bold; padding: 10px 25px; border-radius: 30px; margin-top: 15px; font-size: 0.9rem; transition: 0.3s; }
 
         /* --- Botón Entrar con brillo --- */
         #entrar-btn {
@@ -250,7 +285,8 @@
 
             .foto-real { top: 28vh; left: 50%; transform: translate(-50%, 0) scale(0.8); width: 240px; height: 240px; }
             .foto-real.active { transform: translate(-50%, 0) scale(1); }
-            .dynamic-section { top: auto; bottom: 15vh; left: 50%; transform: translate(-50%, 20px); width: 90%; padding: 20px; }
+            #bottom-panel { height: 40dvh; }
+            .dynamic-section { top: auto; bottom: 20%; left: 50%; transform: translate(-50%, 20px); width: 90%; padding: 20px; }
             .dynamic-section.active { transform: translate(-50%, 0); }
             .time-block span { font-size: 1.8rem; }
             .dynamic-section a { margin-top: 15px; padding: 10px 20px; font-size: 0.9rem; }
@@ -281,6 +317,7 @@
             <li><a onclick="jumpToDynamicSection('sec-celebracion')">La Celebración</a></li>
             <li><a onclick="jumpToDynamicSection('sec-cuestionario')">Confirmación</a></li>
             <li><a onclick="jumpToDynamicSection('sec-final')">Cuenta Atrás</a></li>
+            <li><p>Diseñado por Manuel Torrecillas - 2026</p></li>
         </ul>
     </nav>
 
@@ -315,40 +352,42 @@
         <img id="foto-real-5" class="foto-real" src="fotos/foto5.jpeg">
     </div>
 
-    <div id="sec-intro" class="dynamic-section">
-        <p style="font-size: 1.7rem; font-style: italic;">Nuestra historia comienza...</p>
-        <p style="font-size: 1rem; opacity: 0.8; margin-top: 10px;">Desliza para descubrir nuestro camino</p>
-    </div>
+    <div id="bottom-panel">
+		<div id="sec-intro" class="dynamic-section">
+			<p style="font-size: 1.7rem; font-style: italic;">Nuestra historia comienza...</p>
+			<p style="font-size: 1rem; opacity: 0.8; margin-top: 10px;">Desliza para descubrir nuestro camino</p>
+		</div>
 
-    <div id="sec-ceremonia" class="dynamic-section">
-        <h2 style="font-size: 1.6rem;">La Ceremonia</h2>
-        <p style="font-size: 1.1rem;">Parroquia Arciprestal de la Inmaculada Concepción</p>
-        <a href="https://www.google.com/maps/search/?api=1&query=Parroquia+Arciprestal+Inmaculada+Concepcion+Torrevieja" target="_blank">VER UBICACIÓN</a>
-    </div>
-    
-    <div id="sec-celebracion" class="dynamic-section">
-        <h2 style="font-size: 1.6rem;">La Celebración</h2>
-        <p style="font-size: 1.1rem;">Finca Victoria Garden</p>
-        <a href="https://www.google.com/maps/search/?api=1&query=Victoria+Garden+Torrevieja" target="_blank">VER UBICACIÓN</a>
-    </div>
+		<div id="sec-ceremonia" class="dynamic-section">
+			<h2 style="font-size: 1.6rem;">La Ceremonia</h2>
+			<p style="font-size: 1.1rem;">Parroquia Arciprestal de la Inmaculada Concepción</p>
+			<a href="https://www.google.com/maps/search/?api=1&query=Parroquia+Arciprestal+Inmaculada+Concepcion+Torrevieja" target="_blank">VER UBICACIÓN</a>
+		</div>
+		
+		<div id="sec-celebracion" class="dynamic-section">
+			<h2 style="font-size: 1.6rem;">La Celebración</h2>
+			<p style="font-size: 1.1rem;">Finca Victoria Garden</p>
+			<a href="https://www.google.com/maps/search/?api=1&query=Victoria+Garden+Torrevieja" target="_blank">VER UBICACIÓN</a>
+		</div>
 
-    <div id="sec-cuestionario" class="dynamic-section">
-        <h2 style="font-size: 1.8rem;">¿Nos acompañas?</h2>
-        <p style="font-size: 1rem;">Tu confirmación nos ayuda a organizar el día perfecto.</p>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfpXBEfxR94WtQaBAf2_7j6LHs19c3V35J_R2LHIJHamQQOkA/viewform?usp=dialog" target="_blank">RELLENAR CUESTIONARIO</a>
-    </div>
+		<div id="sec-cuestionario" class="dynamic-section">
+			<h2 style="font-size: 1.8rem;">¿Nos acompañas?</h2>
+			<p style="font-size: 1rem;">Tu confirmación nos ayuda a organizar el día perfecto.</p>
+			<a href="https://docs.google.com/forms/d/e/1FAIpQLSfpXBEfxR94WtQaBAf2_7j6LHs19c3V35J_R2LHIJHamQQOkA/viewform?usp=dialog" target="_blank">RELLENAR CUESTIONARIO</a>
+		</div>
 
-	<div id="sec-final" class="dynamic-section">
-        <p style="font-size: 2.2rem; font-family: 'Great Vibes'; color: #ffffff; margin-bottom: 20px;">¡Nos vemos en el altar!</p>
-        
-        <div class="countdown-container">
-            <div class="time-block"><span id="days">00</span><p>Días</p></div>
-            <div class="time-block"><span id="hours">00</span><p>Horas</p></div>
-            <div class="time-block"><span id="minutes">00</span><p>Min</p></div>
-            <div class="time-block"><span id="seconds">00</span><p>Seg</p></div>
-        </div>
+		<div id="sec-final" class="dynamic-section">
+			<p style="font-size: 2.2rem; font-family: 'Great Vibes'; color: #ffffff; margin-bottom: 20px;">¡Nos vemos en el altar!</p>
+			
+			<div class="countdown-container">
+				<div class="time-block"><span id="days">00</span><p>Días</p></div>
+				<div class="time-block"><span id="hours">00</span><p>Horas</p></div>
+				<div class="time-block"><span id="minutes">00</span><p>Min</p></div>
+				<div class="time-block"><span id="seconds">00</span><p>Seg</p></div>
+			</div>
+		</div>
     </div>
-
+	
     <div id="watermark"></div>
     <div id="bg-container"></div>
     <div class="helper-text">Frame: <span id="frame-count">001</span></div>

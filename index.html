@@ -8,6 +8,7 @@
     <meta property="og:description" content="Te esperamos el 24 de abril de 2027. Haz scroll para ver nuestra historia.">
     <meta property="og:image" content="recursos/scene00096.jpg"> 
     <meta property="og:url" content="https://tudominio.com">
+	<!meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     
     <title>Gemma & Manuel - 24/04/2027</title>
     
@@ -17,8 +18,39 @@
     <link rel="icon" type="image/x-icon" href="recursos/favicon_2.ico">
 
     <style>
-        body { margin: 0; height: 1000vh; background-color: #000; overflow-x: hidden; color: white; }
-        
+        /* Ajuste para que Safari no rebote pero permita el scroll largo */
+        html {
+            background-color: #000;
+            /* Evita el rebote elástico arriba y abajo sin matar el desplazamiento */
+            overscroll-behavior-y: none; 
+        }
+
+        body { 
+            margin: 0; 
+            /* ¡IMPORTANTE! Esta altura es la que genera el scroll para los frames */
+            height: 1000vh; 
+            background-color: #000; 
+            overflow-x: hidden;
+            color: white;
+            /* Mejora la suavidad en iPhone */
+            -webkit-overflow-scrolling: touch; 
+        }
+
+        #bg-container {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            /* 'dvh' se adapta a las barras de Safari que suben y bajan */
+            height: 100dvh; 
+            background-position: center; 
+            background-size: cover;
+            background-repeat: no-repeat; 
+            z-index: 1;
+            transform: translateZ(0);
+            will-change: background-image;
+        }
+
 		#entrar-btn {
             margin-top: 30px;
             padding: 12px 35px;
@@ -219,15 +251,15 @@
         }
 
         .flor-top { 
-            top: -5px; /* Un poco hacia arriba para que no se vea el borde */
-            left: 50%; 
+            top: -1px; 
+			left: 50%; 
             transform: translateX(-50%); 
             width: 100%; 
             max-height: 150px; 
         }
 
         .flor-bottom { 
-            bottom: -5px; /* Un poco hacia abajo */
+            bottom: -1px;
             left: 50%; 
             transform: translateX(-50%); 
             width: 100%; 

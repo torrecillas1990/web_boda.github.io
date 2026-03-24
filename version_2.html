@@ -176,7 +176,15 @@
         .dynamic-section h2 { font-family: 'Cormorant Garamond', serif; color: #fff; margin-bottom: 10px; }
         .dynamic-section p { font-family: 'Cormorant Garamond', serif; margin: 5px 0; color: #eee; }
         .dynamic-section a { display: inline-block; color: #fff; background-color: #990033; text-decoration: none; font-weight: bold; font-family: 'Cormorant Garamond', serif; font-size: 1rem; margin-top: 20px; padding: 12px 25px; border-radius: 30px; transition: 0.3s; }
-
+		
+		#copy-btn:active {
+			transform: scale(0.95);
+		}
+		#copy-btn.success {
+			background-color: #4CAF50; /* Verde cuando se copia */
+			color: white;
+		}
+		
         /* --- Botón Entrar con brillo --- */
         #entrar-btn {
             margin-top: 30px; padding: 15px 40px; background: transparent; color: #d4af37;
@@ -363,7 +371,13 @@
 	<div id="sec-regalo" class="dynamic-section">
 		<h2 style="font-size: 1.8rem;">¿Nos echas una mano 👋?</h2>
 		<p style="font-size: 1rem;">Nos puedes echar una mano, pero si eres un poco perezoso nuestra cuenta es... 😜</p>
-		<p style="font-size: 1rem;">ES00 1111 2222 3333 4444 5555</p>
+		<div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin: 15px 0; border: 1px dashed #d4af37;">
+			<p id="iban-text" style="font-family: monospace; font-size: 1.1rem; letter-spacing: 1px; color: #d4af37; margin-bottom: 10px;">ES00 1111 2222 3333 4444 5555</p>
+			<button id="copy-btn" onclick="copiarIBAN()" style="background: #d4af37; color: #000; border: none; padding: 8px 20px; border-radius: 20px; font-family: 'Cormorant Garamond', serif; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.9rem;">
+				COPIAR IBAN
+			</button>
+		</div>
+		<p style="font-size: 0.9rem; opacity: 0.7; font-style: italic;">¡Muchísimas gracias!</p>
 	</div>
 
 	<div id="sec-final" class="dynamic-section">
@@ -526,6 +540,29 @@
                 musicBtn.style.animation = "none";
             }
         }
+
+		// Funcion copiar IBAN
+		function copiarIBAN() {
+			const iban = document.getElementById('iban-text').innerText;
+			const btn = document.getElementById('copy-btn');
+			
+			// Método moderno para copiar al portapapeles
+			navigator.clipboard.writeText(iban).then(() => {
+				// Feedback visual
+				const originalText = btn.innerText;
+				btn.innerText = "¡COPIADO!";
+				btn.classList.add('success');
+				
+				// Volver al estado original después de 3 segundos
+				setTimeout(() => {
+					btn.innerText = originalText;
+					btn.classList.remove('success');
+				}, 3000);
+			}).catch(err => {
+				console.error('Error al copiar: ', err);
+				alert("No se pudo copiar automáticamente. IBAN: " + iban);
+			});
+		}
 
         window.addEventListener('scroll', () => {
             if (totalFrames === 0) return;

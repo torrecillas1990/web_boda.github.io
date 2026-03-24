@@ -319,17 +319,24 @@
 			100% { background-color: rgba(212, 175, 55, 0); }
 		}
 
-		/* Partículas de confeti */
-		.confetti {
+		/* Estilo del Pétalo */
+		.petalo {
 			position: absolute;
-			width: 8px; height: 8px;
-			background-color: #d4af37;
-			border-radius: 2px;
-			animation: fall linear forwards;
+			width: 14px; 
+			height: 18px;
+			border-radius: 50% 10% 50% 50%; /* Forma de pétalo orgánica */
+			opacity: 0.8;
+			pointer-events: none;
+			z-index: 201;
+			animation: caerPetalo linear forwards;
 		}
 
-		@keyframes fall {
-			to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+		@keyframes caerPetalo {
+			0% {transform: translateY(-10vh) rotate(0deg) rotateY(0deg);}
+			25% {transform: translateY(25vh) rotate(45deg) rotateY(180deg) translateX(15px);}
+			50% {transform: translateY(50vh) rotate(90deg) rotateY(0deg) translateX(-15px);}
+			75% {transform: translateY(75vh) rotate(135deg) rotateY(180deg) translateX(15px);}
+			100% {transform: translateY(110vh) rotate(180deg) rotateY(0deg);opacity: 0;}
 		}
     </style>
 </head>
@@ -664,6 +671,7 @@
 
         // --- LÓGICA DE LA CUENTA ATRÁS ---
         const targetDate = new Date("April 24, 2027 00:00:00").getTime();
+        //const targetDate = new Date("March 24, 2026 00:00:00").getTime();
 
         function updateCountdown() {
             const now = new Date().getTime();
@@ -729,23 +737,32 @@
 			overlay.style.display = 'block';
 			overlay.classList.add('gold-flash');
 
-			// Cambiar el mensaje final
 			const finalSec = document.getElementById('sec-final');
 			if(finalSec) finalSec.querySelector('p').innerText = "¡Es el gran día!";
 
-			// Generar partículas de confeti dorado
-			for (let i = 0; i < 50; i++) {
+			const coloresPetalos = ['#f4e4bc', '#990033']; // crema y un toque de vino
+
+			for (let i = 0; i < 60; i++) {
 				setTimeout(() => {
-					const confetti = document.createElement('div');
-					confetti.classList.add('confetti');
-					confetti.style.left = Math.random() * 100 + 'vw';
-					confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
-					confetti.style.opacity = Math.random();
-					overlay.appendChild(confetti);
+					const petalo = document.createElement('div');
+					petalo.classList.add('petalo');
 					
-					// Limpiar elemento después de la animación
-					setTimeout(() => confetti.remove(), 5000);
-				}, i * 100);
+					// Variaciones aleatorias
+					const color = coloresPetalos[Math.floor(Math.random() * coloresPetalos.length)];
+					const sizeW = Math.random() * 10 + 10; // entre 10 y 20px
+					
+					petalo.style.left = Math.random() * 100 + 'vw';
+					petalo.style.backgroundColor = color;
+					petalo.style.width = sizeW + 'px';
+					petalo.style.height = (sizeW * 1.2) + 'px';
+					petalo.style.animationDuration = (Math.random() * 4 + 4) + 's'; // Caída lenta (4-8 segundos)
+					petalo.style.opacity = Math.random() * 0.5 + 0.5;
+					
+					overlay.appendChild(petalo);
+					
+					// Limpiar para no saturar la memoria
+					setTimeout(() => petalo.remove(), 8000);
+				}, i * 150); // Salen escalonados
 			}
 		}
 		

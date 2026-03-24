@@ -334,6 +334,7 @@
             <li><a onclick="jumpToDynamicSection('sec-celebracion')">La Celebración</a></li>
             <li><a onclick="jumpToDynamicSection('sec-cuestionario')">Confirmación</a></li>
             <li><a onclick="jumpToDynamicSection('sec-regalo')">¿Nos echas una mano?</a></li>
+            <li><a onclick="jumpToDynamicSection('sec-musica')">Temazos</a></li>
             <li><a onclick="jumpToDynamicSection('sec-final')">Cuenta Atrás</a></li>
         </ul>
         <p>Diseñado por Manuel Torrecillas - 2026</p>
@@ -408,7 +409,30 @@
 			</div>
 			<p style="font-size: 0.9rem; opacity: 0.7; font-style: italic;">¡Muchísimas gracias!</p>
 		</div>
-
+		
+		<div id="sec-musica" class="dynamic-section">
+			<h2 style="font-size: 1.8rem;">¡Tú pones la música! 🎶</h2>
+			<p style="font-size: 1rem;">Queremos que la pista de baile eche humo. Añade tus canciones favoritas a nuestra lista oficial de Spotify.</p>
+			
+			<div style="margin-top: 25px;">
+				<a href="https://open.spotify.com/playlist/5U9WvTg9igE8aw6sJ8EPIz?si=pWUiLE4eQDilULusVOTsww" target="_blank" 
+					   style="background-color: #1DB954; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; font-weight: bold; font-family: sans-serif; transition: 0.3s; border: none;">
+					<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+						<path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.508 17.302c-.218.358-.684.474-1.042.255-2.883-1.762-6.513-2.161-10.787-1.184-.41.094-.82-.163-.914-.573-.094-.41.163-.82.573-.914 4.675-1.07 8.675-.615 11.915 1.365.358.218.474.684.255 1.051zm1.47-3.253c-.276.448-.865.589-1.313.313-3.298-2.027-8.324-2.613-12.217-1.432-.505.153-1.037-.134-1.19-.639-.153-.505.134-1.037.639-1.19 4.456-1.352 10.002-.686 13.766 1.628.448.276.589.865.315 1.32zm.127-3.386c-3.955-2.348-10.47-2.564-14.253-1.416-.606.184-1.242-.168-1.426-.774-.184-.606.168-1.242.774-1.426 4.343-1.318 11.536-1.063 16.088 1.638.544.323.722 1.025.399 1.569-.323.544-1.025.722-1.582.409z"/>
+					</svg>
+					ABRIR PLAYLIST BODA
+				</a>
+			</div>
+			<p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.7; font-style: italic;">* Necesitas tener cuenta de Spotify para añadir temas.</p>
+			<div style="margin-top: 20px; border-radius: 12px; overflow: hidden;">
+				<iframe style="border-radius:12px" 
+						src="https://open.spotify.com/playlist/5U9WvTg9igE8aw6sJ8EPIz?si=pWUiLE4eQDilULusVOTsww" 
+						width="100%" height="152" frameBorder="0" allowfullscreen="" 
+						allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
+				</iframe>
+			</div>
+		</div>
+	
 		<div id="sec-final" class="dynamic-section">
 			<p style="font-size: 2.2rem; font-family: 'Great Vibes'; color: #ffffff; margin-bottom: 20px;">¡Nos vemos en el altar!</p>
 			
@@ -458,7 +482,7 @@
         }
 
         function iniciarLogicaSecciones() {
-            const size = Math.floor(totalFrames / 6);
+            const size = Math.floor(totalFrames / 7);
             scrollStory = [
                 // Añadimos 'fotoId' para saber qué foto real vincular
                 { start: 1, end: size, id: 'sec-intro', fotoId: 'foto-real-1' },
@@ -466,7 +490,8 @@
                 { start: (size * 2) + 1, end: size * 3, id: 'sec-celebracion'}, //fotoId: 'foto-real-3' },
                 { start: (size * 3) + 1, end: size * 4, id: 'sec-cuestionario'}, //fotoId: 'foto-real-4' },
                 { start: (size * 4) + 1, end: size * 5, id: 'sec-regalo'}, //fotoId: 'foto-real-4' },
-                { start: (size * 5) + 1, end: totalFrames, id: 'sec-final', fotoId: 'foto-real-5' }
+                { start: (size * 4) + 1, end: size * 6, id: 'sec-musica'}, //fotoId: 'foto-real-4' },
+                { start: (size * 6) + 1, end: totalFrames, id: 'sec-final', fotoId: 'foto-real-5' }
             ];
         }
 		

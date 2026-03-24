@@ -38,12 +38,28 @@
 			z-index: 1;
 		}
 		
-		/* El contenedor que envuelve las secciones para darles espacio */
+		/* Contenedor principal que envuelve todas las secciones */
 		#main-content {
 			position: relative;
 			z-index: 20;
-			padding-top: 80vh; /* Espacio inicial para que se vea el fondo limpio al cargar */
-			padding-bottom: 50vh;
+			/* 40vh permite que la primera sección aparezca centrada al inicio */
+			padding-top: 40vh; 
+			/* 45vh permite que la última sección se detenga en el centro al final del scroll */
+			padding-bottom: 45vh; 
+
+			/* Máscara para suavizar la entrada/salida visual */
+			-webkit-mask-image: linear-gradient(to bottom, 
+				transparent 0%, 
+				black 25%, 
+				black 75%, 
+				transparent 100%
+			);
+			mask-image: linear-gradient(to bottom, 
+				transparent 0%, 
+				black 25%, 
+				black 75%, 
+				transparent 100%
+			);
 		}
 		
         /* --- Contenedor de Ilustración (Fondo) --- */
@@ -101,11 +117,21 @@
             50% { transform: translateY(-52%) rotate(-2deg); }
         }
 
-        /* --- Header Imágenes (Nombres Fijos) --- */
-        .header-text {
-            top: 8%; left: 30%; width: 100%; max-height: 150px; z-index: 20; 
-        }
-        .img-h1 { width: 500px; height: auto; pointer-events: none; }
+        /* Ajuste del header para que siempre esté visible y por encima */
+		.header-text {
+			position: fixed;
+			top: 8%;
+			left: 0;
+			right: 0;
+			text-align: center;
+			z-index: 100; 
+			pointer-events: none;
+		}
+
+		.img-h1 {
+			width: 80%; /* Ajustado para que no sature en móvil */
+			max-width: 500px;
+		}
 
         /* --- NUEVO: Botón de Menú (Hamburger) --- */
         #hamburger {
@@ -171,25 +197,35 @@
         }
         .foto-real.active { opacity: 1; transform: translate(-50%, -90%) scale(1); }
 
-        /* Las cajas de texto ahora se desplazan físicamente */
+		/* Optimizamos las secciones para el desvanecimiento */
 		.dynamic-section {
 			position: relative;
-			margin: 0 auto 40vh auto; /* Separación vertical entre bloques */
+			margin: 0 auto 70vh auto; /* Aumentamos el margen para que no se amontonen */
 			width: 85%; 
 			max-width: 420px; 
-			background: rgba(0, 0, 0, 0.8); 
-			padding: 30px; 
-			border-radius: 20px; 
-			border: 1px solid rgba(212, 175, 55, 0.3);
-			box-shadow: 0 10px 40px rgba(0,0,0,0.8); 
+			background: rgba(0, 0, 0, 0.85); 
+			padding: 35px 25px; 
+			border-radius: 25px; 
+			border: 1px solid rgba(212, 175, 55, 0.4);
 			text-align: center; 
 			
-			/* Efecto de aparición */
 			opacity: 0;
-			transform: translateY(30px);
-			transition: all 1s ease-out;
+			filter: blur(0px);
+			transform: translateY(0);
+			/* Transición suave para el filtro y opacidad */
+			transition: opacity 0.4s ease, filter 0.4s ease;
 		}
-
+		
+		/* Evitamos que la última sección se separe del fondo del contenedor */
+		#sec-final {
+			margin-bottom: 0 !important;
+		}
+		
+		/* Excepción para la última sección: no queremos que se desvanezca al final */
+		#sec-final.active {
+			margin-bottom: 0; 
+		}
+		
 		/* Clase que se activa al hacer scroll */
 		.dynamic-section.active {
 			opacity: 1;
@@ -335,10 +371,13 @@
         </div>
     </div>
 	
+	<div id="bg-container"></div>
+    <div id="watermark"></div>
+	
     <img src="recursos/arriba.png" class="decor-flor flor-top" alt="">
-    <img src="recursos/abajo.png" class="decor-flor flor-bottom" alt="">
-    <img src="recursos/izquierda.png" class="decor-flor flor-side-l" alt="">
-    <img src="recursos/derecha.png" class="decor-flor flor-side-r" alt="">
+    <!img src="recursos/abajo.png" class="decor-flor flor-bottom" alt="">
+    <!img src="recursos/izquierda.png" class="decor-flor flor-side-l" alt="">
+    <!img src="recursos/derecha.png" class="decor-flor flor-side-r" alt="">
 
     <div class="header-text">
         <img src="recursos/texto.png" class="img-h1" alt="Gemma & Manuel">
@@ -394,9 +433,8 @@
 		</div>
 	</div>
 
-    <div id="watermark"></div>
 	<div id="celebration-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:200; display:none; overflow:hidden;"></div>
-    <div id="bg-container"></div>
+    
     <div class="helper-text">Frame: <span id="frame-count">001</span></div>
 
     <script>
@@ -498,14 +536,14 @@
 
 		function startExperience() {
 			loader.style.opacity = "0";
-			setTimeout(() => loader.style.display = "none", 800);
+			setTimeout(() => {
+				loader.style.display = "none";
+				// Forzamos un pequeño refresco del scroll para posicionar la intro
+				window.scrollTo(0, 1); 
+			}, 800);
 
-			// DISPARO DE MÚSICA: Al ser una acción del usuario (click en entrar), 
-			// todos los móviles permitirán que suene la música.
 			miMusica.play();
 			musicBtn.classList.add('playing');
-			
-			updateContent(0);
 		}
 
         function toggleMusic() {
@@ -535,27 +573,65 @@
 
 		// 2. Lógica para que el fondo (acuarela) siga cambiando con el scroll
 		window.addEventListener('scroll', () => {
-			const scrollTop = window.pageYOffset;
-			const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-			const fraction = scrollTop / maxScroll;
-			
-			// Cambiamos el frame de fondo basado en el progreso total de la página
-			const frameIndex = Math.min(totalFrames - 1, Math.floor(fraction * totalFrames));
-			
-			if(images[frameIndex]) {
-				bgContainer.style.backgroundImage = `url('${images[frameIndex].src}')`;
-				frameDisplay.innerText = String(frameIndex + 1).padStart(3, '0');
-			}
-		});
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const fraction = maxScroll <= 0 ? 0 : scrollTop / maxScroll;
+            
+            // 1. Fondo Acuarela
+            const frameIndex = Math.min(totalFrames - 1, Math.floor(fraction * totalFrames));
+            if(images[frameIndex]) {
+                bgContainer.style.backgroundImage = `url('${images[frameIndex].src}')`;
+                if(frameDisplay) frameDisplay.innerText = String(frameIndex + 1).padStart(3, '0');
+            }
+            
+            // 2. Lógica de Secciones y Fotos Reales
+            const currentFrame = frameIndex + 1;
+            const fadeLimit = window.innerHeight * 0.32; 
+
+            scrollStory.forEach(seccion => {
+                const secEl = document.getElementById(seccion.id);
+                const fotoEl = document.getElementById(seccion.fotoId);
+                
+                if (currentFrame >= seccion.start && currentFrame <= seccion.end) {
+                    // Control de la Foto Real
+                    if (fotoEl) fotoEl.classList.add('active');
+                    
+                    // Control de la Sección de Texto
+                    if (secEl) {
+                        const rect = secEl.getBoundingClientRect();
+                        // Si está subiendo hacia el header, desvanecer
+                        if (rect.top < fadeLimit) {
+                            let factor = (rect.top - 80) / (fadeLimit - 80);
+                            factor = Math.max(0, Math.min(1, factor));
+                            secEl.style.opacity = factor;
+                            secEl.style.filter = `blur(${(1 - factor) * 12}px)`;
+                        } else {
+                            secEl.style.opacity = "1";
+                            secEl.style.filter = "blur(0px)";
+                            secEl.classList.add('active');
+                        }
+                    }
+                } else {
+                    if (fotoEl) fotoEl.classList.remove('active');
+                    if (secEl && seccion.id !== 'sec-final') {
+                        secEl.classList.remove('active');
+                    }
+                }
+            });
+        });
 
 		// 3. Navegación del menú corregida para scroll real
 		function jumpToDynamicSection(sectionId) {
 			closeNavMenu();
 			const target = document.getElementById(sectionId);
 			if (target) {
-				target.scrollIntoView({
-					behavior: 'smooth',
-					block: 'center'
+				// Calculamos la posición para que la caja quede en el centro de la pantalla
+				const elementPosition = target.getBoundingClientRect().top + window.pageYOffset;
+				const offsetPosition = elementPosition - (window.innerHeight / 2) + (target.offsetHeight / 2);
+
+				window.scrollTo({
+					top: offsetPosition,
+					behavior: 'smooth'
 				});
 			}
 		}

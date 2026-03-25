@@ -76,6 +76,8 @@
 			transform: translateZ(0); will-change: background-image;
 			backface-visibility: hidden;
 			-webkit-backface-visibility: hidden;
+			image-rendering: -webkit-optimize-contrast; /* Mejor nitidez en bordes */
+			transform: translate3d(0,0,0); /* Fuerza aceleración por hardware */
 		}
 
 		#bottom-panel {

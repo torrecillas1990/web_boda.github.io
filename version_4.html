@@ -287,6 +287,8 @@
         const loader = document.getElementById('loader');
         const progressFill = document.getElementById('progress-fill');
         const miMusica = document.getElementById('miMusica');
+		let isHorizontal = window.innerWidth > window.innerHeight;
+		let folder = isHorizontal ? 'frames_1' : 'frames_3'; // frames_1 para PC, frames_3 para móvil
 
         // Precarga de imágenes
 		function preload() {

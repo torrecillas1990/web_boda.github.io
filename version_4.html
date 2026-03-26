@@ -41,6 +41,9 @@
             background-size: cover;
             background-repeat: no-repeat;
             will-change: background-image;
+			background-position: center;
+			background-size: cover; /* Esto es vital */
+			background-repeat: no-repeat;
         }
 
         #watermark {
@@ -278,7 +281,7 @@
     </div>
 
     <script>
-        const totalFrames = 89;
+        const totalFrames = 78;
         const frames = [];
         const bgContainer = document.getElementById('bg-sticky-container');
         const loader = document.getElementById('loader');
@@ -286,24 +289,34 @@
         const miMusica = document.getElementById('miMusica');
 
         // Precarga de imágenes
-        function preload() {
-            let loaded = 0;
-            for (let i = 1; i <= totalFrames; i++) {
-                const img = new Image();
-                const idx = String(i).padStart(3, '0');
-                img.src = `frames_1/scene00${idx}.jpg`;
-                img.onload = () => {
-                    loaded++;
-                    let p = Math.floor((loaded / totalFrames) * 100);
-                    document.getElementById('loader-text').innerText = `Cargando... ${p}%`;
-                    progressFill.style.width = `${p}%`;
-                    if (loaded === totalFrames) {
-                        document.getElementById('entrar-btn').style.display = 'block';
-                    }
-                };
-                frames.push(img);
-            }
-        }
+		function preload() {
+			let loaded = 0;
+			// Detectar orientación al cargar
+			isHorizontal = window.innerWidth > window.innerHeight;
+			folder = isHorizontal ? 'frames_1' : 'frames_3';
+			
+			// Limpiamos el array de frames por si acaso hay un re-load
+			frames.length = 0; 
+
+			for (let i = 1; i <= totalFrames; i++) {
+				const img = new Image();
+				const idx = String(i).padStart(3, '0');
+				
+				// Usamos la variable 'folder' dinámicamente
+				img.src = `${folder}/scene00${idx}.jpg`;
+				
+				img.onload = () => {
+					loaded++;
+					let p = Math.floor((loaded / totalFrames) * 100);
+					document.getElementById('loader-text').innerText = `Cargando... ${p}%`;
+					progressFill.style.width = `${p}%`;
+					if (loaded === totalFrames) {
+						document.getElementById('entrar-btn').style.display = 'block';
+					}
+				};
+				frames.push(img);
+			}
+		}
 
         function startExperience() {
             loader.style.display = 'none';
@@ -365,8 +378,17 @@
 		  document.documentElement.style.setProperty('--vh', `${vh}px`);
 		}
 
-		window.addEventListener('resize', ajustarAltura);
-		ajustarAltura();
+		window.addEventListener('resize', () => {
+			ajustarAltura();
+			
+			// Si cambia radicalmente la orientación, podrías reiniciar el preload
+			// pero cuidado: esto volvería a mostrar el loader.
+			const nuevoEstadoHorizontal = window.innerWidth > window.innerHeight;
+			if (nuevoEstadoHorizontal !== isHorizontal) {
+				// Opcional: recargar la página para asegurar que los frames sean los correctos
+				// window.location.reload(); 
+			}
+		});
 
         preload();
         window.addEventListener('scroll', () => {}); // Listener para safari

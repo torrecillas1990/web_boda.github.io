@@ -320,13 +320,15 @@
 			}
 		}
 
-        function startExperience() {
-            loader.style.display = 'none';
-            miMusica.play();
-            document.getElementById('music-btn').classList.add('playing');
-            updateFrame();
-        }
-
+		// En lugar de llamar a updateFrame() al final de startExperience()...
+		function startExperience() {
+			loader.style.display = 'none';
+			miMusica.play();
+			document.getElementById('music-btn').classList.add('playing');
+			// Pintamos el primer frame una vez
+			renderFrame(); 
+		}
+		
         // Cambio de frame según scroll
         function updateFrame() {
             const scrollTop = window.pageYOffset;
@@ -359,9 +361,18 @@
 
         function copiarIBAN() {
             const text = document.getElementById('iban').innerText;
-            navigator.clipboard.writeText(text);
-            alert("¡IBAN Copiado!");
-        }
+			//const text = "ES00 1111 2222 3333 4444 5555"; // Mejor directo para evitar espacios raros
+			navigator.clipboard.writeText(text).then(() => {
+				const btn = event.target;
+				const originalText = btn.innerText;
+				btn.innerText = "¡COPIADO!";
+				btn.style.background = "#4CAF50";
+				setTimeout(() => {
+					btn.innerText = originalText;
+					btn.style.background = "var(--color-oro)";
+				}, 2000);
+			});
+		}
 
         // Countdown
         const target = new Date("April 24, 2027 00:00:00").getTime();
@@ -393,7 +404,22 @@
 		});
 
         preload();
-        window.addEventListener('scroll', () => {}); // Listener para safari
+		
+        // Escuchamos el scroll de forma eficiente
+		window.addEventListener('scroll', () => {
+			requestAnimationFrame(renderFrame);
+		}, { passive: true });
+
+		function renderFrame() {
+			const scrollTop = window.pageYOffset;
+			const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+			const scrollFraction = scrollTop / maxScroll;
+			const frameIndex = Math.min(totalFrames - 1, Math.floor(scrollFraction * totalFrames));
+			
+			if(frames[frameIndex]) {
+				bgContainer.style.backgroundImage = `url('${frames[frameIndex].src}')`;
+			}
+		}
     </script>
 </body>
 </html>

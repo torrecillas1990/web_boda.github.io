@@ -3,225 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memories | Personal Timeline</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,500;1,300&display=swap" rel="stylesheet">
+    <title>Memories Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #fcfcfc;
-            --text: #1a1a1a;
-            --gray: #888;
-            --accent: #e0e0e0;
+        :root { --bg: #fcfcfc; --text: #1a1a1a; --gray: #888; --accent: #eee; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px; }
+        header { max-width: 900px; margin: 0 auto 40px; }
+        
+        .upload-section { 
+            max-width: 900px; margin: 0 auto 60px; padding: 25px; 
+            background: #fff; border: 1px solid var(--accent); border-radius: 12px;
+            display: flex; gap: 15px; flex-wrap: wrap; align-items: center;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        .input-group { display: flex; flex-direction: column; flex: 1; min-width: 200px; }
+        label { font-size: 0.7rem; text-transform: uppercase; color: var(--gray); margin-bottom: 5px; letter-spacing: 1px; }
+        
+        input { padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #000; }
+        input:required { border-left: 3px solid #ff4d4d; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            padding: 40px 20px;
+        button { 
+            padding: 12px 25px; background: #000; color: #fff; 
+            border: none; border-radius: 6px; cursor: pointer; align-self: flex-end;
         }
 
-        header {
-            max-width: 1000px;
-            margin: 0 auto 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
+        .grid { max-width: 900px; margin: 0 auto; column-count: 3; column-gap: 25px; }
+        .card { break-inside: avoid; margin-bottom: 30px; animation: fadeIn 0.5s ease forwards; }
+        .card img { width: 100%; border-radius: 8px; filter: grayscale(100%); transition: 0.5s; }
+        .card:hover img { filter: grayscale(0%); }
+        .info { margin-top: 8px; font-size: 0.8rem; color: var(--gray); display: flex; justify-content: space-between; }
 
-        header h1 {
-            font-weight: 300;
-            font-style: italic;
-            font-size: 1.8rem;
-            letter-spacing: -1px;
-        }
-
-        header span {
-            font-size: 0.7rem;
-            color: var(--gray);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Grid estilo Dots/Pinterest */
-        .timeline-grid {
-            max-width: 1000px;
-            margin: 0 auto;
-            column-count: 3;
-            column-gap: 30px;
-        }
-
-        @media (max-width: 800px) { .timeline-grid { column-count: 2; } }
-        @media (max-width: 500px) { .timeline-grid { column-count: 1; } }
-
-        .memory-card {
-            break-inside: avoid;
-            margin-bottom: 40px;
-            cursor: pointer;
-            transition: opacity 0.3s ease;
-        }
-
-        .image-container {
-            background-color: var(--accent);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-
-        .image-container img {
-            width: 100%;
-            display: block;
-            filter: grayscale(100%);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .memory-card:hover img {
-            filter: grayscale(0%);
-            transform: scale(1.03);
-        }
-
-        .memory-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            font-size: 0.85rem;
-        }
-
-        .memory-date {
-            font-size: 0.7rem;
-            color: var(--gray);
-            font-family: monospace;
-        }
-
-        .memory-desc {
-            margin-top: 5px;
-            font-size: 0.8rem;
-            color: #666;
-            font-weight: 300;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <header>
-        <div>
-            <h1>Memories.</h1>
-        </div>
-        <span>2024 Index</span>
-    </header>
-	
-	<section style="max-width: 1000px; margin: 0 auto 40px; padding: 20px; border: 1px dashed var(--accent); border-radius: 8px;">
-    <h3 style="font-size: 0.8rem; margin-bottom: 15px; text-transform: uppercase; color: var(--gray);">Añadir Nuevo Recuerdo</h3>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <input type="text" id="memTitle" placeholder="Título" style="padding: 8px; border: 1px solid var(--accent); border-radius: 4px; flex: 1;">
-        <input type="date" id="memDate" style="padding: 8px; border: 1px solid var(--accent); border-radius: 4px;">
-        <input type="file" id="memFile" accept="image/*" style="font-size: 0.8rem;">
-        <button onclick="addMemory()" style="padding: 8px 20px; background: #000; color: #fff; border: none; border-radius: 4px; cursor: pointer;">Publicar</button>
+<header>
+    <h1>Memories.</h1>
+    <p style="color: var(--gray); font-size: 0.9rem;">Archivo fotográfico personal</p>
+</header>
+
+<section class="upload-section">
+    <div class="input-group">
+        <label>Autor (Obligatorio)</label>
+        <input type="text" id="author" placeholder="Tu nombre..." required>
     </div>
-	</section>
+    <div class="input-group">
+        <label>Seleccionar Imagen</label>
+        <input type="file" id="file" accept="image/*">
+    </div>
+    <button onclick="saveMemory()">Guardar</button>
+</section>
 
-    <main class="timeline-grid" id="gallery">
-        </main>
+<main class="grid" id="gallery"></main>
 
-    <script>
-	const gallery = document.getElementById('gallery');
+<script>
+    const authorInput = document.getElementById('author');
+    const gallery = document.getElementById('gallery');
 
-	// Función para crear el HTML de una tarjeta
-	function createCard(m) {
-		const card = document.createElement('div');
-		card.className = 'memory-card';
-		card.innerHTML = ' ' +
-			'<div class="image-container">' +
-			'    <img src="${m.img}" alt="${m.title}" loading="lazy">' +
-			'</div>' +
-			'<div class="memory-info">' +
-			'    <strong>${m.title}</strong>' +
-			'    <span class="memory-date">${m.date}</span>' +
-			'</div>' +
-			'<p class="memory-desc">${m.desc}</p>';
-		return card;
-	}
+    // 1. Al cargar la página, recuperar autor del localStorage
+    window.onload = () => {
+        const savedAuthor = localStorage.getItem('memories_author');
+        if (savedAuthor) {
+            authorInput.value = savedAuthor;
+        }
+        renderGallery();
+    };
 
-	// Función para añadir memoria dinámicamente
-	function addMemory() {
-		const title = document.getElementById('memTitle').value;
-		const date = document.getElementById('memDate').value;
-		const fileInput = document.getElementById('memFile');
-		const file = fileInput.files[0];
+    // 2. Guardar memoria y autor
+    function saveMemory() {
+        const author = authorInput.value.trim();
+        const fileInput = document.getElementById('file');
+        const file = fileInput.files[0];
 
-		if (!title || !date || !file) {
-			alert("Por favor, rellena todos los campos");
-			return;
-		}
-
-		// FileReader convierte la imagen en una URL de datos (base64)
-		const reader = new FileReader();
-		reader.onload = function(e) {
-			const newMemory = {
-				title: title,
-				date: date.replace(/-/g, '.'),
-				desc: "Nuevo recuerdo añadido.",
-				img: e.target.result // La imagen en formato texto largo
-			};
-
-			// Insertar al principio de la galería
-			gallery.prepend(createCard(newMemory));
-			
-			// Limpiar formulario
-			document.getElementById('memTitle').value = '';
-			fileInput.value = '';
-		};
-		reader.readAsDataURL(file);
-	}
-
-	// Carga inicial (puedes mantener tus recuerdos por defecto aquí)
-	memories.forEach(m => gallery.appendChild(createCard(m)));
-
-        // Tu base de datos local
-        const memories = [
-            {
-                title: "Quiet Morning",
-                date: "2024.03.12",
-                desc: "Café y luz de invierno.",
-                img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80"
-            },
-            {
-                title: "The Architecture",
-                date: "2024.02.28",
-                desc: "Líneas rectas en la ciudad.",
-                img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80"
-            },
-            {
-                title: "Ocean Breeze",
-                date: "2024.01.15",
-                desc: "Fin de semana en la costa.",
-                img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80"
-            }
-        ];
-
-        const gallery = document.getElementById('gallery');
-
-        function loadMemories() {
-            memories.forEach(m => {
-                const card = document.createElement('div');
-                card.className = 'memory-card';
-                card.innerHTML = `
-                    <div class="image-container">
-                        <img src="${m.img}" alt="${m.title}" loading="lazy">
-                    </div>
-                    <div class="memory-info">
-                        <strong>${m.title}</strong>
-                        <span class="memory-date">${m.date}</span>
-                    </div>
-                    <p class="memory-desc">${m.desc}</p>
-                `;
-                gallery.appendChild(card);
-            });
+        if (!author) {
+            alert("El nombre de autor es obligatorio");
+            return;
+        }
+        if (!file) {
+            alert("Selecciona una imagen");
+            return;
         }
 
-        loadMemories();
-    </script>
+        // Guardar nombre de autor para la próxima vez
+        localStorage.setItem('memories_author', author);
+
+        // Crear el objeto de memoria
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const newMemory = {
+                author: author,
+                // Simulamos la ruta que mencionas: imagenes/nombre-autor/archivo
+                path: `imagenes/${author.toLowerCase().replace(/\s/g, '-')}/${file.name}`,
+                imgData: e.target.result, // Base64 para mostrarla ahora
+                timestamp: new Date().toLocaleString()
+            };
+
+            // Guardar en la lista de memorias local (para esta sesión/dispositivo)
+            let memories = JSON.parse(localStorage.getItem('local_dots') || '[]');
+            memories.unshift(newMemory);
+            localStorage.setItem('local_dots', JSON.stringify(memories));
+
+            renderGallery();
+            fileInput.value = ''; // Limpiar input
+            
+            console.log(`Simulando guardado en: ${newMemory.path}`);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // 3. Renderizar fotos guardadas en el dispositivo
+    function renderGallery() {
+        const memories = JSON.parse(localStorage.getItem('local_dots') || '[]');
+        gallery.innerHTML = '';
+        
+        memories.forEach(m => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = `
+                <img src="${m.imgData}">
+                <div class="info">
+                    <span>${m.author}</span>
+                    <span style="font-size: 0.6rem;">${m.timestamp}</span>
+                </div>
+            `;
+            gallery.appendChild(div);
+        });
+    }
+</script>
 </body>
 </html>

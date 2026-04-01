@@ -40,7 +40,15 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
             cursor: pointer;
             transition: transform 0.3s ease;
-        }
+			position: relative;
+			overflow: hidden;
+			animation: fadeInCard 0.5s ease forwards;
+		}
+
+		@keyframes fadeInCard {
+			from { opacity: 0; transform: translateY(10px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
 
         .photo-card:hover { transform: translateY(-5px); }
 
@@ -49,15 +57,43 @@
             height: 150px; 
             object-fit: cover; 
             border-radius: 6px; 
-        }
-
-        @media (min-width: 600px) {
+			transition: opacity 0.5s ease;
+		}
+        
+		@media (min-width: 600px) {
             .photo-card img { height: 220px; }
         }
 
         .photo-card p { font-size: 0.85rem; margin: 10px 0 5px; color: #666; text-align: center; }
         .photo-card b { color: var(--accent); font-weight: 600; }
+		
+		/* Estado inicial de la tarjeta (Cargando) */
+		.photo-card.loading img {
+			background: #f0f0f0; /* Color de fondo mientras carga */
+			opacity: 0; /* Oculta la imagen hasta que esté lista */
+		}
 
+		.photo-card.loading::before {
+			content: "";
+			position: absolute;
+			top: 40%; left: 50%;
+			transform: translate(-50%, -50%);
+			width: 20px; height: 20px;
+			border: 2px solid #ddd;
+			border-radius: 50%;
+			border-top-color: var(--accent);
+			animation: spin 0.8s linear infinite;
+			z-index: 5;
+		}
+
+		.photo-card.loaded img {
+			opacity: 1;
+		}
+
+		.photo-card.loaded::before {
+			display: none; /* Quita el spinner cuando carga */
+		}
+		
         /* Lightbox */
         #lightbox {
             display: none;
@@ -114,6 +150,62 @@
         #progress-container { margin: 20px 0; text-align: left; }
         #preview-area { display: flex; gap: 8px; flex-wrap: wrap; margin: 15px 0; justify-content: center; }
         .preview-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; }
+		
+		/* Espiral de carga (Spinner) */
+		.spinner {
+			position: absolute;
+			top: 50%; left: 50%;
+			transform: translate(-50%, -50%);
+			width: 24px; height: 24px;
+			border: 3px solid rgba(255, 255, 255, 0.3);
+			border-radius: 50%;
+			border-top-color: #fff;
+			animation: spin 1s ease-in-out infinite;
+			z-index: 10;
+			display: none; /* Oculto por defecto */
+		}
+
+		@keyframes spin {
+			to { transform: translate(-50%, -50%) rotate(360deg); }
+		}
+
+		/* Contenedor individual de miniatura en el modal */
+		.thumb-wrapper {
+			position: relative;
+			width: 80px; height: 80px;
+			border-radius: 8px;
+			overflow: hidden;
+			background: #000;
+		}
+
+		.thumb-wrapper img {
+			width: 100%; height: 100%;
+			object-fit: cover;
+			transition: opacity 0.4s ease, filter 0.4s ease;
+		}
+
+		/* Estado: Subiendo */
+		.thumb-wrapper.uploading img {
+			opacity: 0.5;
+		}
+		.thumb-wrapper.uploading .spinner {
+			display: block;
+		}
+
+		/* Estado: Completado (Oscurecido) */
+		.thumb-wrapper.done img {
+			filter: brightness(0.3) grayscale(100%);
+			opacity: 0.8;
+		}
+		.thumb-wrapper.done::after {
+			content: "✓";
+			position: absolute;
+			top: 50%; left: 50%;
+			transform: translate(-50%, -50%);
+			color: var(--accent);
+			font-weight: bold;
+			font-size: 1.2rem;
+		}
     </style>
 </head>
 <body>
@@ -157,157 +249,203 @@
         <div id="lightbox-caption"></div>
     </div>
 
-    <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-_O4rkrXzlNOUyS9NWhazj27Pm9rpmkDI8wy3kCgQTPENBNB6QLmzHptat4pBbjbfJA/exec";
-        let selectedFiles = [];
+	<script>
+		const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyXZVF4ApFjpGgh0Wne88wJV4V7IjIp4JRAifsOn91PQVpIOYJ7gLdHBqbJQdqjBafuVA/exec";
+		let selectedFiles = [];
+		let currentPage = 0;
+		let isLoading = false;
+		let allPhotosLoaded = false;
 
-        window.onload = () => {
-            document.getElementById('author').value = localStorage.getItem('boda_author') || '';
-            loadGallery();
-        };
+		// 1. Función para cargar un lote de fotos con efecto "Goteo"
+		async function loadGallery(page = 0) {
+			if (isLoading || allPhotosLoaded) return;
+			
+			isLoading = true;
+			const loadingText = document.getElementById('loading-gallery');
+			if(loadingText && page === 0) loadingText.style.display = 'block';
 
-        async function loadGallery() {
-            try {
-                const response = await fetch(SCRIPT_URL);
-                const images = await response.json();
-                const gallery = document.getElementById('gallery');
-                gallery.innerHTML = '';
+			try {
+				const response = await fetch(`${SCRIPT_URL}?page=${page}`);
+				const images = await response.json();
+				const gallery = document.getElementById('gallery');
+				
+				if (page === 0 && images.length > 0) {
+					gallery.innerHTML = ''; // Limpiar mensaje inicial
+				}
+				if (loadingText) loadingText.style.display = 'none';
 
-                if (images.length === 0) {
-                    gallery.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#999;">Aún no hay fotos.</p>';
-                    return;
-                }
+				if (images.length === 0) {
+					allPhotosLoaded = true;
+					if (page === 0) gallery.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#999; padding: 20px;">Aún no hay fotos. ¡Sé el primero!</p>';
+					return;
+				}
 
-                images.forEach(img => {
-                    const card = document.createElement('div');
-                    card.className = 'photo-card';
-                    card.onclick = () => openLightbox(img.url, img.author);
-                    
-                    // Corregido el uso de Template Literals
-                    card.innerHTML = `
-                        <img src="${img.url}" alt="Recuerdo" loading="lazy">
-                        <p>Por: <b>${img.author}</b></p>
-                    `;
-                    gallery.appendChild(card);
-                });
-            } catch (e) {
-                document.getElementById('loading-gallery').innerText = "Error al cargar la galería.";
-            }
-        }
+				// Renderizado secuencial (Goteo)
+				for (const img of images) {
+					const card = document.createElement('div');
+					card.className = 'photo-card loading';
+					card.onclick = () => openLightbox(img.url, img.author);
+					
+					const imageElement = document.createElement('img');
+					imageElement.src = img.url;
+					imageElement.loading = "lazy";
+					
+					imageElement.onload = () => {
+						card.classList.remove('loading');
+						card.classList.add('loaded');
+					};
 
-        function openLightbox(url, author) {
-            const lb = document.getElementById('lightbox');
-            const lbImg = document.getElementById('lightbox-img');
-            const lbCap = document.getElementById('lightbox-caption');
+					const info = document.createElement('p');
+					info.innerHTML = `Por: <b>${img.author}</b>`;
 
-            lbImg.src = url;
-            lbCap.innerHTML = `Foto de <b>${author}</b>`;
-            lb.style.display = 'flex';
-        }
+					card.appendChild(imageElement);
+					card.appendChild(info);
+					gallery.appendChild(card);
 
-        function toggleModal(show) {
-            document.getElementById('uploadModal').style.display = show ? 'block' : 'none';
-            if(!show) {
-                document.getElementById('preview-area').innerHTML = '';
-                document.getElementById('msg').innerText = '';
-                document.getElementById('progress-container').style.display = 'none';
-                document.getElementById('fileInput').value = '';
-            }
-        }
+					// Delay de 100ms entre cada foto para el efecto visual
+					await new Promise(resolve => setTimeout(resolve, 100)); 
+				}
 
-        function handlePreview(e) {
-            selectedFiles = Array.from(e.target.files);
-            const area = document.getElementById('preview-area');
-            area.innerHTML = '';
-            
-            selectedFiles.slice(0, 5).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    img.className = 'preview-thumb';
-                    area.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            });
-            if (selectedFiles.length > 5) {
-                const span = document.createElement('span');
-                span.style.fontSize = "0.8rem";
-                span.style.alignSelf = "center";
-                span.innerText = `+${selectedFiles.length - 5}`;
-                area.appendChild(span);
-            }
-        }
+				currentPage++;
+			} catch (e) {
+				console.error("Error cargando galería:", e);
+			} finally {
+				isLoading = false;
+			}
+		}
+		
+		// 2. Sensor de Scroll (Intersection Observer)
+		const sentinel = document.createElement('div');
+		sentinel.id = 'sentinel';
+		sentinel.style.height = '50px'; // Un poco más alto para facilitar detección
+		document.body.appendChild(sentinel);
 
-        async function upload() {
-            const author = document.getElementById('author').value.trim();
-            const btn = document.getElementById('btnUpload');
-            const msg = document.getElementById('msg');
-            const progContainer = document.getElementById('progress-container');
-            const progBar = document.getElementById('progress-bar');
-            const progText = document.getElementById('progress-text');
+		const observer = new IntersectionObserver((entries) => {
+			if (entries[0].isIntersecting && !isLoading && !allPhotosLoaded) {
+				loadGallery(currentPage);
+			}
+		}, { rootMargin: '200px' }); // Detecta antes de llegar al final real
 
-            if (!author || selectedFiles.length === 0) {
-                alert("Por favor, pon tu nombre y elige al menos una foto.");
-                return;
-            }
+		observer.observe(sentinel);
 
-            localStorage.setItem('boda_author', author);
-            btn.disabled = true;
-            progContainer.style.display = "block";
+		window.onload = () => {
+			const savedAuthor = localStorage.getItem('boda_author');
+			if(savedAuthor) document.getElementById('author').value = savedAuthor;
+			loadGallery(0);
+		};
 
-            const f = (n) => String(n).padStart(2, '0');
-            const ahora = new Date();
-            const prefix = `${ahora.getFullYear()}${f(ahora.getMonth()+1)}${f(ahora.getDate())}${f(ahora.getHours())}${f(ahora.getMinutes())}`;
+		function openLightbox(url, author) {
+			const lb = document.getElementById('lightbox');
+			const lbImg = document.getElementById('lightbox-img');
+			const lbCap = document.getElementById('lightbox-caption');
+			lbImg.src = url;
+			lbCap.innerHTML = `Foto de <b>${author}</b>`;
+			lb.style.display = 'flex';
+		}
 
-            for (let i = 0; i < selectedFiles.length; i++) {
-                const file = selectedFiles[i];
-                const percent = Math.round((i / selectedFiles.length) * 100);
-                progBar.style.width = percent + "%";
-                progText.innerText = `Subiendo ${i + 1} de ${selectedFiles.length}: ${file.name}`;
+		function toggleModal(show) {
+			document.getElementById('uploadModal').style.display = show ? 'block' : 'none';
+			if(!show) {
+				document.getElementById('preview-area').innerHTML = '';
+				document.getElementById('msg').innerText = '';
+				document.getElementById('progress-container').style.display = 'none';
+				document.getElementById('fileInput').value = '';
+				selectedFiles = [];
+			}
+		}
 
-                try {
-                    await uploadSingleFile(file, author, prefix);
-                } catch (error) {
-                    console.error("Error:", error);
-                }
-            }
+		function handlePreview(e) {
+			selectedFiles = Array.from(e.target.files);
+			const area = document.getElementById('preview-area');
+			area.innerHTML = '';
+			
+			selectedFiles.forEach((file, index) => {
+				const reader = new FileReader();
+				reader.onload = (event) => {
+					const wrapper = document.createElement('div');
+					wrapper.className = 'thumb-wrapper';
+					wrapper.id = `thumb-${index}`;
+					wrapper.innerHTML = `<div class="spinner"></div><img src="${event.target.result}">`;
+					area.appendChild(wrapper);
+				};
+				reader.readAsDataURL(file);
+			});
+		}
 
-            progBar.style.width = "100%";
-            progText.innerText = "¡Todo subido con éxito!";
-            msg.style.color = "green";
-            msg.innerText = "✅ ¡Gracias por compartir!";
-            
-            setTimeout(() => {
-                toggleModal(false);
-                loadGallery();
-                btn.disabled = false;
-            }, 2000);
-        }
+		async function upload() {
+			const authorInput = document.getElementById('author');
+			const author = authorInput.value.trim();
+			const btn = document.getElementById('btnUpload');
+			const progContainer = document.getElementById('progress-container');
+			const progBar = document.getElementById('progress-bar');
+			const progText = document.getElementById('progress-text');
 
-        function uploadSingleFile(file, author, prefix) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const nombreFormateado = `${prefix}-${file.name.replace(/\s+/g, '_')}`;
-                    const payload = {
-                        image: e.target.result,
-                        fileName: nombreFormateado,
-                        author: author
-                    };
+			if (!author || selectedFiles.length === 0) {
+				alert("Selecciona fotos y pon tu nombre.");
+				return;
+			}
 
-                    fetch(SCRIPT_URL, {
-                        method: "POST",
-                        mode: 'no-cors',
-                        body: JSON.stringify(payload)
-                    })
-                    .then(() => resolve())
-                    .catch(err => reject(err));
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
-    </script>
+			btn.disabled = true;
+			progContainer.style.display = "block";
+			localStorage.setItem('boda_author', author);
+
+			const f = (n) => String(n).padStart(2, '0');
+			const ahora = new Date();
+			const prefix = `${ahora.getFullYear()}${f(ahora.getMonth()+1)}${f(ahora.getDate())}${f(ahora.getHours())}${f(ahora.getMinutes())}`;
+
+			for (let i = 0; i < selectedFiles.length; i++) {
+				const file = selectedFiles[i];
+				const thumb = document.getElementById(`thumb-${i}`);
+				
+				if(thumb) thumb.classList.add('uploading');
+				
+				const totalPercent = Math.round((i / selectedFiles.length) * 100);
+				progBar.style.width = totalPercent + "%";
+				progText.innerText = `Subiendo ${i+1} de ${selectedFiles.length}...`;
+
+				try {
+					await uploadSingleFile(file, author, prefix);
+					if(thumb) {
+						thumb.classList.remove('uploading');
+						thumb.classList.add('done');
+					}
+				} catch (error) {
+					console.error("Error:", error);
+				}
+			}
+
+			progBar.style.width = "100%";
+			document.getElementById('msg').innerText = "✅ ¡Guardado!";
+			
+			setTimeout(() => {
+				toggleModal(false);
+				// Reset galería para ver lo nuevo
+				currentPage = 0;
+				allPhotosLoaded = false;
+				loadGallery(0);
+				btn.disabled = false;
+			}, 2000);
+		}
+
+		function uploadSingleFile(file, author, prefix) {
+			return new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onload = function(e) {
+					const nombreFormateado = `${prefix}-${file.name.replace(/\s+/g, '_')}`;
+					fetch(SCRIPT_URL, {
+						method: "POST",
+						mode: 'no-cors',
+						body: JSON.stringify({
+							image: e.target.result,
+							fileName: nombreFormateado,
+							author: author
+						})
+					}).then(() => resolve()).catch(err => reject(err));
+				};
+				reader.onerror = reject;
+				reader.readAsDataURL(file);
+			});
+		}
+	</script>
 </body>
 </html>

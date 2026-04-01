@@ -9,7 +9,33 @@
     <style>
         :root { --accent: #d4af37; --bg: #fcfcfc; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; color: #333; }
-        
+		
+        /* Clase para congelar el fondo */
+		body.no-scroll {
+			overflow: hidden;
+			position: fixed; /* Truco para iOS */
+			width: 100%;
+		}
+
+		/* Ajuste del modal para que sea amigable con el teclado */
+		.modal {
+			display: none;
+			position: fixed;
+			top: 0; left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(255,255,255,0.98);
+			z-index: 200;
+			/* Permitir scroll solo dentro del modal si el contenido es largo */
+			overflow-y: auto; 
+			-webkit-overflow-scrolling: touch;
+		}
+
+		/* Asegurar que el input no haga zoom automático en iPhone (fuente mín 16px) */
+		input[type="text"] {
+			font-size: 16px !important; 
+		}
+		
         header { padding: 40px 20px; text-align: center; }
         h1 { font-weight: 300; letter-spacing: 4px; margin: 0; text-transform: uppercase; }
         
@@ -408,9 +434,27 @@
 			lb.style.display = 'flex';
 		}
 
+		let scrollPos = 0;
+
 		function toggleModal(show) {
-			document.getElementById('uploadModal').style.display = show ? 'block' : 'none';
-			if(!show) {
+			const modal = document.getElementById('uploadModal');
+			const body = document.body;
+
+			if (show) {
+				// Guardamos la posición actual del scroll
+				scrollPos = window.pageYOffset;
+				modal.style.display = 'block';
+				body.classList.add('no-scroll');
+				// Mantener la posición visual del fondo
+				body.style.top = `-${scrollPos}px`;
+			} else {
+				modal.style.display = 'none';
+				body.classList.remove('no-scroll');
+				body.style.top = '';
+				// Restaurar el scroll donde estaba
+				window.scrollTo(0, scrollPos);
+				
+				// Limpieza de inputs
 				document.getElementById('preview-area').innerHTML = '';
 				document.getElementById('msg').innerText = '';
 				document.getElementById('progress-container').style.display = 'none';
@@ -418,6 +462,13 @@
 				selectedFiles = [];
 			}
 		}
+		
+		document.getElementById('author').addEventListener('focus', function(e) {
+			// Evita que el navegador intente hacer scroll automático
+			setTimeout(function() {
+				window.scrollTo(0, 0);
+			}, 1);
+		});
 
 		function handlePreview(e) {
 			selectedFiles = Array.from(e.target.files);

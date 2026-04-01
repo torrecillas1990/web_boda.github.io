@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memories | Personal Timeline</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,500;1,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fcfcfc;
+            --text: #1a1a1a;
+            --gray: #888;
+            --accent: #e0e0e0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        header {
+            max-width: 1000px;
+            margin: 0 auto 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        header h1 {
+            font-weight: 300;
+            font-style: italic;
+            font-size: 1.8rem;
+            letter-spacing: -1px;
+        }
+
+        header span {
+            font-size: 0.7rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Grid estilo Dots/Pinterest */
+        .timeline-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            column-count: 3;
+            column-gap: 30px;
+        }
+
+        @media (max-width: 800px) { .timeline-grid { column-count: 2; } }
+        @media (max-width: 500px) { .timeline-grid { column-count: 1; } }
+
+        .memory-card {
+            break-inside: avoid;
+            margin-bottom: 40px;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-container {
+            background-color: var(--accent);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .image-container img {
+            width: 100%;
+            display: block;
+            filter: grayscale(100%);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .memory-card:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.03);
+        }
+
+        .memory-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 0.85rem;
+        }
+
+        .memory-date {
+            font-size: 0.7rem;
+            color: var(--gray);
+            font-family: monospace;
+        }
+
+        .memory-desc {
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>Memories.</h1>
+        </div>
+        <span>2024 Index</span>
+    </header>
+	
+	<section style="max-width: 1000px; margin: 0 auto 40px; padding: 20px; border: 1px dashed var(--accent); border-radius: 8px;">
+    <h3 style="font-size: 0.8rem; margin-bottom: 15px; text-transform: uppercase; color: var(--gray);">Añadir Nuevo Recuerdo</h3>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <input type="text" id="memTitle" placeholder="Título" style="padding: 8px; border: 1px solid var(--accent); border-radius: 4px; flex: 1;">
+        <input type="date" id="memDate" style="padding: 8px; border: 1px solid var(--accent); border-radius: 4px;">
+        <input type="file" id="memFile" accept="image/*" style="font-size: 0.8rem;">
+        <button onclick="addMemory()" style="padding: 8px 20px; background: #000; color: #fff; border: none; border-radius: 4px; cursor: pointer;">Publicar</button>
+    </div>
+	</section>
+
+    <main class="timeline-grid" id="gallery">
+        </main>
+
+    <script>
+	const gallery = document.getElementById('gallery');
+
+	// Función para crear el HTML de una tarjeta
+	function createCard(m) {
+		const card = document.createElement('div');
+		card.className = 'memory-card';
+		card.innerHTML = ' ' +
+			'<div class="image-container">' +
+			'    <img src="${m.img}" alt="${m.title}" loading="lazy">' +
+			'</div>' +
+			'<div class="memory-info">' +
+			'    <strong>${m.title}</strong>' +
+			'    <span class="memory-date">${m.date}</span>' +
+			'</div>' +
+			'<p class="memory-desc">${m.desc}</p>';
+		return card;
+	}
+
+	// Función para añadir memoria dinámicamente
+	function addMemory() {
+		const title = document.getElementById('memTitle').value;
+		const date = document.getElementById('memDate').value;
+		const fileInput = document.getElementById('memFile');
+		const file = fileInput.files[0];
+
+		if (!title || !date || !file) {
+			alert("Por favor, rellena todos los campos");
+			return;
+		}
+
+		// FileReader convierte la imagen en una URL de datos (base64)
+		const reader = new FileReader();
+		reader.onload = function(e) {
+			const newMemory = {
+				title: title,
+				date: date.replace(/-/g, '.'),
+				desc: "Nuevo recuerdo añadido.",
+				img: e.target.result // La imagen en formato texto largo
+			};
+
+			// Insertar al principio de la galería
+			gallery.prepend(createCard(newMemory));
+			
+			// Limpiar formulario
+			document.getElementById('memTitle').value = '';
+			fileInput.value = '';
+		};
+		reader.readAsDataURL(file);
+	}
+
+	// Carga inicial (puedes mantener tus recuerdos por defecto aquí)
+	memories.forEach(m => gallery.appendChild(createCard(m)));
+
+        // Tu base de datos local
+        const memories = [
+            {
+                title: "Quiet Morning",
+                date: "2024.03.12",
+                desc: "Café y luz de invierno.",
+                img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                title: "The Architecture",
+                date: "2024.02.28",
+                desc: "Líneas rectas en la ciudad.",
+                img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                title: "Ocean Breeze",
+                date: "2024.01.15",
+                desc: "Fin de semana en la costa.",
+                img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80"
+            }
+        ];
+
+        const gallery = document.getElementById('gallery');
+
+        function loadMemories() {
+            memories.forEach(m => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.innerHTML = `
+                    <div class="image-container">
+                        <img src="${m.img}" alt="${m.title}" loading="lazy">
+                    </div>
+                    <div class="memory-info">
+                        <strong>${m.title}</strong>
+                        <span class="memory-date">${m.date}</span>
+                    </div>
+                    <p class="memory-desc">${m.desc}</p>
+                `;
+                gallery.appendChild(card);
+            });
+        }
+
+        loadMemories();
+    </script>
+</body>
+</html>

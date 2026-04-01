@@ -3,188 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boda Gemma & Manuel | Recuerdos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <title>Boda Gemma & Manuel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #d4af37; --text: #2c2c2c; } /* Dorado suave */
-        body { font-family: 'Inter', sans-serif; background: #fffcf9; color: var(--text); margin: 0; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-        .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 400px; width: 100%; text-align: center; border: 1px solid #f0e6d2; }
-        h1 { font-weight: 300; font-size: 1.5rem; margin-bottom: 30px; letter-spacing: 2px; text-transform: uppercase; }
-        .field { margin-bottom: 20px; text-align: left; }
-        label { display: block; font-size: 0.75rem; margin-bottom: 8px; color: #888; text-transform: uppercase; }
-        input { width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 1rem; outline: none; transition: border 0.3s; }
-        input:focus { border-color: var(--accent); }
-        button { width: 100%; padding: 15px; background: var(--text); color: white; border: none; border-radius: 8px; font-size: 0.9rem; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-        #msg { margin-top: 20px; font-size: 0.85rem; min-height: 1.2rem; }
+        :root { --accent: #d4af37; --bg: #fcfcfc; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; color: #333; }
+        
+        header { padding: 40px 20px; text-align: center; }
+        h1 { font-weight: 300; letter-spacing: 4px; margin: 0; text-transform: uppercase; }
+        
+        .gallery { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 25px; padding: 20px; max-width: 1200px; margin: 0 auto;
+        }
+        .photo-card { background: white; padding: 12px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s; }
+        .photo-card:hover { transform: translateY(-5px); }
+        .photo-card img { width: 100%; height: 320px; object-fit: cover; border-radius: 10px; filter: grayscale(10%); }
+        .photo-card p { font-size: 0.85rem; margin: 12px 0 5px; color: #666; }
+        .photo-card b { color: var(--accent); font-weight: 600; }
+
+        .fab { 
+            position: fixed; bottom: 30px; right: 30px; 
+            width: 65px; height: 65px; background: #000; color: white; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-size: 35px; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 100;
+        }
+
+        .modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(255,255,255,0.98); z-index: 200; overflow-y: auto;
+        }
+        .modal-content { max-width: 450px; margin: 40px auto; padding: 30px; text-align: center; }
+        
+        input[type="text"], input[type="file"] { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
+        .btn-send { width: 100%; padding: 18px; background: #000; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 600; }
+        .btn-send:disabled { background: #666; }
+        .close-modal { margin-top: 25px; display: inline-block; color: #999; cursor: pointer; font-size: 0.9rem; text-decoration: underline; }
+        
+        #progress-container { margin: 20px 0; text-align: left; }
+        #preview-area { display: flex; gap: 8px; flex-wrap: wrap; margin: 15px 0; justify-content: center; }
+        .preview-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>G & M</h1>
-    <p style="font-size: 0.9rem; color: #666; margin-bottom: 30px;">Comparte tus fotos con nosotros</p>
-    
-    <div class="field">
-        <label>¿Quién eres?</label>
-        <input type="text" id="author" placeholder="Tu nombre y apellido" required>
+    <header>
+        <h1>G & M</h1>
+        <p style="color: #999; font-weight: 300;">Recuerdos de un día especial</p>
+    </header>
+
+    <main class="gallery" id="gallery">
+        <p id="loading-gallery" style="grid-column: 1/-1; text-align: center; color: #999;">Cargando momentos...</p>
+    </main>
+
+    <div class="fab" onclick="toggleModal(true)">+</div>
+
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <h2 style="font-weight: 400;">Subir Fotos</h2>
+            <input type="text" id="author" placeholder="Tu nombre">
+            <input type="file" id="fileInput" accept="image/*" multiple onchange="handlePreview(event)">
+            
+            <div id="preview-area"></div>
+            
+            <div id="progress-container" style="display:none;">
+                <div style="background:#eee; height:8px; border-radius:10px; overflow:hidden;">
+                    <div id="progress-bar" style="background:var(--accent); width:0%; height:100%; transition: width 0.3s;"></div>
+                </div>
+                <p id="progress-text" style="font-size: 0.75rem; margin-top: 8px; color: #666;"></p>
+            </div>
+
+            <button class="btn-send" id="btnUpload" onclick="upload()">Enviar a la nube</button>
+            <br>
+            <span class="close-modal" onclick="toggleModal(false)">Volver a la galería</span>
+            <p id="msg" style="margin-top: 15px; font-size: 0.9rem;"></p>
+        </div>
     </div>
 
-	<div class="field">
-		<label>Tus Recuerdos (Puedes elegir varias)</label>
-		<input type="file" id="file" accept="image/*" multiple onchange="handleFiles(event)">
-		
-		<div id="file-list" style="font-size: 0.75rem; color: #666; margin-top: 10px; text-align: left;"></div>
-		
-		<div id="preview-container" style="display:none; margin-top: 15px; display: flex; flex-wrap: wrap; gap: 5px;">
-			</div>
-	</div>
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_BVMHPWKbecro9DaW4g1YJPVpq2zc0CvlXPD737ibYiX8S_e-OK1w2sAp8DWscwF6tw/exec";
+        let selectedFiles = [];
 
-	<div id="progress-container" style="display:none; margin: 20px 0;">
-		<div style="width: 100%; background: #eee; height: 8px; border-radius: 10px; overflow: hidden;">
-			<div id="progress-bar" style="width: 0%; background: var(--accent); height: 100%; transition: width 0.3s;"></div>
-		</div>
-		<p id="progress-text" style="font-size: 0.7rem; color: #888; margin-top: 5px;">Preparando envío...</p>
-	</div>
+        window.onload = () => {
+            document.getElementById('author').value = localStorage.getItem('boda_author') || '';
+            loadGallery();
+        };
 
-    <button onclick="upload()" id="btn">Subir Recuerdo</button>
-    <p id="msg"></p>
-</div>
+        async function loadGallery() {
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const images = await response.json();
+                const gallery = document.getElementById('gallery');
+                gallery.innerHTML = '';
 
-<script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbww52kj90xibGP8ZTBwfCTddDZVYlJXFgDJd1MONFiymnODy9rXxy_MLYr0KXMi_rdVyQ/exec";
+                if (images.length === 0) {
+                    gallery.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#999;">Aún no hay fotos. ¡Sé el primero!</p>';
+                    return;
+                }
 
+                images.forEach(img => {
+                    const card = document.createElement('div');
+                    card.className = 'photo-card';
+                    card.innerHTML = `
+                        <img src="${img.url}" alt="Recuerdo" loading="lazy">
+                        <p>Por: <b>${img.author}</b></p>
+                    `;
+                    gallery.appendChild(card);
+                });
+            } catch (e) {
+                document.getElementById('loading-gallery').innerText = "Error al cargar galería.";
+            }
+        }
 
-    // Cargar autor guardado
-    window.onload = () => {
-        document.getElementById('author').value = localStorage.getItem('boda_author') || '';
-    };
+        function toggleModal(show) {
+            document.getElementById('uploadModal').style.display = show ? 'block' : 'none';
+            if(!show) {
+                // Resetear formulario al cerrar
+                document.getElementById('preview-area').innerHTML = '';
+                document.getElementById('msg').innerText = '';
+                document.getElementById('progress-container').style.display = 'none';
+            }
+        }
 
-	// Función para mostrar la miniatura antes de subir
-	function previewImage(event) {
-		const reader = new FileReader();
-		const previewContainer = document.getElementById('preview-container');
-		const imgPreview = document.getElementById('img-preview');
+        function handlePreview(e) {
+            selectedFiles = Array.from(e.target.files);
+            const area = document.getElementById('preview-area');
+            area.innerHTML = '';
+            
+            selectedFiles.slice(0, 5).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.className = 'preview-thumb';
+                    area.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+            if (selectedFiles.length > 5) {
+                const span = document.createElement('span');
+                span.innerText = `+${selectedFiles.length - 5}`;
+                area.appendChild(span);
+            }
+        }
 
-		reader.onload = function() {
-			imgPreview.src = reader.result;
-			previewContainer.style.display = 'block';
-		}
-		
-		if(event.target.files[0]) {
-			reader.readAsDataURL(event.target.files[0]);
-		}
-	}
+        async function upload() {
+            const author = document.getElementById('author').value.trim();
+            const btn = document.getElementById('btnUpload');
+            const msg = document.getElementById('msg');
+            const progContainer = document.getElementById('progress-container');
+            const progBar = document.getElementById('progress-bar');
+            const progText = document.getElementById('progress-text');
 
-	let selectedFiles = [];
+            if (!author || selectedFiles.length === 0) {
+                alert("Por favor, pon tu nombre y elige al menos una foto.");
+                return;
+            }
 
-	function handleFiles(event) {
-		const files = event.target.files;
-		const container = document.getElementById('preview-container');
-		const list = document.getElementById('file-list');
-		
-		container.innerHTML = '';
-		list.innerHTML = '';
-		selectedFiles = Array.from(files);
+            localStorage.setItem('boda_author', author);
+            btn.disabled = true;
+            progContainer.style.display = "block";
 
-		if (selectedFiles.length > 0) {
-			container.style.display = 'flex';
-			list.innerText = `${selectedFiles.length} fotos seleccionadas`;
-			
-			// Mostrar miniaturas (solo las primeras 4 para no ralentizar el navegador)
-			selectedFiles.slice(0, 4).forEach(file => {
-				const reader = new FileReader();
-				reader.onload = (e) => {
-					const img = document.createElement('img');
-					img.src = e.target.result;
-					img.style.width = '60px';
-					img.style.height = '60px';
-					img.style.objectFit = 'cover';
-					img.style.borderRadius = '5px';
-					container.appendChild(img);
-				};
-				reader.readAsDataURL(file);
-			});
-		}
-	}
+            const f = (n) => String(n).padStart(2, '0');
+            const ahora = new Date();
+            const prefix = `${ahora.getFullYear()}${f(ahora.getMonth()+1)}${f(ahora.getDate())}${f(ahora.getHours())}${f(ahora.getMinutes())}`;
 
-	async function upload() {
-		const author = document.getElementById('author').value.trim();
-		const btn = document.getElementById('btn');
-		const msg = document.getElementById('msg');
-		const progContainer = document.getElementById('progress-container');
-		const progBar = document.getElementById('progress-bar');
-		const progText = document.getElementById('progress-text');
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                const percent = Math.round((i / selectedFiles.length) * 100);
+                progBar.style.width = percent + "%";
+                progText.innerText = `Subiendo ${i + 1} de ${selectedFiles.length}: ${file.name}`;
 
-		if (!author || selectedFiles.length === 0) {
-			alert("Por favor, pon tu nombre y elige al menos una foto.");
-			return;
-		}
+                try {
+                    await uploadSingleFile(file, author, prefix);
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+            }
 
-		localStorage.setItem('boda_author', author);
-		btn.disabled = true;
-		progContainer.style.display = "block";
+            progBar.style.width = "100%";
+            progText.innerText = "¡Todo subido con éxito!";
+            msg.style.color = "green";
+            msg.innerText = "✅ ¡Gracias por compartir!";
+            
+            setTimeout(() => {
+                toggleModal(false);
+                loadGallery();
+                btn.disabled = false;
+            }, 2000);
+        }
 
-		const f = (n) => String(n).padStart(2, '0');
-		const ahora = new Date();
-		const prefix = `${ahora.getFullYear()}${f(ahora.getMonth()+1)}${f(ahora.getDate())}${f(ahora.getHours())}${f(ahora.getMinutes())}`;
+        function uploadSingleFile(file, author, prefix) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const nombreFormateado = `${prefix}-${file.name.replace(/\s+/g, '_')}`;
+                    const payload = {
+                        image: e.target.result,
+                        fileName: nombreFormateado,
+                        author: author
+                    };
 
-		// Procesar archivos uno por uno
-		for (let i = 0; i < selectedFiles.length; i++) {
-			const file = selectedFiles[i];
-			const currentProgress = Math.round((i / selectedFiles.length) * 100);
-			
-			progBar.style.width = currentProgress + "%";
-			progText.innerText = `Subiendo foto ${i + 1} de ${selectedFiles.length}... (${currentProgress}%)`;
-
-			try {
-				await uploadSingleFile(file, author, prefix);
-			} catch (error) {
-				console.error("Error en archivo:", file.name, error);
-			}
-		}
-
-		// Finalización
-		progBar.style.width = "100%";
-		progText.innerText = "¡Todo subido con éxito!";
-		msg.style.color = "green";
-		msg.innerText = `✅ ¡${selectedFiles.length} fotos enviadas! Muchas gracias.`;
-		
-		setTimeout(() => {
-			btn.disabled = false;
-			btn.innerText = "Subir más fotos";
-			progContainer.style.display = "none";
-			document.getElementById('preview-container').innerHTML = '';
-			document.getElementById('file').value = '';
-			selectedFiles = [];
-		}, 3000);
-	}
-
-	// Función auxiliar para subir un solo archivo (prometificada)
-	function uploadSingleFile(file, author, prefix) {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onload = function(e) {
-				const nombreFormateado = `${prefix}-${file.name.replace(/\s+/g, '_')}`;
-				const payload = {
-					image: e.target.result,
-					fileName: nombreFormateado,
-					author: author
-				};
-
-				fetch(SCRIPT_URL, {
-					method: "POST",
-					mode: 'no-cors',
-					body: JSON.stringify(payload)
-				})
-				.then(() => resolve())
-				.catch(err => reject(err));
-			};
-			reader.onerror = (err) => reject(err);
-			reader.readAsDataURL(file);
-		});
-	}
-</script>
-
+                    fetch(SCRIPT_URL, {
+                        method: "POST",
+                        mode: 'no-cors',
+                        body: JSON.stringify(payload)
+                    })
+                    .then(() => resolve())
+                    .catch(err => reject(err));
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
 </body>
 </html>

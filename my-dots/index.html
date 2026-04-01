@@ -2,95 +2,189 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Dots Memories Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boda Gemma & Manuel | Recuerdos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #fcfcfc; --text: #1a1a1a; --accent: #000; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); padding: 40px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; border: 1px solid #eee; }
-        input, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 6px; border: 1px solid #ddd; }
-        button { background: var(--accent); color: white; font-weight: bold; cursor: pointer; border: none; }
-        #status { margin-top: 15px; font-size: 0.8rem; color: #666; text-align: center; }
+        :root { --accent: #d4af37; --text: #2c2c2c; } /* Dorado suave */
+        body { font-family: 'Inter', sans-serif; background: #fffcf9; color: var(--text); margin: 0; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 400px; width: 100%; text-align: center; border: 1px solid #f0e6d2; }
+        h1 { font-weight: 300; font-size: 1.5rem; margin-bottom: 30px; letter-spacing: 2px; text-transform: uppercase; }
+        .field { margin-bottom: 20px; text-align: left; }
+        label { display: block; font-size: 0.75rem; margin-bottom: 8px; color: #888; text-transform: uppercase; }
+        input { width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 1rem; outline: none; transition: border 0.3s; }
+        input:focus { border-color: var(--accent); }
+        button { width: 100%; padding: 15px; background: var(--text); color: white; border: none; border-radius: 8px; font-size: 0.9rem; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        #msg { margin-top: 20px; font-size: 0.85rem; min-height: 1.2rem; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Subir Memoria</h1>
-    <p>Se guardará en: <code>imagenes/{autor}/foto.jpg</code></p>
+<div class="card">
+    <h1>G & M</h1>
+    <p style="font-size: 0.9rem; color: #666; margin-bottom: 30px;">Comparte tus fotos con nosotros</p>
     
-    <input type="text" id="author" placeholder="Nombre del autor (Obligatorio)" required>
-    <input type="file" id="file" accept="image/*">
-    <button onclick="uploadToGithub()" id="btn">Publicar en GitHub</button>
-    
-    <div id="status"></div>
+    <div class="field">
+        <label>¿Quién eres?</label>
+        <input type="text" id="author" placeholder="Tu nombre y apellido" required>
+    </div>
+
+	<div class="field">
+		<label>Tus Recuerdos (Puedes elegir varias)</label>
+		<input type="file" id="file" accept="image/*" multiple onchange="handleFiles(event)">
+		
+		<div id="file-list" style="font-size: 0.75rem; color: #666; margin-top: 10px; text-align: left;"></div>
+		
+		<div id="preview-container" style="display:none; margin-top: 15px; display: flex; flex-wrap: wrap; gap: 5px;">
+			</div>
+	</div>
+
+	<div id="progress-container" style="display:none; margin: 20px 0;">
+		<div style="width: 100%; background: #eee; height: 8px; border-radius: 10px; overflow: hidden;">
+			<div id="progress-bar" style="width: 0%; background: var(--accent); height: 100%; transition: width 0.3s;"></div>
+		</div>
+		<p id="progress-text" style="font-size: 0.7rem; color: #888; margin-top: 5px;">Preparando envío...</p>
+	</div>
+
+    <button onclick="upload()" id="btn">Subir Recuerdo</button>
+    <p id="msg"></p>
 </div>
 
 <script>
-    // --- CONFIGURACIÓN CRÍTICA ---
-    const GITHUB_TOKEN = 'TU_TOKEN_AQUÍ'; // No compartas esto
-    const REPO_OWNER = 'TU_USUARIO_GITHUB';
-    const REPO_NAME = 'NOMBRE_DE_TU_REPO';
-    // ------------------------------
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbww52kj90xibGP8ZTBwfCTddDZVYlJXFgDJd1MONFiymnODy9rXxy_MLYr0KXMi_rdVyQ/exec";
 
-    const authorInput = document.getElementById('author');
-    const status = document.getElementById('status');
 
-    // Recuperar autor de la sesión anterior
+    // Cargar autor guardado
     window.onload = () => {
-        authorInput.value = localStorage.getItem('memories_author') || '';
+        document.getElementById('author').value = localStorage.getItem('boda_author') || '';
     };
 
-    async function uploadToGithub() {
-        const author = authorInput.value.trim();
-        const fileInput = document.getElementById('file');
-        const file = fileInput.files[0];
+	// Función para mostrar la miniatura antes de subir
+	function previewImage(event) {
+		const reader = new FileReader();
+		const previewContainer = document.getElementById('preview-container');
+		const imgPreview = document.getElementById('img-preview');
 
-        if (!author || !file) return alert("Rellena todos los campos");
+		reader.onload = function() {
+			imgPreview.src = reader.result;
+			previewContainer.style.display = 'block';
+		}
+		
+		if(event.target.files[0]) {
+			reader.readAsDataURL(event.target.files[0]);
+		}
+	}
 
-        // Guardar autor localmente
-        localStorage.setItem('memories_author', author);
-        
-        const btn = document.getElementById('btn');
-        btn.disabled = true;
-        status.innerText = "Procesando imagen...";
+	let selectedFiles = [];
 
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            const content = e.target.result.split(',')[1]; // Solo el base64
-            const folderAuthor = author.toLowerCase().replace(/\s/g, '-');
-            const path = `imagenes/${folderAuthor}/${Date.now()}-${file.name}`;
+	function handleFiles(event) {
+		const files = event.target.files;
+		const container = document.getElementById('preview-container');
+		const list = document.getElementById('file-list');
+		
+		container.innerHTML = '';
+		list.innerHTML = '';
+		selectedFiles = Array.from(files);
 
-            status.innerText = "Subiendo a GitHub...";
+		if (selectedFiles.length > 0) {
+			container.style.display = 'flex';
+			list.innerText = `${selectedFiles.length} fotos seleccionadas`;
+			
+			// Mostrar miniaturas (solo las primeras 4 para no ralentizar el navegador)
+			selectedFiles.slice(0, 4).forEach(file => {
+				const reader = new FileReader();
+				reader.onload = (e) => {
+					const img = document.createElement('img');
+					img.src = e.target.result;
+					img.style.width = '60px';
+					img.style.height = '60px';
+					img.style.objectFit = 'cover';
+					img.style.borderRadius = '5px';
+					container.appendChild(img);
+				};
+				reader.readAsDataURL(file);
+			});
+		}
+	}
 
-            try {
-                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: `Añadida foto de ${author}`,
-                        content: content
-                    })
-                });
+	async function upload() {
+		const author = document.getElementById('author').value.trim();
+		const btn = document.getElementById('btn');
+		const msg = document.getElementById('msg');
+		const progContainer = document.getElementById('progress-container');
+		const progBar = document.getElementById('progress-bar');
+		const progText = document.getElementById('progress-text');
 
-                if (response.ok) {
-                    status.innerHTML = "✅ ¡Guardado! La web se actualizará en unos minutos.";
-                    fileInput.value = '';
-                } else {
-                    const error = await response.json();
-                    status.innerText = "❌ Error: " + error.message;
-                }
-            } catch (err) {
-                status.innerText = "❌ Error de conexión.";
-            } finally {
-                btn.disabled = false;
-            }
-        };
-        reader.readAsDataURL(file);
-    }
+		if (!author || selectedFiles.length === 0) {
+			alert("Por favor, pon tu nombre y elige al menos una foto.");
+			return;
+		}
+
+		localStorage.setItem('boda_author', author);
+		btn.disabled = true;
+		progContainer.style.display = "block";
+
+		const f = (n) => String(n).padStart(2, '0');
+		const ahora = new Date();
+		const prefix = `${ahora.getFullYear()}${f(ahora.getMonth()+1)}${f(ahora.getDate())}${f(ahora.getHours())}${f(ahora.getMinutes())}`;
+
+		// Procesar archivos uno por uno
+		for (let i = 0; i < selectedFiles.length; i++) {
+			const file = selectedFiles[i];
+			const currentProgress = Math.round((i / selectedFiles.length) * 100);
+			
+			progBar.style.width = currentProgress + "%";
+			progText.innerText = `Subiendo foto ${i + 1} de ${selectedFiles.length}... (${currentProgress}%)`;
+
+			try {
+				await uploadSingleFile(file, author, prefix);
+			} catch (error) {
+				console.error("Error en archivo:", file.name, error);
+			}
+		}
+
+		// Finalización
+		progBar.style.width = "100%";
+		progText.innerText = "¡Todo subido con éxito!";
+		msg.style.color = "green";
+		msg.innerText = `✅ ¡${selectedFiles.length} fotos enviadas! Muchas gracias.`;
+		
+		setTimeout(() => {
+			btn.disabled = false;
+			btn.innerText = "Subir más fotos";
+			progContainer.style.display = "none";
+			document.getElementById('preview-container').innerHTML = '';
+			document.getElementById('file').value = '';
+			selectedFiles = [];
+		}, 3000);
+	}
+
+	// Función auxiliar para subir un solo archivo (prometificada)
+	function uploadSingleFile(file, author, prefix) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = function(e) {
+				const nombreFormateado = `${prefix}-${file.name.replace(/\s+/g, '_')}`;
+				const payload = {
+					image: e.target.result,
+					fileName: nombreFormateado,
+					author: author
+				};
+
+				fetch(SCRIPT_URL, {
+					method: "POST",
+					mode: 'no-cors',
+					body: JSON.stringify(payload)
+				})
+				.then(() => resolve())
+				.catch(err => reject(err));
+			};
+			reader.onerror = (err) => reject(err);
+			reader.readAsDataURL(file);
+		});
+	}
 </script>
+
 </body>
 </html>

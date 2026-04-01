@@ -2,134 +2,94 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memories Project</title>
+    <title>Dots Memories Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #fcfcfc; --text: #1a1a1a; --gray: #888; --accent: #eee; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px; }
-        header { max-width: 900px; margin: 0 auto 40px; }
-        
-        .upload-section { 
-            max-width: 900px; margin: 0 auto 60px; padding: 25px; 
-            background: #fff; border: 1px solid var(--accent); border-radius: 12px;
-            display: flex; gap: 15px; flex-wrap: wrap; align-items: center;
-        }
-
-        .input-group { display: flex; flex-direction: column; flex: 1; min-width: 200px; }
-        label { font-size: 0.7rem; text-transform: uppercase; color: var(--gray); margin-bottom: 5px; letter-spacing: 1px; }
-        
-        input { padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s; }
-        input:focus { border-color: #000; }
-        input:required { border-left: 3px solid #ff4d4d; }
-
-        button { 
-            padding: 12px 25px; background: #000; color: #fff; 
-            border: none; border-radius: 6px; cursor: pointer; align-self: flex-end;
-        }
-
-        .grid { max-width: 900px; margin: 0 auto; column-count: 3; column-gap: 25px; }
-        .card { break-inside: avoid; margin-bottom: 30px; animation: fadeIn 0.5s ease forwards; }
-        .card img { width: 100%; border-radius: 8px; filter: grayscale(100%); transition: 0.5s; }
-        .card:hover img { filter: grayscale(0%); }
-        .info { margin-top: 8px; font-size: 0.8rem; color: var(--gray); display: flex; justify-content: space-between; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        :root { --bg: #fcfcfc; --text: #1a1a1a; --accent: #000; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); padding: 40px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; border: 1px solid #eee; }
+        input, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 6px; border: 1px solid #ddd; }
+        button { background: var(--accent); color: white; font-weight: bold; cursor: pointer; border: none; }
+        #status { margin-top: 15px; font-size: 0.8rem; color: #666; text-align: center; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Memories.</h1>
-    <p style="color: var(--gray); font-size: 0.9rem;">Archivo fotográfico personal</p>
-</header>
-
-<section class="upload-section">
-    <div class="input-group">
-        <label>Autor (Obligatorio)</label>
-        <input type="text" id="author" placeholder="Tu nombre..." required>
-    </div>
-    <div class="input-group">
-        <label>Seleccionar Imagen</label>
-        <input type="file" id="file" accept="image/*">
-    </div>
-    <button onclick="saveMemory()">Guardar</button>
-</section>
-
-<main class="grid" id="gallery"></main>
+<div class="container">
+    <h1>Subir Memoria</h1>
+    <p>Se guardará en: <code>imagenes/{autor}/foto.jpg</code></p>
+    
+    <input type="text" id="author" placeholder="Nombre del autor (Obligatorio)" required>
+    <input type="file" id="file" accept="image/*">
+    <button onclick="uploadToGithub()" id="btn">Publicar en GitHub</button>
+    
+    <div id="status"></div>
+</div>
 
 <script>
-    const authorInput = document.getElementById('author');
-    const gallery = document.getElementById('gallery');
+    // --- CONFIGURACIÓN CRÍTICA ---
+    const GITHUB_TOKEN = 'TU_TOKEN_AQUÍ'; // No compartas esto
+    const REPO_OWNER = 'TU_USUARIO_GITHUB';
+    const REPO_NAME = 'NOMBRE_DE_TU_REPO';
+    // ------------------------------
 
-    // 1. Al cargar la página, recuperar autor del localStorage
+    const authorInput = document.getElementById('author');
+    const status = document.getElementById('status');
+
+    // Recuperar autor de la sesión anterior
     window.onload = () => {
-        const savedAuthor = localStorage.getItem('memories_author');
-        if (savedAuthor) {
-            authorInput.value = savedAuthor;
-        }
-        renderGallery();
+        authorInput.value = localStorage.getItem('memories_author') || '';
     };
 
-    // 2. Guardar memoria y autor
-    function saveMemory() {
+    async function uploadToGithub() {
         const author = authorInput.value.trim();
         const fileInput = document.getElementById('file');
         const file = fileInput.files[0];
 
-        if (!author) {
-            alert("El nombre de autor es obligatorio");
-            return;
-        }
-        if (!file) {
-            alert("Selecciona una imagen");
-            return;
-        }
+        if (!author || !file) return alert("Rellena todos los campos");
 
-        // Guardar nombre de autor para la próxima vez
+        // Guardar autor localmente
         localStorage.setItem('memories_author', author);
+        
+        const btn = document.getElementById('btn');
+        btn.disabled = true;
+        status.innerText = "Procesando imagen...";
 
-        // Crear el objeto de memoria
         const reader = new FileReader();
-        reader.onload = function(e) {
-            const newMemory = {
-                author: author,
-                // Simulamos la ruta que mencionas: imagenes/nombre-autor/archivo
-                path: `imagenes/${author.toLowerCase().replace(/\s/g, '-')}/${file.name}`,
-                imgData: e.target.result, // Base64 para mostrarla ahora
-                timestamp: new Date().toLocaleString()
-            };
+        reader.onload = async function(e) {
+            const content = e.target.result.split(',')[1]; // Solo el base64
+            const folderAuthor = author.toLowerCase().replace(/\s/g, '-');
+            const path = `imagenes/${folderAuthor}/${Date.now()}-${file.name}`;
 
-            // Guardar en la lista de memorias local (para esta sesión/dispositivo)
-            let memories = JSON.parse(localStorage.getItem('local_dots') || '[]');
-            memories.unshift(newMemory);
-            localStorage.setItem('local_dots', JSON.stringify(memories));
+            status.innerText = "Subiendo a GitHub...";
 
-            renderGallery();
-            fileInput.value = ''; // Limpiar input
-            
-            console.log(`Simulando guardado en: ${newMemory.path}`);
+            try {
+                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: `Añadida foto de ${author}`,
+                        content: content
+                    })
+                });
+
+                if (response.ok) {
+                    status.innerHTML = "✅ ¡Guardado! La web se actualizará en unos minutos.";
+                    fileInput.value = '';
+                } else {
+                    const error = await response.json();
+                    status.innerText = "❌ Error: " + error.message;
+                }
+            } catch (err) {
+                status.innerText = "❌ Error de conexión.";
+            } finally {
+                btn.disabled = false;
+            }
         };
         reader.readAsDataURL(file);
-    }
-
-    // 3. Renderizar fotos guardadas en el dispositivo
-    function renderGallery() {
-        const memories = JSON.parse(localStorage.getItem('local_dots') || '[]');
-        gallery.innerHTML = '';
-        
-        memories.forEach(m => {
-            const div = document.createElement('div');
-            div.className = 'card';
-            div.innerHTML = `
-                <img src="${m.imgData}">
-                <div class="info">
-                    <span>${m.author}</span>
-                    <span style="font-size: 0.6rem;">${m.timestamp}</span>
-                </div>
-            `;
-            gallery.appendChild(div);
-        });
     }
 </script>
 </body>

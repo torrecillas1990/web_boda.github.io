@@ -186,7 +186,9 @@
             color: white;
             font-size: 40px;
             cursor: pointer;
-        }
+			padding: 20px;
+			line-height: 1;
+		}
 
         /* Botón Flotante y Modal */
         .fab { 
@@ -251,6 +253,11 @@
 		.thumb-wrapper.uploading .spinner {
 			display: block;
 		}
+		
+		.thumb-wrapper .spinner {
+			border: 3px solid rgba(255, 255, 255, 0.2);
+			border-top-color: #fff; /* Spinner blanco sobre fotos oscurecidas */
+		}
 
 		/* Estado: Completado (Oscurecido) */
 		.thumb-wrapper.done img {
@@ -287,6 +294,11 @@
 
 		@keyframes spin {
 			to { transform: rotate(360deg); }
+		}
+		
+		/* Evitar que el spinner de carga inicial choque con el de lote */
+		#loading-gallery {
+			margin: 20px 0;
 		}
     </style>
 </head>

@@ -9,22 +9,29 @@
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body class="bg-slate-50 font-sans">
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="flex items-center space-x-3 group">
-                <img src="logo.jpg" alt="Logo Manuel Torrecillas S.L." class="h-12 w-auto transition-transform group-hover:scale-105">
-                <span class="text-xl font-bold tracking-tight uppercase text-slate-800">
-                    Manuel Torrecillas <span class="text-green-600">S.L.</span>
-                </span>
-            </a>
-            <div class="hidden md:flex space-x-8 text-sm font-semibold uppercase text-slate-600">
-                <a href="index.html" class="hover:text-green-600">Inicio</a>
-                <a href="empresa.html" class="hover:text-green-600">Empresa</a>
-                <a href="vademecum.html" class="text-green-600">Vademecum</a>
-                <a href="contacto.html" class="hover:text-green-600">Contacto</a>
-            </div>
-        </div>
-    </nav>
+
+	<nav class="bg-white shadow-sm sticky top-0 z-50 border-b border-slate-100">
+		<div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+			<a href="index.html" class="flex items-center space-x-3 group shrink-0">
+				<img src="logo.png" alt="Logo Manuel Torrecillas S.L." class="h-10 w-auto transition-transform group-hover:scale-105">
+				<span class="text-lg md:text-xl font-bold tracking-tight uppercase text-slate-800">
+					Manuel Torrecillas <span class="text-green-600">S.L.</span>
+				</span>
+			</a>
+
+			<button id="menu-btn" class="md:hidden text-slate-600 focus:outline-none p-2">
+				<i class="fas fa-bars text-2xl" id="menu-icon"></i>
+			</button>
+
+			<div id="nav-links" class="hidden absolute top-full left-0 w-full bg-white border-b md:border-none md:static md:w-auto md:flex md:space-x-8 text-sm font-semibold uppercase text-slate-600 px-6 py-4 md:p-0 transition-all duration-300">
+				<a href="index.html" id="link-index" class="block py-2 hover:text-green-600 transition">Inicio</a>
+				<a href="empresa.html" id="link-empresa" class="block py-2 hover:text-green-600 transition">Empresa</a>
+				<a href="vademecum.html" id="link-vademecum" class="block py-2 hover:text-green-600 transition">Vademecum</a>
+				<a href="contacto.html" id="link-contacto" class="block py-2 hover:text-green-600 transition border-t md:border-none mt-2 md:mt-0">Contacto</a>
+			</div>
+		</div>
+	</nav>
+
 
     <header class="bg-slate-100 py-12 border-b">
         <div class="max-w-7xl mx-auto px-6">
@@ -75,8 +82,33 @@
         </div>
     </section>
 
-    <footer class="bg-slate-900 text-white py-12 text-center">
-        <p class="text-sm text-slate-400 uppercase tracking-widest">&copy; 2026 Manuel Torrecillas S.L. | Orihuela, Alicante</p>
-    </footer>
+	<footer class="bg-slate-900 text-white py-12">
+		<div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-8 text-center md:text-left">
+			<div>
+				<img src="logo.jpg" alt="Logo MT" class="h-10 w-auto mb-4 mx-auto md:mx-0 opacity-80 brightness-0 invert">
+				<p class="text-slate-400 text-sm italic">Innovación biológica para el futuro de nuestra tierra.</p>
+			</div>
+			<div class="text-slate-400 text-sm">
+				<h4 class="text-white font-bold mb-4 uppercase tracking-widest">Navegación</h4>
+				<ul class="space-y-2">
+					<li><a href="index.html" class="hover:text-green-400 transition">Inicio</a></li>
+					<li><a href="empresa.html" class="hover:text-green-400 transition">La Empresa</a></li>
+					<li><a href="vademecum.html" class="hover:text-green-400 transition">Vademecum Técnico</a></li>
+					<li><a href="contacto.html" class="hover:text-green-400 transition">Contacto</a></li>
+				</ul>
+			</div>
+			<div class="text-slate-400 text-sm">
+				<h4 class="text-white font-bold mb-4 uppercase tracking-widest">Sede Central</h4>
+				<p>Carretera de Arneva, 60</p>
+				<p>03300 Orihuela (Alicante)</p>
+				<p class="mt-2 text-green-400 font-bold">+34 965 30 13 00</p>
+			</div>
+		</div>
+		<div class="border-t border-slate-800 mt-10 pt-6 text-center text-xs text-slate-500 uppercase tracking-widest">
+			&copy; 2026 Manuel Torrecillas S.L. | Todos los derechos reservados.
+		</div>
+	</footer>
+	
+	<script src="main.js"></script>
 </body>
 </html>

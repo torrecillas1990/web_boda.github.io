@@ -181,3 +181,29 @@ function filtrarProductos(categoria) {
         }
     });
 }
+
+// --- LÓGICA DEL BUSCADOR ---
+
+function buscarProducto() {
+    const input = document.getElementById('buscador');
+    const filtro = input.value.toLowerCase();
+    const productos = document.querySelectorAll('.producto-card');
+
+    productos.forEach(card => {
+        // Obtenemos el título del producto dentro de la tarjeta
+        const titulo = card.querySelector('h3').innerText.toLowerCase();
+        
+        // Si el título incluye lo que escribimos, lo mostramos; si no, lo ocultamos
+        if (titulo.includes(filtro)) {
+            card.classList.remove('hidden');
+        } else {
+            card.classList.add('hidden');
+        }
+    });
+
+    // Opcional: Si el usuario escribe, desactivamos visualmente los filtros de categoría
+    if (filtro !== "") {
+        const botones = document.querySelectorAll('.btn-filtro');
+        botones.forEach(btn => btn.classList.replace('bg-green-600', 'bg-white'));
+    }
+}

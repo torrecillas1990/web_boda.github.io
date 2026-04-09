@@ -33,51 +33,49 @@
 	</nav>
 
     <main class="max-w-7xl mx-auto px-6 py-12">
-        <header class="mb-10 flex justify-between items-end">
-            <div>
-				<h1 class="text-3xl font-bold">catalogo de Productos</h1>
-				<p class="text-slate-500">Información técnica y recomendaciones de uso profesional.</p>
-                <p class="text-slate-500">Seleccione los productos para solicitar presupuesto.</p>
-            </div>
-        </header>
+		<header class="mb-10">
+			<h1 class="text-3xl font-bold text-slate-800">Catálogo de Productos</h1>
+			<p class="text-slate-500 mb-8">Información técnica y selección de productos para su pedido.</p>
+			
+			<div class="flex flex-wrap gap-2" id="filtros">
+				<button onclick="filtrarProductos('todos')" class="btn-filtro active bg-green-600 text-white px-4 py-2 rounded-full text-xs font-bold uppercase transition">Todos</button>
+				<button onclick="filtrarProductos('organico')" class="btn-filtro bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-full text-xs font-bold uppercase hover:bg-slate-100 transition">Nutrición Orgánica</button>
+				<button onclick="filtrarProductos('corrector')" class="btn-filtro bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-full text-xs font-bold uppercase hover:bg-slate-100 transition">Correctores</button>
+				<button onclick="filtrarProductos('bioestimulante')" class="btn-filtro bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-full text-xs font-bold uppercase hover:bg-slate-100 transition">Bioestimulantes</button>
+			</div>
+		</header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-                <div class="h-48 bg-slate-200 flex items-center justify-center text-slate-400">
-                    <i class="fas fa-seedling text-5xl"></i> </div>
-                <div class="p-6 flex-grow">
-                    <span class="text-[10px] font-bold text-green-600 uppercase tracking-widest">Nutrición Orgánica</span>
-                    <h3 class="text-xl font-bold mt-1 text-slate-800">BIORCAMP PREMIUM</h3>
-                    <p class="text-sm text-slate-500 mt-2 mb-4">Abono orgánico fermentado de alta carga microbiana.</p>
-                    <div class="flex items-center justify-between mt-auto">
-                        <span class="text-xs font-bold text-slate-400 italic">Sacos 25kg / BigBag</span>
-                        <button onclick="agregarAlPedido('Biorcamp Premium', 'Sacos 25kg')" class="bg-green-600 text-white p-3 rounded-xl hover:bg-green-700 transition">
-                            <i class="fas fa-plus"></i> Añadir
-                        </button>
-                    </div>
-                </div>
-            </div>
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="grid-productos">
+			
+			<div class="producto-card bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col" data-category="organico">
+				<div class="h-48 bg-green-50 flex items-center justify-center text-green-600"><i class="fas fa-leaf text-5xl"></i></div>
+				<div class="p-6 flex-grow">
+					<span class="text-[10px] font-bold text-green-600 uppercase tracking-widest">Nutrición Orgánica</span>
+					<h3 class="text-xl font-bold mt-1 text-slate-800">BIORCAMP PREMIUM</h3>
+					<button onclick="agregarAlPedido('Biorcamp Premium', 'Saco 25kg')" class="mt-4 w-full bg-green-600 text-white py-2 rounded-lg font-bold hover:bg-green-700 transition">Añadir</button>
+				</div>
+			</div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-                <div class="h-48 bg-slate-200 flex items-center justify-center text-slate-400">
-                    <i class="fas fa-flask text-5xl"></i>
-                </div>
-                <div class="p-6 flex-grow">
-                    <span class="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Corrector Carencias</span>
-                    <h3 class="text-xl font-bold mt-1 text-slate-800">MICRO-TORR MIX</h3>
-                    <p class="text-sm text-slate-500 mt-2 mb-4">Mezcla equilibrada de micronutrientes quelatados.</p>
-                    <div class="flex items-center justify-between mt-auto">
-                        <span class="text-xs font-bold text-slate-400 italic">Envases 1L / 5L</span>
-                        <button onclick="agregarAlPedido('Micro-Torr Mix', 'Envase 5L')" class="bg-green-600 text-white p-3 rounded-xl hover:bg-green-700 transition">
-                            <i class="fas fa-plus"></i> Añadir
-                        </button>
-                    </div>
-                </div>
-            </div>
+			<div class="producto-card bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col" data-category="corrector">
+				<div class="h-48 bg-blue-50 flex items-center justify-center text-blue-600"><i class="fas fa-flask text-5xl"></i></div>
+				<div class="p-6 flex-grow">
+					<span class="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Corrector</span>
+					<h3 class="text-xl font-bold mt-1 text-slate-800">MICRO-TORR MIX</h3>
+					<button onclick="agregarAlPedido('Micro-Torr Mix', 'Envase 5kg')" class="mt-4 w-full bg-green-600 text-white py-2 rounded-lg font-bold hover:bg-green-700 transition">Añadir</button>
+				</div>
+			</div>
 
-        </div>
-    </main>
+			<div class="producto-card bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col" data-category="bioestimulante">
+				<div class="h-48 bg-orange-50 flex items-center justify-center text-orange-600"><i class="fas fa-bolt text-5xl"></i></div>
+				<div class="p-6 flex-grow">
+					<span class="text-[10px] font-bold text-orange-600 uppercase tracking-widest">Bioestimulante</span>
+					<h3 class="text-xl font-bold mt-1 text-slate-800">AMINOTORR L-24</h3>
+					<button onclick="agregarAlPedido('Aminotorr L-24', 'Garrafa 5L')" class="mt-4 w-full bg-green-600 text-white py-2 rounded-lg font-bold hover:bg-green-700 transition">Añadir</button>
+				</div>
+			</div>
+
+		</div>
+	</main>
 
     <div id="panel-pedido" class="fixed bottom-6 right-6 left-6 md:left-auto md:w-96 bg-slate-900 text-white rounded-2xl shadow-2xl p-6 transform translate-y-full transition-transform duration-300 z-[100]">
         <div class="flex justify-between items-center mb-4">

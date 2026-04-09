@@ -151,3 +151,33 @@ function finalizarPedido() {
 document.addEventListener("DOMContentLoaded", () => {
     actualizarUI();
 });
+
+// --- LÓGICA DE FILTRADO ---
+
+function filtrarProductos(categoria) {
+    const productos = document.querySelectorAll('.producto-card');
+    const botones = document.querySelectorAll('.btn-filtro');
+
+    // 1. Gestionar estilo de los botones
+    botones.forEach(btn => {
+        btn.classList.remove('bg-green-600', 'text-white', 'active');
+        btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+    });
+
+    // Resaltar el botón clickeado (buscamos por el evento o el texto)
+    event.currentTarget.classList.add('bg-green-600', 'text-white', 'active');
+    event.currentTarget.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+
+    // 2. Filtrar las tarjetas
+    productos.forEach(card => {
+        if (categoria === 'todos') {
+            card.classList.remove('hidden');
+        } else {
+            if (card.getAttribute('data-category') === categoria) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        }
+    });
+}

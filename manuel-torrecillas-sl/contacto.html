@@ -6,7 +6,7 @@
     <title>Contacto | Manuel Torrecillas S.L.</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-	<link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body class="bg-slate-50 font-sans">
 
@@ -32,37 +32,40 @@
 		</div>
 	</nav>
 
-
-    <section class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-16">
+    <main class="py-20 max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16">
         <div>
-            <h1 class="text-4xl font-bold mb-6">Contacte con nosotros</h1>
-            <p class="text-slate-600 mb-8">Estamos en el corazón de la Vega Baja. Visite nuestras instalaciones o solicite la visita de un técnico a su finca.</p>
+            <h1 id="titulo-mensaje-contacto" class="text-4xl font-bold mb-6 text-slate-800">Contacte con nosostros</h1>
+            <p id="subtitulo-mensaje-contacto" class="text-slate-600 mb-8">Complete el formulario y nuestro equipo le contestara a la mayor brevedad.</p>
             
             <div class="space-y-6">
                 <div class="flex items-center space-x-4">
-                    <div class="bg-green-100 text-green-700 p-3 rounded-lg"><i class="fas fa-map-marker-alt"></i></div>
-                    <div><p class="font-bold">Dirección</p><p class="text-slate-500">Ctra. de Arneva, 60. 03300 Orihuela</p></div>
+                    <div class="bg-green-600 text-white p-4 rounded-full shadow-lg shadow-green-200"><i class="fas fa-phone-alt"></i></div>
+                    <div><p class="font-bold text-slate-800">+34 965 30 13 00</p><p class="text-xs text-slate-500 uppercase tracking-widest">Oficina Orihuela</p></div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <div class="bg-green-100 text-green-700 p-3 rounded-lg"><i class="fas fa-phone-alt"></i></div>
-                    <div><p class="font-bold">Teléfono</p><p class="text-slate-500">+34 965 30 13 00</p></div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <div class="bg-green-100 text-green-700 p-3 rounded-lg"><i class="fas fa-envelope"></i></div>
-                    <div><p class="font-bold">Email</p><p class="text-slate-500">info@manueltorrecillas.es</p></div>
+                    <div class="bg-green-600 text-white p-4 rounded-full shadow-lg shadow-green-200"><i class="fas fa-envelope"></i></div>
+                    <div><p class="font-bold text-slate-800">comercial@manueltorrecillas.es</p><p class="text-xs text-slate-500 uppercase tracking-widest">Presupuestos</p></div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-100">
-            <form class="space-y-4">
-                <input type="text" placeholder="Su nombre" class="w-full bg-slate-50 border-none p-4 rounded-lg">
-                <input type="email" placeholder="Correo electrónico" class="w-full bg-slate-50 border-none p-4 rounded-lg">
-                <textarea placeholder="¿En qué podemos ayudarle?" rows="5" class="w-full bg-slate-50 border-none p-4 rounded-lg"></textarea>
-                <button class="w-full bg-green-600 text-white py-4 rounded-lg font-bold uppercase hover:bg-green-700 transition">Enviar Mensaje</button>
+        <div class="bg-white p-10 rounded-3xl shadow-xl border border-slate-100">
+            <form id="form-contacto" class="space-y-4">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <input type="text" placeholder="Nombre completo" required class="w-full bg-slate-50 border-slate-200 p-4 rounded-xl focus:ring-2 focus:ring-green-500 transition">
+                    <input type="tel" placeholder="Teléfono" class="w-full bg-slate-50 border-slate-200 p-4 rounded-xl focus:ring-2 focus:ring-green-500 transition">
+                </div>
+                <input type="email" placeholder="Email" required class="w-full bg-slate-50 border-slate-200 p-4 rounded-xl focus:ring-2 focus:ring-green-500 transition">
+                
+                <textarea id="mensaje-contacto" name="mensaje" rows="6" placeholder="¿En qué podemos ayudarle?" class="w-full bg-slate-50 border-slate-200 p-4 rounded-xl focus:ring-2 focus:ring-green-500 transition"></textarea>
+                
+                <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition-all flex items-center justify-center space-x-2">
+                    <span id="boton-mensaje-contacto">ENVIAR MENSAJE</span>
+                    <i class="fas fa-paper-plane text-xs opacity-50"></i>
+                </button>
             </form>
         </div>
-    </section>
+    </main>
 
 	<footer class="bg-slate-900 text-white py-12">
 		<div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-8 text-center md:text-left">
@@ -92,5 +95,26 @@
 	</footer>
 	
 	<script src="main.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Buscamos si hay un parámetro "pedido" en la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const pedidoTexto = urlParams.get('pedido');
+
+            if (pedidoTexto) {
+                // Si existe, lo ponemos en el textarea
+                const textarea = document.getElementById('mensaje-contacto');
+                textarea.value = pedidoTexto;
+				
+                document.getElementById('titulo-mensaje-contacto').innerText = "Finalice su Pedido";
+				document.getElementById('subtitulo-mensaje-contacto').innerText = "Complete el formulario y nuestro equipo técnico le enviará un presupuesto detallado con las dosis recomendadas para su cultivo.";
+				document.getElementById('boton-mensaje-contacto').innerText = "SOLICITAR PRESUPUESTO";
+				
+                // Efecto visual: resaltar el textarea para que el usuario lo vea
+                textarea.classList.add('ring-2', 'ring-green-500');
+            }
+        });
+    </script>
 </body>
 </html>

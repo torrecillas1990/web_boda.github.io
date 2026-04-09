@@ -65,3 +65,89 @@ function destacarEnlaceActivo() {
     const activeLink = document.getElementById(linkId);
     if (activeLink) activeLink.classList.add('text-green-600');
 }
+
+// --- LÓGICA DE ÓRDENES DE PEDIDO ---
+
+let pedido = JSON.parse(localStorage.getItem('pedido_torrecillas')) || [];
+
+function agregarAlPedido(nombre, formato) {
+    // Añadimos el producto al array
+    pedido.push({ nombre, formato, id: Date.now() });
+    
+    // Guardamos en el navegador (para que no se borre al refrescar)
+    localStorage.setItem('pedido_torrecillas', JSON.stringify(pedido));
+    
+    actualizarUI();
+    
+    // Si es el primer producto, mostramos el panel
+    if(pedido.length === 1) {
+        togglePanel(true);
+    }
+}
+
+function eliminarDelPedido(id) {
+    pedido = pedido.filter(item => item.id !== id);
+    localStorage.setItem('pedido_torrecillas', JSON.stringify(pedido));
+    actualizarUI();
+}
+
+function actualizarUI() {
+    const lista = document.getElementById('lista-pedido');
+    const contador = document.getElementById('contador-pedido');
+    const btnAbrir = document.getElementById('btn-abrir-pedido');
+    const panel = document.getElementById('panel-pedido');
+
+    if (!lista) return; // Si no estamos en la página de vademecum
+
+    lista.innerHTML = '';
+    
+    pedido.forEach(item => {
+        lista.innerHTML += `
+            <div class="flex justify-between items-center text-sm bg-slate-800 p-3 rounded-lg">
+                <div>
+                    <p class="font-bold text-green-400">${item.nombre}</p>
+                    <p class="text-[10px] text-slate-400">${item.formato}</p>
+                </div>
+                <button onclick="eliminarDelPedido(${item.id})" class="text-red-400 hover:text-red-300 px-2">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        `;
+    });
+
+    // Actualizar contador
+    contador.innerText = pedido.length;
+
+    // Mostrar/Ocultar botón flotante
+    if (pedido.length > 0) {
+        btnAbrir.classList.remove('hidden');
+    } else {
+        btnAbrir.classList.add('hidden');
+        panel.classList.add('translate-y-full');
+    }
+}
+
+function togglePanel(forzarAbrir = false) {
+    const panel = document.getElementById('panel-pedido');
+    if (forzarAbrir) {
+        panel.classList.remove('translate-y-full');
+    } else {
+        panel.classList.toggle('translate-y-full');
+    }
+}
+
+function finalizarPedido() {
+    if (pedido.length === 0) return;
+
+    // Creamos un texto legible con los productos
+    const listaNombres = pedido.map(i => `${i.nombre} (${i.formato})`).join(', ');
+    const textoPedido = `Hola, me gustaría solicitar presupuesto para los siguientes productos: ${listaNombres}.`;
+    
+    // Redirigimos a contacto.html pasando el texto en la URL
+    window.location.href = `contacto.html?pedido=${encodeURIComponent(textoPedido)}`;
+}
+
+// Ejecutar al cargar para recuperar pedido guardado
+document.addEventListener("DOMContentLoaded", () => {
+    actualizarUI();
+});

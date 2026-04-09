@@ -8,9 +8,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
-<body class="bg-slate-50 font-sans">
+<body class="bg-slate-50 font-sans pb-20">
 
-	<nav class="bg-white shadow-sm sticky top-0 z-50 border-b border-slate-100">
+    <nav class="bg-white shadow-sm sticky top-0 z-50 border-b border-slate-100">
 		<div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
 			<a href="index.html" class="flex items-center space-x-3 group shrink-0">
 				<img src="logo.png" alt="Logo Manuel Torrecillas S.L." class="h-10 w-auto transition-transform group-hover:scale-105">
@@ -32,55 +32,75 @@
 		</div>
 	</nav>
 
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <header class="mb-10 flex justify-between items-end">
+            <div>
+				<h1 class="text-3xl font-bold">Vademecum de Productos</h1>
+				<p class="text-slate-500">Información técnica y recomendaciones de uso profesional.</p>
+                <p class="text-slate-500">Seleccione los productos para solicitar presupuesto.</p>
+            </div>
+        </header>
 
-    <header class="bg-slate-100 py-12 border-b">
-        <div class="max-w-7xl mx-auto px-6">
-            <h1 class="text-3xl font-bold">Vademecum de Productos</h1>
-            <p class="text-slate-500">Información técnica y recomendaciones de uso profesional.</p>
-        </div>
-    </header>
-
-    <section class="max-w-7xl mx-auto px-6 py-12 space-y-12">
-        <div class="bg-white border rounded-xl overflow-hidden shadow-sm">
-            <div class="bg-green-700 text-white px-6 py-3 font-bold uppercase tracking-widest text-sm">Nutrición Orgánica</div>
-            <div class="p-8">
-                <h2 class="text-2xl font-bold mb-4">BIORCAMP PREMIUM (Sólido)</h2>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div>
-                        <h4 class="font-bold text-slate-400 uppercase text-xs mb-2">Descripción Técnica</h4>
-                        <p class="text-slate-600">Producto estrella obtenido por fermentación aeróbica. Aporta una flora microbiana rizosférica única que optimiza el intercambio de iones entre suelo y raíz.</p>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-lg">
-                        <table class="w-full text-sm">
-                            <tr class="border-b"><td class="py-2 font-bold">Materia Orgánica</td><td class="py-2 text-right">38% p/p</td></tr>
-                            <tr class="border-b"><td class="py-2 font-bold">NPK Total</td><td class="py-2 text-right">4-3-3</td></tr>
-                            <tr><td class="py-2 font-bold">Dosis Citricos</td><td class="py-2 text-right">3-5 kg/árbol</td></tr>
-                        </table>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                <div class="h-48 bg-slate-200 flex items-center justify-center text-slate-400">
+                    <i class="fas fa-seedling text-5xl"></i> </div>
+                <div class="p-6 flex-grow">
+                    <span class="text-[10px] font-bold text-green-600 uppercase tracking-widest">Nutrición Orgánica</span>
+                    <h3 class="text-xl font-bold mt-1 text-slate-800">BIORCAMP PREMIUM</h3>
+                    <p class="text-sm text-slate-500 mt-2 mb-4">Abono orgánico fermentado de alta carga microbiana.</p>
+                    <div class="flex items-center justify-between mt-auto">
+                        <span class="text-xs font-bold text-slate-400 italic">Sacos 25kg / BigBag</span>
+                        <button onclick="agregarAlPedido('Biorcamp Premium', 'Sacos 25kg')" class="bg-green-600 text-white p-3 rounded-xl hover:bg-green-700 transition">
+                            <i class="fas fa-plus"></i> Añadir
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="bg-white border rounded-xl overflow-hidden shadow-sm">
-            <div class="bg-blue-700 text-white px-6 py-3 font-bold uppercase tracking-widest text-sm">Correctores de Carencias</div>
-            <div class="p-8">
-                <h2 class="text-2xl font-bold mb-4">MICRO-TORR LÍQUIDO</h2>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div>
-                        <h4 class="font-bold text-slate-400 uppercase text-xs mb-2">Uso Recomendado</h4>
-                        <p class="text-slate-600">Complejo de micronutrientes diseñado para aplicación vía fertirrigación en suelos alcalinos o con problemas de bloqueo mineral.</p>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-lg">
-                        <table class="w-full text-sm">
-                            <tr class="border-b"><td class="py-2 font-bold">Hierro (Fe) EDTA</td><td class="py-2 text-right">6.0% p/v</td></tr>
-                            <tr class="border-b"><td class="py-2 font-bold">Manganeso (Mn)</td><td class="py-2 text-right">2.5% p/v</td></tr>
-                            <tr><td class="py-2 font-bold">Aplicación Foliar</td><td class="py-2 text-right">200-300 cc/hl</td></tr>
-                        </table>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                <div class="h-48 bg-slate-200 flex items-center justify-center text-slate-400">
+                    <i class="fas fa-flask text-5xl"></i>
+                </div>
+                <div class="p-6 flex-grow">
+                    <span class="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Corrector Carencias</span>
+                    <h3 class="text-xl font-bold mt-1 text-slate-800">MICRO-TORR MIX</h3>
+                    <p class="text-sm text-slate-500 mt-2 mb-4">Mezcla equilibrada de micronutrientes quelatados.</p>
+                    <div class="flex items-center justify-between mt-auto">
+                        <span class="text-xs font-bold text-slate-400 italic">Envases 1L / 5L</span>
+                        <button onclick="agregarAlPedido('Micro-Torr Mix', 'Envase 5L')" class="bg-green-600 text-white p-3 rounded-xl hover:bg-green-700 transition">
+                            <i class="fas fa-plus"></i> Añadir
+                        </button>
                     </div>
                 </div>
             </div>
+
         </div>
-    </section>
+    </main>
+
+    <div id="panel-pedido" class="fixed bottom-6 right-6 left-6 md:left-auto md:w-96 bg-slate-900 text-white rounded-2xl shadow-2xl p-6 transform translate-y-full transition-transform duration-300 z-[100]">
+        <div class="flex justify-between items-center mb-4">
+            <h4 class="font-bold flex items-center">
+                <i class="fas fa-clipboard-list mr-2 text-green-400"></i> Orden de Pedido
+            </h4>
+            <button onclick="togglePanel()" class="text-slate-400 hover:text-white text-sm">Cerrar</button>
+        </div>
+        
+        <div id="lista-pedido" class="max-h-60 overflow-y-auto mb-4 space-y-3">
+            </div>
+
+        <div class="border-t border-slate-700 pt-4">
+            <button onclick="finalizarPedido()" class="w-full bg-green-600 py-3 rounded-xl font-bold hover:bg-green-500 transition">
+                CONFIRMAR ORDEN
+            </button>
+        </div>
+    </div>
+
+    <button id="btn-abrir-pedido" onclick="togglePanel()" class="fixed bottom-6 right-6 bg-slate-900 text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center hidden z-[90]">
+        <i class="fas fa-shopping-basket"></i>
+        <span id="contador-pedido" class="absolute -top-1 -right-1 bg-green-600 text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-slate-900">0</span>
+    </button>
 
 	<footer class="bg-slate-900 text-white py-12">
 		<div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-8 text-center md:text-left">

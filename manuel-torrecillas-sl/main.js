@@ -97,7 +97,7 @@ function actualizarUI() {
     const btnAbrir = document.getElementById('btn-abrir-pedido');
     const panel = document.getElementById('panel-pedido');
 
-    if (!lista) return; // Si no estamos en la página de vademecum
+    if (!lista) return; // Si no estamos en la página de catalogo
 
     lista.innerHTML = '';
     

@@ -58,6 +58,13 @@
         @media (min-width: 600px) {
             .gallery { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
         }
+		
+		#gallery {
+			transition: opacity 0.3s ease;
+		}
+		.gallery-refreshing {
+			opacity: 0.3; /* Se oscurece un poco mientras se actualiza */
+		}
 
 		/* Contenedor de la tarjeta */
 		.photo-card {
@@ -196,6 +203,8 @@
             width: 65px; height: 65px; background: #000; color: white; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center; 
             font-size: 35px; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 100;
+			line-height: 0;      /* Evita desplazamientos por altura de línea */
+			align-items: center; /* Asegura centrado vertical */
         }
 
         .modal { 
@@ -300,6 +309,25 @@
 		#loading-gallery {
 			margin: 20px 0;
 		}
+		
+		.photo-card {
+			cursor: pointer; /* Indica que se puede hacer clic */
+			transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+		}
+
+		.photo-card:active {
+			transform: scale(0.95); /* Efecto de pulsación en móvil */
+		}
+
+		.fab:active {
+			transform: scale(0.9); /* Feedback táctil al darle al botón + */
+		}
+
+		/* Evitar que el texto de la cabecera se seleccione por error al hacer scroll rápido */
+		header img {
+			user-select: none;
+			-webkit-user-drag: none;
+		}
     </style>
 </head>
 <body>
@@ -342,69 +370,70 @@
         </div>
     </div>
     
-    <div id="lightbox" onclick="this.style.display='none'">
-        <span class="close-lightbox">&times;</span>
-        <img id="lightbox-img" src="">
-        <div id="lightbox-caption"></div>
-    </div>
+	<div id="lightbox">
+		<span class="close-lightbox" onclick="document.getElementById('lightbox').style.display='none'">&times;</span>
+		<img id="lightbox-img" src="">
+		<div id="lightbox-caption"></div>
+		<a id="download-btn" href="" download="boda-recuerdo.jpg" style="color: var(--accent); text-decoration: none; margin-top: 10px; font-size: 0.9rem; border: 1px solid var(--accent); padding: 5px 15px; border-radius: 20px;">Descargar Foto</a>
+	</div>
 
 	<script>
-		const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxAqsk8EDCymOokGavNgHKhNeD_mELnePUicFgGN_FY488sGVL9nl1lguds2iaDGjwgiw/exec";
+		const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby03WVH9OWNdi5SLKOLT8fMa-Cr3sgoHPjMoJWfVN4oMK41u_C_iO-p3fiMvMmvwV4uQw/exec";
 		let selectedFiles = [];
 		let currentPage = 0;
 		let isLoading = false;
 		let allPhotosLoaded = false;
 
-		// 1. Función para cargar un lote de fotos con efecto "Goteo"
+		// Añade esta variable global al inicio de tu <script>
+		let cachedPhotos = JSON.parse(localStorage.getItem('boda_cache_photos')) || [];
+
 		async function loadGallery(page = 0) {
 			if (isLoading || allPhotosLoaded) return;
 			
+			// --- NUEVA LÓGICA DE CACHÉ ---
+			// Si es la primera página y tenemos fotos guardadas, las mostramos primero
+			if (page === 0 && cachedPhotos.length > 0) {
+				renderBatch(cachedPhotos); // Función que crearemos para no repetir código
+				// Opcional: podrías detenerte aquí o seguir para buscar fotos nuevas
+			}
+			// ----------------------------
+
 			isLoading = true;
 			const footerLoader = document.getElementById('infinite-loader');
 			const loadingInitial = document.getElementById('loading-gallery');
 
-			// Mostramos el spinner de pie de página si no es la primera carga
 			if (page >= 0 && footerLoader) footerLoader.style.display = 'block';
-			if (page === 0 && loadingInitial) loadingInitial.style.display = 'block';
+			if (page === 0 && loadingInitial && cachedPhotos.length === 0) loadingInitial.style.display = 'block';
 
 			try {
 				const response = await fetch(`${SCRIPT_URL}?page=${page}`);
 				const images = await response.json();
-				const gallery = document.getElementById('gallery');
 				
-				if (page === 0) gallery.innerHTML = ''; 
-				if (loadingInitial) loadingInitial.style.display = 'none';
-
 				if (images.length === 0) {
 					allPhotosLoaded = true;
-					if (page === 0) gallery.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#999;">Aún no hay fotos.</p>';
+					if (page === 0 && cachedPhotos.length === 0) {
+						document.getElementById('gallery').innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#999;">Aún no hay fotos.</p>';
+					}
 					if (footerLoader) footerLoader.style.display = 'none';
 					return;
 				}
 
-				// Carga secuencial de las fotos del lote
-				for (const img of images) {
-					await new Promise((resolve) => {
-						const card = document.createElement('div');
-						card.className = 'photo-card loading';
-						card.onclick = () => openLightbox(img.url, img.author);
+				// Si es la página 0, actualizamos la caché con lo más nuevo del servidor
+				if (page === 0) {
+					localStorage.setItem('boda_cache_photos', JSON.stringify(images));
+					// Si lo que viene del servidor es distinto a lo que teníamos, refrescamos la vista
+					if (JSON.stringify(images) !== JSON.stringify(cachedPhotos)) {
+						const gal = document.getElementById('gallery');
+						gal.classList.add('gallery-refreshing'); // Efecto visual de carga
 						
-						const imageElement = document.createElement('img');
-						imageElement.onload = () => {
-							card.classList.remove('loading');
-							card.classList.add('loaded');
-							setTimeout(resolve, 100); // Pequeño delay visual
-						};
-						imageElement.onerror = resolve;
-						imageElement.src = img.url;
-
-						const info = document.createElement('p');
-						info.innerHTML = `Por: <b>${img.author}</b>`;
-
-						card.appendChild(imageElement);
-						card.appendChild(info);
-						gallery.appendChild(card);
-					});
+						setTimeout(() => {
+							gal.innerHTML = '';
+							renderBatch(images);
+							gal.classList.remove('gallery-refreshing');
+						}, 300);
+					}
+				} else {
+					renderBatch(images);
 				}
 
 				currentPage++;
@@ -412,8 +441,39 @@
 				console.error("Error cargando lote:", e);
 			} finally {
 				isLoading = false;
-				// Ocultamos el spinner de pie de página al terminar el lote
 				if (footerLoader) footerLoader.style.display = 'none';
+				if (loadingInitial) loadingInitial.style.display = 'none';
+			}
+		}
+
+		// 2. Nueva función auxiliar para renderizar (para no repetir el bucle for)
+		async function renderBatch(images) {
+			const gallery = document.getElementById('gallery');
+			for (const img of images) {
+				// Evitar duplicados si la caché y el servidor coinciden
+				if (document.querySelector(`img[src="${img.url}"]`)) continue;
+
+				await new Promise((resolve) => {
+					const card = document.createElement('div');
+					card.className = 'photo-card loading';
+					card.onclick = () => openLightbox(img.url, img.author);
+					
+					const imageElement = document.createElement('img');
+					imageElement.onload = () => {
+						card.classList.remove('loading');
+						card.classList.add('loaded');
+						setTimeout(resolve, 50); 
+					};
+					imageElement.onerror = resolve;
+					imageElement.src = img.url;
+
+					const info = document.createElement('p');
+					info.innerHTML = `Por: <b>${img.author}</b>`;
+
+					card.appendChild(imageElement);
+					card.appendChild(info);
+					gallery.appendChild(card);
+				});
 			}
 		}
 		
@@ -421,7 +481,8 @@
 		const sentinel = document.createElement('div');
 		sentinel.id = 'sentinel';
 		sentinel.style.height = '50px'; // Un poco más alto para facilitar detección
-		document.body.appendChild(sentinel);
+		// En lugar de document.body.appendChild(sentinel);
+		document.getElementById('gallery').after(sentinel);
 
 		const observer = new IntersectionObserver((entries) => {
 			if (entries[0].isIntersecting && !isLoading && !allPhotosLoaded) {
@@ -441,7 +502,13 @@
 			const lb = document.getElementById('lightbox');
 			const lbImg = document.getElementById('lightbox-img');
 			const lbCap = document.getElementById('lightbox-caption');
+			const dlBtn = document.getElementById('download-btn');
+
 			lbImg.src = url;
+			// Cambiamos el thumbnail por la imagen real si quieres más calidad, 
+			// pero para descargar, la URL actual sirve perfectamente.
+			dlBtn.href = url; 
+			
 			lbCap.innerHTML = `Foto de <b>${author}</b>`;
 			lb.style.display = 'flex';
 		}
@@ -546,31 +613,67 @@
 			document.getElementById('msg').innerText = "✅ ¡Guardado!";
 			
 			setTimeout(() => {
-				toggleModal(false);
-				// Reset galería para ver lo nuevo
-				currentPage = 0;
-				allPhotosLoaded = false;
-				loadGallery(0);
-				btn.disabled = false;
-			}, 2000);
+                // 1. Limpiamos caché para asegurar que al recargar se vea lo nuevo
+                localStorage.removeItem('boda_cache_photos');
+                
+                // 2. Cerramos modal
+                toggleModal(false);
+                
+                // 3. En lugar de recargar toda la página (que puede ser brusco), 
+                // reseteamos variables y recargamos la galería
+                document.getElementById('gallery').innerHTML = '';
+                currentPage = 0;
+                allPhotosLoaded = false;
+                cachedPhotos = []; // Limpiamos la variable en memoria también
+                
+                loadGallery(0);
+                
+                // 4. Rehabilitamos el botón
+                btn.disabled = false;
+                
+                // Opcional: Si prefieres la recarga total para limpiar estados de memoria:
+                // location.reload(); 
+            }, 2000);
 		}
 
-		function uploadSingleFile(file, author, prefix) {
+		async function uploadSingleFile(file, author, prefix) {
 			return new Promise((resolve, reject) => {
 				const reader = new FileReader();
 				reader.onload = function(e) {
-					const nombreFormateado = `${prefix}-${file.name.replace(/\s+/g, '_')}`;
-					fetch(SCRIPT_URL, {
-						method: "POST",
-						mode: 'no-cors',
-						body: JSON.stringify({
-							image: e.target.result,
-							fileName: nombreFormateado,
-							author: author
-						})
-					}).then(() => resolve()).catch(err => reject(err));
+					const img = new Image();
+					img.onload = function() {
+						// Configurar tamaño máximo (ej. 1200px)
+						const MAX_WIDTH = 1200;
+						let width = img.width;
+						let height = img.height;
+
+						if (width > MAX_WIDTH) {
+							height *= MAX_WIDTH / width;
+							width = MAX_WIDTH;
+						}
+
+						const canvas = document.createElement('canvas');
+						canvas.width = width;
+						canvas.height = height;
+						const ctx = canvas.getContext('2d');
+						ctx.drawImage(img, 0, 0, width, height);
+
+						// Convertir a JPEG con calidad 0.7 para ahorrar espacio
+						const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+						const nombreFormateado = `${prefix}-${file.name.split('.')[0]}.jpg`;
+
+						fetch(SCRIPT_URL, {
+							method: "POST",
+							mode: 'no-cors',
+							body: JSON.stringify({
+								image: dataUrl,
+								fileName: nombreFormateado,
+								author: author
+							})
+						}).then(() => resolve()).catch(err => reject(err));
+					};
+					img.src = e.target.result;
 				};
-				reader.onerror = reject;
 				reader.readAsDataURL(file);
 			});
 		}

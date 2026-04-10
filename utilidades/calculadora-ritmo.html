@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Running con Mapa</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
+        .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 1100px; }
+        
+        .card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); flex: 1; min-width: 300px; max-width: 400px; height: fit-content; }
+        #map { height: 500px; flex: 2; min-width: 350px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 2px solid white; }
+        
+        h2 { color: #1a73e8; text-align: center; margin-top: 0; }
+        .group { margin-bottom: 1rem; padding: 0.8rem; border: 1px solid #eef0f2; border-radius: 8px; background: #fafafa; }
+        label { display: block; font-weight: bold; margin-bottom: 0.4rem; color: #444; font-size: 0.9rem; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
+        input:focus { border-color: #1a73e8; outline: none; background: #fff; }
+        
+        .time-fields { display: flex; gap: 8px; }
+        .time-fields div { flex: 1; }
+        .time-fields label { font-size: 0.75rem; color: #777; }
+        
+        .btn-clear { width: 100%; background: #ea4335; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s; margin-top: 10px; }
+        .btn-clear:hover { background: #d33426; }
+        
+        .instructions { font-size: 0.85rem; color: #666; margin-top: 15px; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>Calculadora de Running con Mapa</h2>
+        
+        <div class="group">
+            <label>Distancia (km)</label>
+            <input type="number" id="dist" placeholder="Calculado desde el mapa..." step="0.01">
+        </div>
+
+        <div class="group">
+            <label>Ritmo (min/km)</label>
+            <div class="time-fields">
+                <div><label>Min</label><input type="number" id="p_min" placeholder="4"></div>
+                <div><label>Seg</label><input type="number" id="p_sec" placeholder="30"></div>
+            </div>
+        </div>
+
+        <div class="group">
+            <label>Tiempo Total</label>
+            <div class="time-fields">
+                <div><label>H</label><input type="number" id="t_h" placeholder="0"></div>
+                <div><label>M</label><input type="number" id="t_m" placeholder="45"></div>
+                <div><label>S</label><input type="number" id="t_s" placeholder="0"></div>
+            </div>
+        </div>
+
+        <button class="btn-clear" onclick="clearAll()">Reiniciar Todo</button>
+        
+        <div class="instructions">
+            <strong>Instrucciones:</strong><br>
+            1. Haz clic derecho en el mapa para marcar el <b>inicio</b>.<br>
+            2. Haz clic derecho en otro punto para el <b>final</b>.<br>
+            3. Arrastra los puntos para ajustar la ruta.<br>
+            4. La distancia se actualizará sola.
+        </div>
+    </div>
+
+    <div id="map"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+<script>
+    // --- LÓGICA DEL MAPA ---
+    const map = L.map('map').setView([40.4167, -3.7037], 13); // Centrado en Madrid por defecto
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const control = L.Routing.control({
+        waypoints: [],
+        routeWhileDragging: true,
+        language: 'es',
+        show: false, // Oculta el panel de texto con instrucciones de giro
+        createMarker: function(i, wp, n) {
+            return L.marker(wp.latLng, { draggable: true });
+        }
+    }).addTo(map);
+
+    // Añadir puntos con clic derecho (contextmenu)
+    map.on('contextmenu', function(e) {
+        const waypoints = control.getWaypoints();
+        const nextWaypoint = waypoints.findIndex(wp => !wp.latLng);
+        
+        if (nextWaypoint !== -1) {
+            control.spliceWaypoints(nextWaypoint, 1, e.latlng);
+        } else {
+            control.spliceWaypoints(waypoints.length, 0, e.latlng);
+        }
+    });
+
+    // Escuchar cuando la ruta cambia para actualizar la distancia
+    control.on('routesfound', function(e) {
+        const routes = e.routes;
+        const distanceInMeters = routes[0].summary.totalDistance;
+        const distanceInKm = (distanceInMeters / 1000).toFixed(2);
+        
+        document.getElementById('dist').value = distanceInKm;
+        calculate(); // Disparar el cálculo de tiempo/ritmo
+    });
+
+    // --- LÓGICA DE LA CALCULADORA ---
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => input.addEventListener('input', calculate));
+
+    function calculate() {
+        const d = parseFloat(document.getElementById('dist').value);
+        const pm = parseFloat(document.getElementById('p_min').value) || 0;
+        const ps = parseFloat(document.getElementById('p_sec').value) || 0;
+        const paceInSec = (pm * 60) + ps;
+
+        const th = parseFloat(document.getElementById('t_h').value) || 0;
+        const tm = parseFloat(document.getElementById('t_m').value) || 0;
+        const ts = parseFloat(document.getElementById('t_s').value) || 0;
+        const totalTimeInSec = (th * 3600) + (tm * 60) + ts;
+
+        const activeId = document.activeElement.id;
+
+        // Si tenemos Distancia y Ritmo -> Calculamos Tiempo
+        if (d > 0 && paceInSec > 0 && (activeId.startsWith('p') || activeId === 'dist')) {
+            const resTime = d * paceInSec;
+            document.getElementById('t_h').value = Math.floor(resTime / 3600);
+            document.getElementById('t_m').value = Math.floor((resTime % 3600) / 60);
+            document.getElementById('t_s').value = Math.floor(resTime % 60);
+        } 
+        // Si tenemos Distancia y Tiempo -> Calculamos Ritmo
+        else if (d > 0 && totalTimeInSec > 0 && (activeId.startsWith('t') || activeId === 'dist')) {
+            const resPace = totalTimeInSec / d;
+            document.getElementById('p_min').value = Math.floor(resPace / 60);
+            document.getElementById('p_sec').value = Math.floor(resPace % 60);
+        }
+    }
+
+    function clearAll() {
+        inputs.forEach(input => input.value = '');
+        control.setWaypoints([]); // Limpia la ruta del mapa
+    }
+</script>
+
+</body>
+</html>

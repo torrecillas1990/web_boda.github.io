@@ -3,70 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Running con Mapa</title>
+    <title>Calculadora de Running Pro</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
 
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
-        .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 1100px; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
+        .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 1200px; }
         
-        .card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); flex: 1; min-width: 300px; max-width: 400px; height: fit-content; }
-        #map { height: 500px; flex: 2; min-width: 350px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 2px solid white; }
+        /* Tarjeta de controles */
+        .card { background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); flex: 1; min-width: 320px; max-width: 420px; height: fit-content; border: 1px solid #eef0f2; }
+        #map { height: 550px; flex: 2; min-width: 350px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 4px solid white; }
         
-        h2 { color: #1a73e8; text-align: center; margin-top: 0; }
-        .group { margin-bottom: 1rem; padding: 0.8rem; border: 1px solid #eef0f2; border-radius: 8px; background: #fafafa; }
-        label { display: block; font-weight: bold; margin-bottom: 0.4rem; color: #444; font-size: 0.9rem; }
-        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
-        input:focus { border-color: #1a73e8; outline: none; background: #fff; }
+        h2 { color: #2d3436; text-align: center; margin-top: 0; font-size: 1.5rem; border-bottom: 2px solid #f1f3f5; padding-bottom: 10px; }
+        .group { margin-bottom: 1.2rem; padding: 1rem; border: 1px solid #f1f3f5; border-radius: 10px; background: #fcfcfc; }
+        label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #636e72; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .time-fields { display: flex; gap: 8px; }
-        .time-fields div { flex: 1; }
-        .time-fields label { font-size: 0.75rem; color: #777; }
+        input { width: 100%; padding: 10px; border: 2px solid #edf2f7; border-radius: 8px; box-sizing: border-box; font-size: 1.1rem; transition: all 0.2s; text-align: center; }
+        input:focus { border-color: #0984e3; outline: none; background: #fff; box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1); }
         
-        .btn-clear { width: 100%; background: #ea4335; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s; margin-top: 10px; }
-        .btn-clear:hover { background: #d33426; }
+        /* Layout de campos múltiples */
+        .multi-fields { display: flex; gap: 8px; }
+        .multi-fields div { flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .sub-label { font-size: 0.65rem; color: #b2bec3; margin-top: 4px; font-weight: bold; }
         
-        .instructions { font-size: 0.85rem; color: #666; margin-top: 15px; line-height: 1.4; }
+        .btn-clear { width: 100%; background: #ff7675; color: white; border: none; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; margin-top: 10px; font-size: 1rem; }
+        .btn-clear:hover { background: #d63031; transform: translateY(-1px); }
+        
+        .instructions { font-size: 0.8rem; color: #636e72; margin-top: 20px; padding: 12px; background: #ebf5ff; border-radius: 8px; border-left: 4px solid #0984e3; line-height: 1.4; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="card">
-        <h2>Calculadora de Running con Mapa</h2>
+        <h2>Running Calculator</h2>
         
         <div class="group">
-            <label>Distancia (km)</label>
-            <input type="number" id="dist" placeholder="Calculado desde el mapa..." step="0.01">
-        </div>
-
-        <div class="group">
-            <label>Ritmo (min/km)</label>
-            <div class="time-fields">
-                <div><label>Min</label><input type="number" id="p_min" placeholder="4"></div>
-                <div><label>Seg</label><input type="number" id="p_sec" placeholder="30"></div>
+            <label>Distancia Recorrida</label>
+            <div class="multi-fields">
+                <div>
+                    <input type="number" id="dist_km" placeholder="0" min="0">
+                    <span class="sub-label">KM</span>
+                </div>
+                <div>
+                    <input type="number" id="dist_m" placeholder="0" min="0" max="999">
+                    <span class="sub-label">METROS</span>
+                </div>
             </div>
         </div>
 
         <div class="group">
-            <label>Tiempo Total</label>
-            <div class="time-fields">
-                <div><label>H</label><input type="number" id="t_h" placeholder="0"></div>
-                <div><label>M</label><input type="number" id="t_m" placeholder="45"></div>
-                <div><label>S</label><input type="number" id="t_s" placeholder="0"></div>
+            <label>Ritmo Medio (min/km)</label>
+            <div class="multi-fields">
+                <div>
+                    <input type="number" id="p_min" placeholder="4" min="0">
+                    <span class="sub-label">MIN</span>
+                </div>
+                <div>
+                    <input type="number" id="p_sec" placeholder="30" min="0" max="59">
+                    <span class="sub-label">SEG</span>
+                </div>
             </div>
         </div>
 
-        <button class="btn-clear" onclick="clearAll()">Reiniciar Todo</button>
+        <div class="group">
+            <label>Tiempo Final</label>
+            <div class="multi-fields">
+                <div>
+                    <input type="number" id="t_h" placeholder="0" min="0">
+                    <span class="sub-label">HORAS</span>
+                </div>
+                <div>
+                    <input type="number" id="t_m" placeholder="45" min="0" max="59">
+                    <span class="sub-label">MIN</span>
+                </div>
+                <div>
+                    <input type="number" id="t_s" placeholder="0" min="0" max="59">
+                    <span class="sub-label">SEG</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-clear" onclick="clearAll()">Reiniciar Datos</button>
         
         <div class="instructions">
-            <strong>Instrucciones:</strong><br>
-            1. Haz clic derecho en el mapa para marcar el <b>inicio</b>.<br>
-            2. Haz clic derecho en otro punto para el <b>final</b>.<br>
-            3. Arrastra los puntos para ajustar la ruta.<br>
-            4. La distancia se actualizará sola.
+            💡 <b>Tip:</b> Haz <u>clic derecho</u> en el mapa para añadir puntos y crear tu ruta. La distancia se dividirá automáticamente en Km y Metros.
         </div>
     </div>
 
@@ -77,80 +100,91 @@
 <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 
 <script>
-    // --- LÓGICA DEL MAPA ---
-    const map = L.map('map').setView([40.4167, -3.7037], 13); // Centrado en Madrid por defecto
+    // Inicializar Mapa
+    const map = L.map('map').setView([40.4167, -3.7037], 13); // Madrid por defecto
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
+        attribution: '© OpenStreetMap'
     }).addTo(map);
 
+    // Control de Rutas
     const control = L.Routing.control({
         waypoints: [],
         routeWhileDragging: true,
-        language: 'es',
-        show: false, // Oculta el panel de texto con instrucciones de giro
-        createMarker: function(i, wp, n) {
+        show: false,
+        createMarker: function(i, wp) {
             return L.marker(wp.latLng, { draggable: true });
         }
     }).addTo(map);
 
-    // Añadir puntos con clic derecho (contextmenu)
+    // Añadir puntos con clic derecho
     map.on('contextmenu', function(e) {
         const waypoints = control.getWaypoints();
-        const nextWaypoint = waypoints.findIndex(wp => !wp.latLng);
-        
-        if (nextWaypoint !== -1) {
-            control.spliceWaypoints(nextWaypoint, 1, e.latlng);
-        } else {
-            control.spliceWaypoints(waypoints.length, 0, e.latlng);
-        }
+        const next = waypoints.findIndex(wp => !wp.latLng);
+        if (next !== -1) control.spliceWaypoints(next, 1, e.latlng);
+        else control.spliceWaypoints(waypoints.length, 0, e.latlng);
     });
 
-    // Escuchar cuando la ruta cambia para actualizar la distancia
+    // Evento cuando se calcula una ruta en el mapa
     control.on('routesfound', function(e) {
-        const routes = e.routes;
-        const distanceInMeters = routes[0].summary.totalDistance;
-        const distanceInKm = (distanceInMeters / 1000).toFixed(2);
+        const totalMeters = e.routes[0].summary.totalDistance;
         
-        document.getElementById('dist').value = distanceInKm;
-        calculate(); // Disparar el cálculo de tiempo/ritmo
+        // Dividir metros en Km y M
+        const km = Math.floor(totalMeters / 1000);
+        const m = Math.round(totalMeters % 1000);
+        
+        document.getElementById('dist_km').value = km;
+        document.getElementById('dist_m').value = m;
+        
+        autoCalculate('dist'); 
     });
 
-    // --- LÓGICA DE LA CALCULADORA ---
-    const inputs = document.querySelectorAll('input');
-    inputs.forEach(input => input.addEventListener('input', calculate));
+    // Lógica de la Calculadora
+    const allInputs = document.querySelectorAll('input');
+    allInputs.forEach(input => {
+        input.addEventListener('input', () => {
+            const type = input.id.split('_')[0]; // Identifica si es dist, p (pace) o t (time)
+            autoCalculate(type);
+        });
+    });
 
-    function calculate() {
-        const d = parseFloat(document.getElementById('dist').value);
+    function autoCalculate(lastChangedType) {
+        // 1. Obtener Distancia Total en km
+        const km = parseFloat(document.getElementById('dist_km').value) || 0;
+        const m = parseFloat(document.getElementById('dist_m').value) || 0;
+        const totalDist = km + (m / 1000);
+        
+        // 2. Obtener Ritmo en segundos por km
         const pm = parseFloat(document.getElementById('p_min').value) || 0;
         const ps = parseFloat(document.getElementById('p_sec').value) || 0;
         const paceInSec = (pm * 60) + ps;
 
+        // 3. Obtener Tiempo Total en segundos
         const th = parseFloat(document.getElementById('t_h').value) || 0;
         const tm = parseFloat(document.getElementById('t_m').value) || 0;
         const ts = parseFloat(document.getElementById('t_s').value) || 0;
         const totalTimeInSec = (th * 3600) + (tm * 60) + ts;
 
-        const activeId = document.activeElement.id;
-
-        // Si tenemos Distancia y Ritmo -> Calculamos Tiempo
-        if (d > 0 && paceInSec > 0 && (activeId.startsWith('p') || activeId === 'dist')) {
-            const resTime = d * paceInSec;
-            document.getElementById('t_h').value = Math.floor(resTime / 3600);
-            document.getElementById('t_m').value = Math.floor((resTime % 3600) / 60);
-            document.getElementById('t_s').value = Math.floor(resTime % 60);
+        // --- LÓGICA DE DECISIÓN ---
+        
+        // Si cambiamos Distancia o Ritmo -> Calculamos TIEMPO
+        if (lastChangedType !== 't' && totalDist > 0 && paceInSec > 0) {
+            const resTime = totalDist * paceInSec;
+            document.getElementById('t_h').value = Math.floor(resTime / 3600) || 0;
+            document.getElementById('t_m').value = Math.floor((resTime % 3600) / 60) || 0;
+            document.getElementById('t_s').value = Math.round(resTime % 60) || 0;
         } 
-        // Si tenemos Distancia y Tiempo -> Calculamos Ritmo
-        else if (d > 0 && totalTimeInSec > 0 && (activeId.startsWith('t') || activeId === 'dist')) {
-            const resPace = totalTimeInSec / d;
-            document.getElementById('p_min').value = Math.floor(resPace / 60);
-            document.getElementById('p_sec').value = Math.floor(resPace % 60);
+        // Si cambiamos Tiempo -> Calculamos RITMO (asumiendo que hay distancia)
+        else if (lastChangedType === 't' && totalDist > 0 && totalTimeInSec > 0) {
+            const resPace = totalTimeInSec / totalDist;
+            document.getElementById('p_min').value = Math.floor(resPace / 60) || 0;
+            document.getElementById('p_sec').value = Math.round(resPace % 60) || 0;
         }
     }
 
     function clearAll() {
-        inputs.forEach(input => input.value = '');
-        control.setWaypoints([]); // Limpia la ruta del mapa
+        allInputs.forEach(input => input.value = '');
+        control.setWaypoints([]);
     }
 </script>
 

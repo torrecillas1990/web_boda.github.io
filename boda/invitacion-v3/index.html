@@ -194,7 +194,7 @@
         </div>
     </div>
 
-    <audio id="miMusica" loop src="musica/0_la_esperanza_de_maria.mp3"></audio>
+    <audio id="miMusica" loop src="../recursos/musica/0_la_esperanza_de_maria.mp3"></audio>
 
     <div id="bg-sticky-container"></div>
     <div id="watermark"></div>
@@ -206,7 +206,7 @@
         </div>
 
         <div class="section-container" id="sec-ceremonia">
-            <img src="fotos/foto1.jpeg" class="foto-real">
+            <img src="../recursos/fotos/foto1.jpeg" class="foto-real">
             <div class="dynamic-section">
                 <h2>La Ceremonia</h2>
                 <p>Parroquia Arciprestal de la Inmaculada Concepción</p>
@@ -215,7 +215,7 @@
         </div>
 
         <div class="section-container" id="sec-celebracion">
-            <img src="fotos/foto2.jpeg" class="foto-real">
+            <img src="../recursos/fotos/foto2.jpeg" class="foto-real">
             <div class="dynamic-section">
                 <h2>La Celebración</h2>
                 <p>Finca Victoria Garden</p>
@@ -224,7 +224,7 @@
         </div>
 		
 		<div class="section-container" id="sec-cuestionario">
-            <img src="fotos/foto3.jpeg" class="foto-real">
+            <img src="../recursos/fotos/foto3.jpeg" class="foto-real">
             <div class="dynamic-section">
 				<h2>¿Nos acompañas?</h2>
 				<p>Tu confirmación nos ayuda a organizar el día perfecto.</p>
@@ -233,7 +233,7 @@
 		</div>
 		
         <div class="section-container" id="sec-regalo">
-            <img src="fotos/foto4.jpeg" class="foto-real">
+            <img src="../recursos/fotos/foto4.jpeg" class="foto-real">
             <div class="dynamic-section">
                 <h2>¿Nos echas una mano?</h2>
                 <p>Si quieres tener un detalle con nosotros, te dejamos nuestra cuenta:</p>
@@ -243,7 +243,7 @@
         </div>
 		
 		<div class="section-container" id="sec-musica">
-            <img src="fotos/foto5.jpeg" class="foto-real">
+            <img src="../recursos/fotos/foto5.jpeg" class="foto-real">
             <div class="dynamic-section">
 				<h2 style="font-size: 1.8rem;">¡Tú pones la música! 🎶</h2>
 				<p style="font-size: 1rem;">Queremos que la pista de baile eche humo. Añade tus canciones favoritas a nuestra lista oficial de Spotify.</p>
@@ -281,21 +281,21 @@
     </div>
 
     <script>
-        const totalFrames = 78;
+        const totalFrames = 93;
         const frames = [];
         const bgContainer = document.getElementById('bg-sticky-container');
         const loader = document.getElementById('loader');
         const progressFill = document.getElementById('progress-fill');
         const miMusica = document.getElementById('miMusica');
 		let isHorizontal = window.innerWidth > window.innerHeight;
-		let folder = isHorizontal ? 'frames_1' : 'frames_3'; // frames_1 para PC, frames_3 para móvil
+		let folder = isHorizontal ? '../recursos/frames_2' : '../recursos/frames_2'; // frames_2 siempre
 
         // Precarga de imágenes
 		function preload() {
 			let loaded = 0;
 			// Detectar orientación al cargar
 			isHorizontal = window.innerWidth > window.innerHeight;
-			folder = isHorizontal ? 'frames_1' : 'frames_3';
+			folder = isHorizontal ? '../recursos/frames_2' : '../recursos/frames_2'; // frames_2 siempre
 			
 			// Limpiamos el array de frames por si acaso hay un re-load
 			frames.length = 0; 

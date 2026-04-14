@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Nutricional Mercadona</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 Contador de Calorías</h1>
+        
+        <div class="search-box">
+            <input type="text" id="productSearch" placeholder="Busca un producto (ej: Hummus, Avena...)">
+            <ul id="resultsList"></ul>
+        </div>
+
+        <div class="diary">
+            <h2>Tu Registro de Hoy</h2>
+            <ul id="diaryList"></ul>
+            <div class="total">
+                <strong>Total Calorías: <span id="totalCalories">0</span> kcal</strong>
+            </div>
+            <button id="clearBtn">Vaciar Lista</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

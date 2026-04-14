@@ -18,7 +18,7 @@ body {
 
 h1 { color: #00703c; text-align: center; } /* Verde Mercadona */
 
-.search-box { position: relative; margin-bottom: 20px; }
+.search-box { position: relative; }
 
 input {
     width: 100%;
@@ -29,24 +29,27 @@ input {
 }
 
 #resultsList {
-    list-style: none;
-    padding: 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
     background: white;
     border: 1px solid #ddd;
-    position: absolute;
-    width: 100%;
-    z-index: 10;
+    z-index: 99;
+    list-style: none;
+    padding: 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     max-height: 200px;
     overflow-y: auto;
 }
 
 #resultsList li {
     padding: 10px;
-    cursor: pointer;
     border-bottom: 1px solid #eee;
+    cursor: pointer;
 }
 
-#resultsList li:hover { background-color: #f0fdf4; }
+#resultsList li:hover { background: #f9f9f9; }
 
 .diary { margin-top: 30px; border-top: 2px solid #00703c; padding-top: 15px; }
 
@@ -74,4 +77,106 @@ input {
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
+}
+
+/* Añade esto a tu style.css */
+.chart-container {
+    margin-top: 20px;
+    height: 250px; /* Importante para Chart.js */
+}
+
+.delete-item {
+    background: #ffeded;
+    color: #e74c3c;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.delete-item:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+.diary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+}
+
+.diary-item small {
+    color: #666;
+    display: block;
+    margin-top: 2px;
+}
+
+.delete-btn {
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 2px 8px;
+}
+
+.main-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.left-column, .right-column {
+    flex: 1; /* Ambas columnas ocupan el mismo espacio */
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* Estilo para el catálogo de la derecha */
+.catalog-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+    max-height: 500px;
+    overflow-y: auto; /* Scroll si hay muchos productos */
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.catalog-list li {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    justify-content: space-between;
+}
+
+.catalog-list li:hover {
+    background-color: #f0fdf4;
+    color: #00a650;
+}
+
+/* Ajuste del modal integrado */
+#quantityModal {
+    background: #eefdf3;
+    border: 2px solid #00a650;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.modal-controls {
+    display: flex;
+    gap: 8px;
 }

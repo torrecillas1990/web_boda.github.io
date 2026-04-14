@@ -7,29 +7,49 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>🛒 Contador de Calorías</h1>
-        
-        <div class="search-box">
-            <input type="text" id="productSearch" placeholder="Busca un producto (ej: Hummus, Avena...)">
-            <ul id="resultsList"></ul>
-        </div>
 
-        <div class="diary">
-            <h2>Tu Registro de Hoy</h2>
-            <ul id="diaryList"></ul>
-            <div class="total">
-                <strong>Total Calorías: <span id="totalCalories">0</span> kcal</strong>
-            </div>
-            <button id="clearBtn">Vaciar Lista</button>
-        </div>
-		
-		<div class="chart-container" style="position: relative; height:250px; width:100%">
-			<canvas id="macroChart"></canvas>
+		<h1>🛒 Contador de Calorías Pro</h1>
+
+		<div class="main-layout">
+			<div class="left-column">
+				<div class="diary">
+					<h2>Tu Registro de Hoy</h2>
+					<ul id="diaryList"></ul>
+					<div class="total">
+						<strong>Total: <span id="totalCalories">0</span> kcal</strong>
+					</div>
+					<button id="clearBtn">Vaciar Lista</button>
+					<button id="downloadBtn" style="background-color: #3498db; margin-top: 10px;">Descargar .txt</button>
+				</div>
+
+				<div class="chart-container">
+					<canvas id="macroChart"></canvas>
+				</div>
+			</div>
+
+			<div class="right-column">
+				<h2>Productos Disponibles</h2>
+				<div class="search-box">
+					<input type="text" id="productSearch" placeholder="Filtrar catálogo...">
+				</div>
+				
+				<div id="quantityModal" style="display: none;">
+					<p id="modalProductName"></p>
+					<div class="modal-controls">
+						<input type="number" id="quantityInput" value="100">
+						<button id="confirmBtn">Añadir</button>
+						<button id="cancelBtn">✕</button>
+					</div>
+				</div>
+
+				<ul id="fullProductList" class="catalog-list">
+					</ul>
+			</div>
 		</div>
 
-    </div>
-    <script src="script.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="datos.js"></script> 
+	<script src="script.js"></script>
 </body>
 </html>

@@ -103,15 +103,47 @@ document.getElementById('clearBtn').onclick = () => {
     if(confirm("¿Borrar todo?")) { registroDiario = []; actualizarApp(); }
 };
 
-// Descargar TXT
+// Función para generar el nombre de archivo AAAAMMDD.js
+function obtenerNombreArchivo() {
+    const ahora = new Date();
+    const año = ahora.getFullYear();
+    const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+    const dia = String(ahora.getDate()).padStart(2, '0');
+    return `${año}${mes}${dia}.js`;
+}
+
 document.getElementById('downloadBtn').onclick = () => {
-    let txt = `DIARIO NUTRICIONAL\nTotal: ${totalCalDisplay.textContent} kcal\n\n`;
-    registroDiario.forEach(p => txt += `- ${p.nombre}: ${p.kcal} kcal\n`);
-    const blob = new Blob([txt], {type: 'text/plain'});
+    if (registroDiario.length === 0) {
+        alert("No hay datos para guardar hoy.");
+        return;
+    }
+
+    const nombreArchivo = obtenerNombreArchivo();
+    
+    // Creamos el contenido en formato JS
+    let contenidoJS = `// Registro Nutricional del ${new Date().toLocaleDateString()}\n`;
+    contenidoJS += `const diario_${nombreArchivo.replace('.js', '')} = `;
+    contenidoJS += JSON.stringify({
+        fecha: new Date().toISOString(),
+        totalKcal: totalCalDisplay.textContent,
+        macros: {
+            proteinas: macroChart.data.datasets[0].data[0],
+            grasas: macroChart.data.datasets[0].data[1],
+            carbohidratos: macroChart.data.datasets[0].data[2]
+        },
+        alimentos: registroDiario
+    }, null, 4);
+    contenidoJS += `;`;
+
+    // Crear el "dispositivo" de descarga
+    const blob = new Blob([contenidoJS], { type: 'application/javascript' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = "dieta.txt";
+    a.download = nombreArchivo; // Esto pondrá automáticamente 20260414.js (o la fecha de hoy)
     a.click();
+    
+    // Feedback visual
+    alert(`Archivo preparado: ${nombreArchivo}\nGuárdalo en tu carpeta ./diario`);
 };
 
 // Inicio

@@ -1,182 +1,112 @@
+:root {
+    --primary-color: #00a650;
+    --secondary-color: #2e7d32;
+    --bg-color: #f0f2f5;
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    display: flex;
-    justify-content: center;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
     padding: 20px;
 }
 
 .container {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 500px;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
-h1 { color: #00703c; text-align: center; } /* Verde Mercadona */
-
-.search-box { position: relative; }
-
-input {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box;
-}
-
-#resultsList {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: white;
-    border: 1px solid #ddd;
-    z-index: 99;
-    list-style: none;
-    padding: 0;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-#resultsList li {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-}
-
-#resultsList li:hover { background: #f9f9f9; }
-
-.diary { margin-top: 30px; border-top: 2px solid #00703c; padding-top: 15px; }
-
-#diaryList { list-style: none; padding: 0; }
-
-#diaryList li {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px dashed #ccc;
-}
-
-.total {
-    font-size: 1.2rem;
-    margin-top: 20px;
-    text-align: right;
-    color: #ff6600; /* Naranja */
-}
-
-#clearBtn {
-    background: #e74c3c;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-/* Añade esto a tu style.css */
-.chart-container {
-    margin-top: 20px;
-    height: 250px; /* Importante para Chart.js */
-}
-
-.delete-item {
-    background: #ffeded;
-    color: #e74c3c;
-    border: none;
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    cursor: pointer;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.2s;
-}
-
-.delete-item:hover {
-    background: #e74c3c;
-    color: white;
-}
-
-.diary-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    align-items: center;
-}
-
-.diary-item small {
-    color: #666;
-    display: block;
-    margin-top: 2px;
-}
-
-.delete-btn {
-    background: #ff4444;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    padding: 2px 8px;
-}
+h1 { text-align: center; color: var(--primary-color); margin-bottom: 30px; }
+h2 { font-size: 1.2rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 
 .main-layout {
     display: flex;
-    gap: 30px;
-    align-items: flex-start;
+    gap: 25px;
+    flex-wrap: wrap; /* Para que sea responsive en móviles */
 }
 
 .left-column, .right-column {
-    flex: 1; /* Ambas columnas ocupan el mismo espacio */
-    background: #fff;
+    flex: 1;
+    min-width: 350px;
+    background: white;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* Estilo para el catálogo de la derecha */
+/* Buscador y Catálogo */
+.search-box input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
 .catalog-list {
     list-style: none;
     padding: 0;
-    margin-top: 15px;
-    max-height: 500px;
-    overflow-y: auto; /* Scroll si hay muchos productos */
-    border: 1px solid #eee;
-    border-radius: 8px;
+    max-height: 450px;
+    overflow-y: auto;
+    border: 1px solid #f0f0f0;
 }
 
 .catalog-list li {
     padding: 12px;
     border-bottom: 1px solid #eee;
     cursor: pointer;
-    transition: 0.2s;
     display: flex;
     justify-content: space-between;
+    transition: background 0.2s;
 }
 
-.catalog-list li:hover {
-    background-color: #f0fdf4;
-    color: #00a650;
-}
+.catalog-list li:hover { background: #f0fdf4; }
 
-/* Ajuste del modal integrado */
+/* Modal de cantidad integrado */
 #quantityModal {
-    background: #eefdf3;
-    border: 2px solid #00a650;
+    background: #e8f5e9;
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 15px;
+    border: 1px solid var(--primary-color);
 }
 
-.modal-controls {
+.modal-controls { display: flex; gap: 10px; }
+.modal-controls input { width: 80px; padding: 5px; }
+
+/* Registro Diario */
+#diaryList { list-style: none; padding: 0; }
+.diary-item {
     display: flex;
-    gap: 8px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed #ddd;
 }
+
+.delete-btn {
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.total { font-size: 1.2rem; margin: 20px 0; text-align: right; }
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+}
+
+#clearBtn { background-color: #e74c3c; }
+#confirmBtn { background-color: var(--primary-color); }
+
+.chart-container { margin-top: 25px; height: 250px; }

@@ -3,50 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Grasa Corporal</title>
+    <title>Calculadora Corporal Pro</title>
+    <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
 </head>
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/" class="logo">VitalStats</a>
+        
+        <button class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+
+        <ul class="nav-links">
+            <li><a href="../index.html">Inicio</a></li>
+            <li><a href="../contador-calorias/index.html">Calorías</a></li>
+            <li><a href="../calculadora-grasa-corporal/index.html">Grasa Corporal</a></li>
+            <li><a href="../calculadora-ritmo/index.html">Ritmo Runner</a></li>
+            <li><a href="../registro-premium/index.html" class="btn-nav">Premium</a></li>
+        </ul>
+    </div>
+</nav>
 <body>
     <div class="container">
-        <h1>Calculadora de Grasa %</h1>
+        <h1>Análisis Corporal Completo</h1>
         <form id="fat-form">
-            <div class="input-group">
-                <label>Género</label>
-                <select id="gender">
-                    <option value="male">Hombre</option>
-                    <option value="female">Mujer</option>
-                </select>
+            <div class="grid-inputs">
+                <div class="input-group">
+                    <label>Género</label>
+                    <select id="gender">
+                        <option value="male">Hombre</option>
+                        <option value="female">Mujer</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Edad</label>
+                    <input type="number" id="age" placeholder="Años" required>
+                </div>
+                <div class="input-group">
+                    <label>Peso (kg)</label>
+                    <input type="number" id="weight" placeholder="Ej: 75" step="0.1" required>
+                </div>
+                <div class="input-group">
+                    <label>Altura (cm)</label>
+                    <input type="number" id="height" placeholder="Ej: 175" required>
+                </div>
+                <div class="input-group">
+                    <label>Cuello (cm)</label>
+                    <input type="number" id="neck" placeholder="Ej: 38" required>
+                </div>
+                <div class="input-group">
+                    <label>Cintura (cm)</label>
+                    <input type="number" id="waist" placeholder="Ej: 85" required>
+                </div>
+                <div id="hip-container" class="input-group hidden">
+                    <label>Cadera (cm)</label>
+                    <input type="number" id="hip" placeholder="Ej: 95">
+                </div>
+                <div class="input-group full-width">
+                    <label>Nivel de Actividad</label>
+                    <select id="activity">
+                        <option value="1.2">Sedentario (poco ejercicio)</option>
+                        <option value="1.375">Ligero (1-3 días/sem)</option>
+                        <option value="1.55">Moderado (3-5 días/sem)</option>
+                        <option value="1.725">Fuerte (6-7 días/sem)</option>
+                    </select>
+                </div>
             </div>
             
-            <div class="input-group">
-                <label>Altura (cm)</label>
-                <input type="number" id="height" placeholder="Ej: 175" required>
-            </div>
-
-            <div class="input-group">
-                <label>Cuello (cm)</label>
-                <input type="number" id="neck" placeholder="Ej: 38" required>
-            </div>
-
-            <div class="input-group">
-                <label>Cintura (cm)</label>
-                <input type="number" id="waist" placeholder="Ej: 85" required>
-            </div>
-
-            <div id="hip-container" class="input-group hidden">
-                <label>Cadera (cm)</label>
-                <input type="number" id="hip" placeholder="Ej: 95">
-            </div>
-
-            <button type="button" onclick="calculateFat()">Calcular</button>
+            <button type="button" onclick="calculateAll()">Calcular Composición</button>
+			<button type="button" onclick="clearData()" style="background:#e74c3c; margin-top:10px;">Borrar Datos Guardados</button>
         </form>
 
         <div id="result-container" class="hidden">
-            <h3>Tu porcentaje de grasa es:</h3>
-            <p id="fat-percentage">0%</p>
-            <p id="fat-category"></p>
+            <div class="result-card">
+                <h3>Composición Corporal</h3>
+                <div class="stats-grid">
+                    <div><small>Grasa Corporal</small><p id="res-fat">0%</p></div>
+                    <div><small>Masa Magra</small><p id="res-lean">0 kg</p></div>
+                    <div><small>Grasa Total</small><p id="res-fat-kg">0 kg</p></div>
+                    <div><small>IMC</small><p id="res-imc">0</p></div>
+                </div>
+            </div>
+
+            <div class="result-card calories">
+                <h3>Calorías Diarias (Objetivos)</h3>
+                <div class="stats-grid">
+                    <div class="target-def"><small>Definición (-500)</small><p id="cal-lose">0</p></div>
+                    <div class="target-maint"><small>Mantenimiento</small><p id="cal-maint">0</p></div>
+                    <div class="target-gain"><small>Volumen (+500)</small><p id="cal-gain">0</p></div>
+                </div>
+            </div>
         </div>
     </div>
+    <script src="../script.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

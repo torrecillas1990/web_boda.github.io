@@ -39,19 +39,25 @@ const proyectos = [
         categoria: 'utilidades',
         titulo: 'Calculadora de Ritmo',
         descripcion: 'Herramienta para el cálculo de tiempos de carrera y ritmos por kilómetro para corredores.',
-        ruta: 'utilidades/calculadora-ritmo/index.html'
+        ruta: 'deportiva/calculadora-ritmo/index.html'
+    },
+    {
+        categoria: 'deportiva',
+        titulo: 'Web deportiva',
+        descripcion: 'Web deportiva.',
+        ruta: 'deportiva/index.html'
     },
     {
         categoria: 'utilidades',
         titulo: 'Grasa Corporal',
         descripcion: 'Herramienta para el cálculo de grasa corporal basado en el Método de la Marina de EEUU (Navy Method).',
-        ruta: 'utilidades/calculadora-grasa-corporal/index.html'
+        ruta: 'deportiva/calculadora-grasa-corporal/index.html'
     },
     {
         categoria: 'utilidades',
         titulo: 'Contador de Calorías',
         descripcion: 'Herramienta para base de datos simplificada para productos específicos de Mercadona.',
-        ruta: 'utilidades/contador-calorias/index.html'
+        ruta: 'deportiva/contador-calorias/index.html'
     }
 ];
 

@@ -1,3 +1,14 @@
+// Al inicio de contador-calorias/script.js
+document.addEventListener('DOMContentLoaded', () => {
+    const savedWeight = VitalStats.get('user_weight');
+    const savedFat = VitalStats.get('user_fat');
+
+    if (savedWeight) {
+        console.log(`Peso detectado: ${savedWeight}kg. Ajustando cálculos...`);
+        // Aquí podrías mostrar un mensaje: "Calculando en base a tus 75kg"
+    }
+});
+
 // --- VARIABLES DE ESTADO ---
 // Cargamos el historial completo o un objeto vacío
 let historialNutricional = JSON.parse(localStorage.getItem('historialNutricional')) || {};

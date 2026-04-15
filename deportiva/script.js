@@ -18,3 +18,49 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Objeto global para gestionar el perfil del usuario
+const VitalStats = {
+    // Guardar un dato (ej: peso, grasa, calorias)
+    save: function(key, value) {
+        localStorage.setItem(`vs_${key}`, value);
+    },
+
+    // Recuperar un dato
+    get: function(key) {
+        return localStorage.getItem(`vs_${key}`);
+    },
+
+    // Borrar todo
+    clear: function() {
+        localStorage.clear();
+        location.reload();
+    }
+};
+
+// En /script.js (el general)
+
+function saveToHistory(data) {
+    let historyCount = parseInt(VitalStats.get('history_count') || 0);
+
+    if (historyCount >= 3) {
+        // Si ya llegó al límite, mostramos un aviso elegante
+        alert("Has alcanzado el límite de 3 registros gratuitos. Hazte Premium para guardar todo tu historial.");
+        window.location.href = "../registro-premium/index.html";
+    } else {
+        // Lógica para guardar el registro (aquí podrías guardar un array de resultados)
+        let historial = JSON.parse(VitalStats.get('user_history') || "[]");
+        historial.push({
+            fecha: new Date().toLocaleDateString(),
+            datos: data
+        });
+        
+        VitalStats.save('user_history', JSON.stringify(historial));
+        
+        // Aumentar el contador de uso gratuito
+        historyCount++;
+        VitalStats.save('history_count', historyCount);
+        
+        alert("¡Datos guardados con éxito en tu historial local!");
+    }
+}

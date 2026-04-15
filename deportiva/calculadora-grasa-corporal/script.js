@@ -50,6 +50,18 @@ function calculateAll() {
     const maintenance = bmr * data.activity;
 
     updateUI(fatPercentage, leanMass, fatKg, imc, maintenance);
+
+    const fatPercent = result; // ejemplo
+    const weight = document.getElementById('weight').value;
+
+    // Guardamos en el "cerebro" común
+    VitalStats.save('user_fat', fatPercent);
+    VitalStats.save('user_weight', weight);
+    VitalStats.save('user_gender', document.getElementById('gender').value);
+    
+    alert("Datos guardados. Tu contador de calorías se ha actualizado.");
+	
+    saveToHistory(resultado);
 }
 
 function updateUI(fat, lean, fatKg, imc, maint) {

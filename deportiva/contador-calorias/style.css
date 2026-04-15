@@ -1,112 +1,52 @@
-:root {
-    --primary-color: #00a650;
-    --secondary-color: #2e7d32;
-    --bg-color: #f0f2f5;
-}
-
-body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background-color: var(--bg-color);
-    margin: 0;
-    padding: 20px;
-}
-
-.container {
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-h1 { text-align: center; color: var(--primary-color); margin-bottom: 30px; }
-h2 { font-size: 1.2rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-
-.main-layout {
-    display: flex;
-    gap: 25px;
-    flex-wrap: wrap; /* Para que sea responsive en móviles */
-}
-
-.left-column, .right-column {
-    flex: 1;
-    min-width: 350px;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
-
-/* Buscador y Catálogo */
-.search-box input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box;
-    margin-bottom: 15px;
-}
-
+/* Catálogo de productos */
 .catalog-list {
     list-style: none;
     padding: 0;
-    max-height: 450px;
+    max-height: 500px;
     overflow-y: auto;
-    border: 1px solid #f0f0f0;
+    border: 1px solid #eee;
+    border-radius: 8px;
 }
 
 .catalog-list li {
     padding: 12px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    transition: background 0.2s;
-}
-
-.catalog-list li:hover { background: #f0fdf4; }
-
-/* Modal de cantidad integrado */
-#quantityModal {
-    background: #e8f5e9;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    border: 1px solid var(--primary-color);
-}
-
-.modal-controls { display: flex; gap: 10px; }
-.modal-controls input { width: 80px; padding: 5px; }
-
-/* Registro Diario */
-#diaryList { list-style: none; padding: 0; }
-.diary-item {
+    border-bottom: 1px solid #f9f9f9;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px dashed #ddd;
+    transition: background 0.2s;
 }
 
-.delete-btn {
-    background: #ff4444;
-    color: white;
-    border: none;
-    padding: 2px 8px;
-    border-radius: 4px;
-    cursor: pointer;
+.catalog-list li:hover { background: #f0f7ff; }
+
+/* El Diario (Columna derecha) */
+.diary {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    position: sticky;
+    top: 80px; /* Para que te siga al hacer scroll */
 }
 
-.total { font-size: 1.2rem; margin: 20px 0; text-align: right; }
-
-button {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    color: white;
-    font-weight: bold;
+.total {
+    font-size: 1.2rem;
+    padding: 15px 0;
+    color: #27ae60;
+    text-align: right;
 }
 
-#clearBtn { background-color: #e74c3c; }
-#confirmBtn { background-color: var(--primary-color); }
+/* Modal de cantidad */
+#quantityModal {
+    background: white;
+    padding: 15px;
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
 
-.chart-container { margin-top: 25px; height: 250px; }
+.modal-controls { display: flex; gap: 10px; margin-top: 10px; }
+.modal-controls input { width: 80px; padding: 5px; }
+
+#confirmBtn { background: #27ae60; color: white; padding: 5px 15px; }
+#cancelBtn { background: #e74c3c; color: white; padding: 5px 10px; }

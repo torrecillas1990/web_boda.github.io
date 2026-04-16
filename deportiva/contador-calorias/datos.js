@@ -1,6 +1,10 @@
 // datos.js
 const productosMercadonaBase = [
+    // --- COMIDAS PREPARADAS ---
+    { nombre: "Tabule Oriental Mercadona", kcal: 167, prot: 3.9, grasa: 5.2, carb: 25.4 },
+	
     // --- LÁCTEOS Y PROTEÍNAS ---
+    { nombre: "Yogur Proteínas Natural Mercadona", kcal: 52, prot: 10, grasa: 0.1, carb: 3.1 },
     { nombre: "Yogur Proteínas Arándanos", kcal: 64, prot: 10, grasa: 0.1, carb: 5 },
     { nombre: "Yogur Griego Natural", kcal: 129, prot: 3.9, grasa: 10.8, carb: 3.9 },
     { nombre: "Queso Batido 0%", kcal: 46, prot: 8, grasa: 0.1, carb: 3.5 },
@@ -48,6 +52,7 @@ const productosMercadonaBase = [
     // --- FRUTAS Y VERDURAS ---
     { nombre: "Plátano", kcal: 89, prot: 1.1, grasa: 0.3, carb: 23 },
     { nombre: "Manzana", kcal: 52, prot: 0.3, grasa: 0.2, carb: 14 },
+    { nombre: "Naranja 1 pieza son 150 gramos", kcal: 60, prot: 0.94, grasa: 0.12, carb: 11.75 },
     { nombre: "Aguacate", kcal: 160, prot: 2, grasa: 15, carb: 9 },
     { nombre: "Brócoli Congelado", kcal: 34, prot: 3, grasa: 0.4, carb: 4 },
     { nombre: "Espinacas Frescas", kcal: 23, prot: 2.9, grasa: 0.4, carb: 3.6 },

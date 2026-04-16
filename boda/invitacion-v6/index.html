@@ -18,20 +18,33 @@
 
         html { scroll-behavior: smooth; }
 
-        body::before {
+		body::before {
 			content: "";
 			position: fixed;
+			/* Usamos inset para cubrir todo el viewport */
 			top: 0;
 			left: 0;
-			width: 100%;
-			height: 100%;
-			/* El JS ahora deberá cambiar el fondo de este elemento, no del body */
-			background-image: inherit; 
+			right: 0;
+			bottom: 0;
+			
+			/* Forzamos el tamaño real del viewport para Safari */
+			height: 100vh;
+			height: calc(var(--vh, 1vh) * 100);
+			width: 100vw;
+
+			/* Eliminamos inheritance para evitar que herede tamaños del body */
 			background-position: center;
 			background-size: cover;
 			background-repeat: no-repeat;
+			background-image: var(--bg-image, none);
+			
+			/* El z-index negativo lo mantiene detrás de todo */
 			z-index: -1;
-			will-change: transform;
+			
+			/* Optimización de rendimiento */
+			will-change: background-image;
+			-webkit-transform: translateZ(0);
+			transform: translateZ(0);
 		}
 
         #watermark {
@@ -280,16 +293,15 @@
 			const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 			const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 			
-			// Evitar división por cero
 			if (maxScroll <= 0) return;
 
 			const scrollFraction = scrollTop / maxScroll;
 			const frameIndex = Math.min(totalFrames - 1, Math.max(0, Math.floor(scrollFraction * totalFrames)));
 			
 			if(frames[frameIndex] && frames[frameIndex].complete) {
-				// Usar requestAnimationFrame para asegurar suavidad
 				requestAnimationFrame(() => {
-					document.body.style.setProperty('background-image', "url('" + frames[frameIndex].src + "')");
+					// Cambiamos la variable de CSS en el documento
+					document.documentElement.style.setProperty('--bg-image', `url('${frames[frameIndex].src}')`);
 				});
 			}
 		}

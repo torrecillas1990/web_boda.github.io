@@ -42,7 +42,9 @@
             will-change: background-image;
             /* Suaviza el parpadeo entre frames */
             transition: background-image 0.1s ease-in-out; 
-        }
+			background-attachment: scroll;
+			image-rendering: -webkit-optimize-contrast; /* Mejora nitidez en algunos navegadores */
+		}
 
         #watermark {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -95,7 +97,10 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.6);
             backdrop-filter: blur(8px);
             margin-top: 20px;
-        }
+			/* Evita parpadeos en Safari al usar blur */
+			-webkit-transform: translateZ(0);
+			transform: translateZ(0);
+		}
 
         .foto-real {
             width: 220px; height: 220px;
@@ -304,6 +309,7 @@
             
             if(frames[frameIndex] && frames[frameIndex].complete) {
                 bgContainer.style.backgroundImage = `url('${frames[frameIndex].src}')`;
+                //document.body.style.backgroundImage = `url('${frames[frameIndex].src}')`;
             }
         }
 
@@ -330,12 +336,15 @@
             if(currentOrient !== isHorizontal) location.reload(); // Recarga para ajustar carpeta de frames
         });
 
-        function toggleMenu() {
-            const menu = document.getElementById('side-menu');
-            const overlay = document.getElementById('menu-overlay');
-            const isOpen = menu.classList.toggle('open');
-            overlay.style.display = isOpen ? 'block' : 'none';
-        }
+		function toggleMenu() {
+			const menu = document.getElementById('side-menu');
+			const overlay = document.getElementById('menu-overlay');
+			const isOpen = menu.classList.toggle('open');
+			overlay.style.display = isOpen ? 'block' : 'none';
+		}
+
+		// Añade esta línea al final de tu script para mayor comodidad
+		document.getElementById('menu-overlay').addEventListener('click', toggleMenu);
 
         function toggleMusic() {
             if (miMusica.paused) {

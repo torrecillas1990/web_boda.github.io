@@ -19,22 +19,20 @@
         html { scroll-behavior: smooth; }
 
         body {
-            margin: 0; padding: 0;
-            background-color: #000;
-            color: white;
-            font-family: 'Cormorant Garamond', serif;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            background-repeat: no-repeat;
-            will-change: background-image;
-            transition: background-image 0.15s ease-in-out; 
-            image-rendering: -webkit-optimize-contrast;
-			/* Cambio importante para evitar saltos en móvil */
-			background-attachment: fixed;
+			margin: 0; padding: 0;
+			background-color: #000;
+			color: white;
+			font-family: 'Cormorant Garamond', serif;
+			
+			/* FIX PARA SAFARI */
 			background-position: center;
 			background-size: cover;
-			-webkit-backface-visibility: hidden;
-			backface-visibility: hidden;
+			background-repeat: no-repeat;
+			background-attachment: scroll; /* Cambia fixed por scroll */
+			
+			/* Usar la variable de altura dinámica que ya tienes en el script */
+			min-height: 100vh; 
+			min-height: calc(var(--vh, 1vh) * 100); 
 		}
 
         #watermark {

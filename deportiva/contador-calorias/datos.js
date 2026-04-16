@@ -57,5 +57,8 @@ const productosMercadonaBase = [
     { nombre: "Brócoli Congelado", kcal: 34, prot: 3, grasa: 0.4, carb: 4 },
     { nombre: "Espinacas Frescas", kcal: 23, prot: 2.9, grasa: 0.4, carb: 3.6 },
     { nombre: "Judías Verdes", kcal: 31, prot: 1.8, grasa: 0.2, carb: 7 },
-    { nombre: "Arándanos Frescos", kcal: 57, prot: 0.7, grasa: 0.3, carb: 14 }
+    { nombre: "Arándanos Frescos", kcal: 57, prot: 0.7, grasa: 0.3, carb: 14 },
+	
+	// --- DULCES ---
+    { nombre: "Chocolate con leche", kcal: 523, prot: 5.6, grasa: 28, carb: 59.8 }
 ];

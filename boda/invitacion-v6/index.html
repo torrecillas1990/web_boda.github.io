@@ -2,397 +2,272 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Gemma & Manuel - 24/04/2027</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@300;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Boda | Gemma & Manuel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="../recursos/favicon_2.ico">
-    
     <style>
         :root {
-            --color-oro: #d4af37;
-            --color-vino: #990033;
+            /* PALETA SUAVE Y ELEGANTE */
+            --color-vino-suave: #5d3a3a;   /* Un borgoña desaturado, nada estridente */
+            --color-granate-oscuro: #4b0002;   /* granate oscuro */
+            --color-nude: #f9f6f2;        /* Fondo crema muy relajante */
+            --color-oro: #b89655;         /* Oro más mate */
+            --color-texto: #444444;       /* Gris oscuro, más suave que el negro */
+            --color-blanco: #ffffff;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html { scroll-behavior: smooth; }
 
-		body::before {
-			content: "";
-			position: fixed;
-			/* Usamos inset para cubrir todo el viewport */
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			
-			/* Forzamos el tamaño real del viewport para Safari */
-			height: 100vh;
-			height: calc(var(--vh, 1vh) * 100);
-			width: 100vw;
-
-			/* Eliminamos inheritance para evitar que herede tamaños del body */
-			background-position: center;
-			background-size: cover;
-			background-repeat: no-repeat;
-			background-image: var(--bg-image, none);
-			
-			/* El z-index negativo lo mantiene detrás de todo */
-			z-index: -1;
-			
-			/* Optimización de rendimiento */
-			will-change: background-image;
-			-webkit-transform: translateZ(0);
-			transform: translateZ(0);
-		}
-
-        #watermark {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('../recursos/watermark.jpg'); background-repeat: repeat; 
-            background-size: 150px; opacity: 0.15; z-index: 2; pointer-events: none;
-        }
-
-        /* UI FIJA */
-        #hamburger, #music-btn {
-            position: fixed; top: 25px; z-index: 200;
-            width: 45px; height: 45px;
-            background: rgba(0,0,0,0.6);
-            border-radius: 50%;
-            display: flex; cursor: pointer;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        #hamburger { left: 20px; flex-direction: column; justify-content: center; align-items: center; gap: 5px; }
-        #music-btn { right: 20px; align-items: center; justify-content: center; border-color: var(--color-vino); }
-        .ham-line { width: 22px; height: 2px; background-color: var(--color-oro); border-radius: 2px; }
-
-        /* SECCIONES */
-		.header-img { width: 95%; max-width: 500px; filter: drop-shadow(0 0 20px rgba(0,0,0,1)); }
-		
-        .section-container {
-            min-height: 100dvh;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            padding: 60px 20px;
-            box-sizing: border-box;
-            position: relative; z-index: 10;
-			transition: opacity 0.6s ease-out;
-		}
-		
-        .dynamic-section {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 40px 30px;
-            border-radius: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            max-width: 400px; width: 90%;
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--color-texto);
+            background-color: var(--color-nude); /* Fondo principal claro */
+            line-height: 1.6;
             text-align: center;
-            backdrop-filter: blur(10px);
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
+        }
+		
+		.header-img { width: 95%; max-width: 600px; filter: drop-shadow(0 0 20px rgba(0,0,0,1)); }
+		
+        /* Navegación */
+        nav {
+            padding: 20px;
+            background: var(--color-granate-oscuro);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: var(--color-blanco);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: 0.3s;
+        }
+        nav a:hover { color: var(--color-oro); }
+
+        /* Hero Section */
+        .hero {
+            height: 90vh; /* Un poco menos de pantalla completa para invitar a bajar */
+            background: linear-gradient(rgba(249, 246, 242, 0.4), rgba(249, 246, 242, 0.4)), 
+                        url('../recursos/acuarela.jpeg') no-repeat center center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero h1 {
+            font-family: 'Alex Brush', cursive;
+            font-size: clamp(3.5rem, 10vw, 6rem);
+            margin-bottom: 10px;
+            color: var(--color-vino-suave);
+        }
+        .hero p { 
+            font-size: 1.1rem; 
+            letter-spacing: 4px; 
+            text-transform: uppercase; 
+            color: var(--color-texto);
         }
 
-        .foto-real {
-            width: 220px; height: 220px;
-            object-fit: cover; border-radius: 50%;
-            border: 3px solid var(--color-oro);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            margin-bottom: -30px;
-            position: relative; z-index: 11;
+        /* Contador */
+        .countdown { padding: 60px 20px; }
+        #timer { display: flex; justify-content: center; gap: 10px; margin-top: 30px; }
+        .time-box {
+            background: var(--color-blanco);
+            padding: 15px;
+            border-radius: 4px;
+            min-width: 80px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            border-bottom: 2px solid var(--color-oro);
+        }
+        .time-box span { font-size: 1.8rem; font-weight: 400; display: block; color: var(--color-vino-suave); }
+
+        /* Secciones */
+        section { padding: 100px 20px; max-width: 900px; margin: auto; }
+        h2 { 
+            font-family: 'Alex Brush', cursive; 
+            font-size: 3.5rem; 
+            color: var(--color-oro); 
+            margin-bottom: 40px; 
         }
 
-        .btn-action {
+        /* Tarjetas */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+        .card {
+            background: var(--color-blanco);
+            padding: 40px;
+            border-radius: 2px; /* Estilo más editorial/minimal */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+            border: 1px solid #eee;
+        }
+        .card h3 { 
+            font-size: 1.2rem; 
+            color: var(--color-vino-suave); 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            margin-bottom: 20px; 
+        }
+
+        /* Botones */
+        .btn {
             display: inline-block;
-            background: var(--color-vino);
-            color: white; padding: 12px 28px;
-            border-radius: 30px; text-decoration: none;
-            margin-top: 20px; font-weight: 600;
-            transition: all 0.3s ease;
+            margin-top: 30px;
+            padding: 14px 35px;
+            background: var(--color-vino-suave);
+            color: white;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: 0.4s;
+            border: none;
+            cursor: pointer;
         }
-        .btn-action:hover { background: #7a0029; transform: translateY(-2px); }
+        .btn:hover { 
+            background: var(--color-oro); 
+            transform: translateY(-2px);
+        }
 
-        /* LOADER */
-        #loader { position: fixed; inset: 0; background: #0a0a0a; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease; }
-        .progress-bar { width: 200px; height: 2px; background: #222; margin-top: 20px; }
-        #progress-fill { width: 0%; height: 100%; background: var(--color-oro); transition: width 0.3s; }
+        /* Regalo e IBAN */
+        #iban {
+            color: var(--color-vino-suave);
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin: 25px 0;
+            font-size: 1rem;
+            padding: 15px;
+            background: var(--color-nude);
+        }
 
-        /* MENU */
-        #side-menu { position: fixed; top: 0; left: -320px; height: 100%; width: 280px; background: rgba(0,0,0,0.98); z-index: 300; transition: 0.5s; padding: 80px 30px; box-sizing: border-box; }
-        #side-menu.open { left: 0; }
-		
-		/* Mejora visual para los enlaces del menú */
-		#side-menu a {transition: color 0.3s ease, padding-left 0.3s ease;}
-		#side-menu a:hover {color: var(--color-oro); padding-left: 10px;}
-		
-        #menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 250; display: none; }
-        
-        /* Animación música */
-        .bars-container { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
-        .bar { width: 3px; background: var(--color-vino); height: 5px; }
-        .playing .bar { animation: soundWave 0.6s infinite ease-in-out; }
-        @keyframes soundWave { 0%, 100% { height: 5px; } 50% { height: 18px; } }
+        footer {
+            padding: 80px 20px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            font-size: 0.8rem;
+            color: #999;
+            letter-spacing: 2px;
+        }
 
-        .countdown-container { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
-        .time-block span { font-size: 2rem; color: var(--color-oro); display: block; font-weight: 600; }
-        .time-block p { font-size: 0.75rem; margin: 0; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; }
+        @media (max-width: 600px) {
+            h2 { font-size: 2.8rem; }
+            .time-box { min-width: 65px; padding: 10px; }
+            .time-box span { font-size: 1.4rem; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="loader">
-        <div id="loader-text" style="letter-spacing: 2px; font-size: 0.9rem;">CARGANDO NUESTRA HISTORIA... 0%</div>
-        <div class="progress-bar"><div id="progress-fill"></div></div>
-        <button id="entrar-btn" onclick="startExperience()" style="display:none; margin-top:30px; background:none; border:1px solid var(--color-oro); color:var(--color-oro); padding:12px 40px; border-radius:30px; cursor:pointer; font-family: inherit; font-size: 1rem; letter-spacing: 3px; transition: 0.3s;">ENTRAR</button>
-    </div>
-
-    <div id="menu-overlay"></div>
-    <nav id="side-menu">
-        <div style="color:var(--color-oro); font-family:'Great Vibes'; font-size:3rem; margin-bottom:40px; text-align: center;">G & M</div>
-        <a href="#sec-intro" onclick="toggleMenu()" style="display:block; color:white; text-decoration:none; margin:25px 0; font-size: 1.3rem;">Inicio</a>
-        <a href="#sec-ceremonia" onclick="toggleMenu()" style="display:block; color:white; text-decoration:none; margin:25px 0; font-size: 1.3rem;">La Ceremonia</a>
-        <a href="#sec-celebracion" onclick="toggleMenu()" style="display:block; color:white; text-decoration:none; margin:25px 0; font-size: 1.3rem;">La Celebración</a>
-        <a href="#sec-cuestionario" onclick="toggleMenu()" style="display:block; color:white; text-decoration:none; margin:25px 0; font-size: 1.3rem;">Confirmación</a>
-        <a href="#sec-regalo" onclick="toggleMenu()" style="display:block; color:white; text-decoration:none; margin:25px 0; font-size: 1.3rem;">Regalo</a>
-        <a href="#sec-musica" onclick="toggleMenu()" style="display:block; color:white; text-decoration:none; margin:25px 0; font-size: 1.3rem;">Temazos</a>
-        <a href="#sec-final" onclick="toggleMenu()" style="display:block; color:white; text-decoration:none; margin:25px 0; font-size: 1.3rem;">Cuenta Atrás</a>
-        <p style="margin-top:60px; font-size:0.8rem; opacity:0.4; text-align: center;">24 de Abril de 2027</p>
-        <p style="margin-top:50px; font-size:0.8rem; opacity:0.5;">Diseñado por Manuel Torrecillas - 2026</p>
+    <nav>
+        <a href="#inicio">Inicio</a>
+        <a href="#historia">Historia</a>
+        <a href="#ubicacion">Ubicación</a>
+        <a href="#cuestionario">Confirmar</a>
+        <a href="#regalo">Regalo</a>
+        <a href="#playlist">Música</a>
     </nav>
 
-    <div id="hamburger" onclick="toggleMenu()">
-        <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
-    </div>
+    <header class="hero" id="inicio">
+        <p>¡Nos casamos!</p>
+        <img src="../recursos/texto.png" class="header-img" alt="Gemma & Manuel">
+    </header>
 
-    <div id="music-btn" onclick="toggleMusic()">
-        <div class="bars-container">
-            <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    <section class="countdown">
+        <div id="timer">
+            <div class="time-box"><span id="days">00</span>Días</div>
+            <div class="time-box"><span id="hours">00</span>Hs</div>
+            <div class="time-box"><span id="minutes">00</span>Min</div>
+            <div class="time-box"><span id="seconds">00</span>Seg</div>
         </div>
-    </div>
+    </section>
 
-    <audio id="miMusica" loop src="../recursos/musica/0_la_esperanza_de_maria.mp3"></audio>
+    <section id="historia">
+        <h2>Nuestra Historia</h2>
+        <p>Próximamente contaremos los momentos más especiales que nos han traído hasta aquí. Una historia llena de risas, viajes y mucho amor.</p>
+    </section>
 
-    <div id="watermark"></div>
-
-    <div id="content-scroll">
-        <div class="section-container" id="sec-intro">
-            <img src="../recursos/texto.png" class="header-img" alt="Gemma & Manuel">
-            <p style="font-style:italic; margin-top:30px; opacity: 0.7; letter-spacing: 2px;">DESLIZA PARA DESCUBRIR</p>
-        </div>
-
-        <div class="section-container" id="sec-ceremonia">
-            <img src="../recursos/fotos/foto1.jpeg" class="foto-real" alt="Ceremonia">
-            <div class="dynamic-section">
-                <h2>La Ceremonia</h2>
-                <p>Parroquia Arciprestal de la Inmaculada Concepción</p>
-                <a href="https://www.google.com/maps/search/?api=1&query=Parroquia+Arciprestal+Inmaculada+Concepcion+Torrevieja" target="_blank" rel="noopener" class="btn-action">VER UBICACIÓN</a>
+    <section id="ubicacion">
+        <h2>¿Dónde celebramos?</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>La Ceremonia</h3>
+                <p>12:00 Horas</p>
+                <p>Parroquia Inmaculada Concepción</p>
+                <p>Torrevieja</p>
+                <a href="https://www.google.com/maps/search/?api=1&query=Parroquia+Arciprestal+Inmaculada+Concepcion+Torrevieja" target="_blank" class="btn">Ver mapa</a>
             </div>
-        </div>
-
-        <div class="section-container" id="sec-celebracion">
-            <img src="../recursos/fotos/foto2.jpeg" class="foto-real" alt="Celebración">
-            <div class="dynamic-section">
-                <h2>La Celebración</h2>
+            <div class="card">
+                <h3>Celebración</h3>
+                <p>13:30 Horas</p>
                 <p>Finca Victoria Garden</p>
-                <a href="https://www.google.com/maps/search/?api=1&query=Victoria+Garden+Torrevieja" target="_blank" rel="noopener" class="btn-action">VER UBICACIÓN</a>
+                <p>C. Gerona, Torrevieja</p>
+                <a href="https://www.google.com/maps/search/?api=1&query=Victoria+Garden+Torrevieja" target="_blank" class="btn">Cómo llegar</a>
             </div>
         </div>
-        
-        <div class="section-container" id="sec-cuestionario">
-            <img src="../recursos/fotos/foto3.jpeg" class="foto-real" alt="Confirmación">
-            <div class="dynamic-section">
-                <h2>¿Nos acompañas?</h2>
-                <p>Tu confirmación nos ayuda a organizar el día perfecto.</p>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfpXBEfxR94WtQaBAf2_7j6LHs19c3V35J_R2LHIJHamQQOkA/viewform?usp=dialog" class="btn-action" target="_blank" rel="noopener">RELLENAR CUESTIONARIO</a>
+    </section>
+
+    <section id="cuestionario">
+        <h2>¿Nos acompañas?</h2>
+        <div class="card">
+            <p>Tu confirmación nos ayuda a organizar el día perfecto. ¡Por favor, rellena el formulario lo antes posible!</p>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfpXBEfxR94WtQaBAf2_7j6LHs19c3V35J_R2LHIJHamQQOkA/viewform?usp=dialog" class="btn" target="_blank">RELLENAR CUESTIONARIO</a>
+        </div>
+    </section>
+
+    <section id="regalo">
+        <h2>Un detalle</h2>
+        <div class="card">
+            <p>Vuestra presencia es nuestro mejor regalo, pero si queréis tener un detalle para nuestra luna de miel:</p>
+            <div id="iban">ES00 1111 2222 3333 4444 5555</div>
+            <button onclick="copiarIBAN(this)" class="btn">Copiar IBAN</button>
+        </div>
+    </section>
+
+    <section id="playlist">
+        <h2>Música</h2>
+        <div class="card">
+            <p>Queremos que la pista de baile eche humo. Añade tus canciones favoritas a nuestra lista oficial.</p>
+            <a href="https://open.spotify.com/playlist/5U9WvTg9igE8aw6sJ8EPIz?si=pWUiLE4eQDilULusVOTsww" target="_blank" class="btn" style="background:#1DB954;">ABRIR SPOTIFY</a>
+            <div class="spotify-container">
+                <iframe src="https://open.spotify.com/embed/playlist/5U9WvTg9igE8aw6sJ8EPIz?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
             </div>
         </div>
-        
-        <div class="section-container" id="sec-regalo">
-            <img src="../recursos/fotos/foto4.jpeg" class="foto-real" alt="Regalo">
-            <div class="dynamic-section">
-                <h2>¿Nos echas una mano?</h2>
-                <p>Si quieres tener un detalle con nosotros, te dejamos nuestra cuenta:</p>
-                <p id="iban" style="color:var(--color-oro); letter-spacing:1px; font-weight: bold; margin: 15px 0;">ES00 1111 2222 3333 4444 5555</p>
-                <button onclick="copiarIBAN(this)" style="background:var(--color-oro); border:none; padding:12px 25px; border-radius:30px; cursor:pointer; font-weight: bold; color: black; font-family: inherit; transition: 0.3s;">COPIAR IBAN</button>
-            </div>
-        </div>
-        
-        <div class="section-container" id="sec-musica">
-            <img src="../recursos/fotos/foto5.jpeg" class="foto-real" alt="Música">
-            <div class="dynamic-section">
-                <h2 style="font-size: 1.8rem;">¡Tú pones la música! 🎶</h2>
-                <p style="font-size: 1rem;">Queremos que la pista de baile eche humo. Añade tus canciones favoritas a nuestra lista oficial de Spotify.</p>
-                <div style="margin: 25px 0;">
-                    <a href="https://open.spotify.com/playlist/5U9WvTg9igE8aw6sJ8EPIz?si=pWUiLE4eQDilULusVOTsww" target="_blank" rel="noopener" 
-                       style="background-color: #1DB954; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; font-weight: bold; font-size: 0.9rem;">
-                        ABRIR PLAYLIST
-                    </a>
-                </div>
-                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/5U9WvTg9igE8aw6sJ8EPIz?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-            </div>
-        </div>
-        
-        <div class="section-container" id="sec-final">
-            <div class="dynamic-section">
-                <h2 style="font-family:'Great Vibes'; font-size:3.5rem; margin-bottom: 0;">Faltan...</h2>
-                <div class="countdown-container">
-                    <div class="time-block"><span id="days">00</span><p>Días</p></div>
-                    <div class="time-block"><span id="hours">00</span><p>Hrs</p></div>
-                    <div class="time-block"><span id="min">00</span><p>Min</p></div>
-                    <div class="time-block"><span id="sec">00</span><p>Seg</p></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </section>
 
-	<script>
-		const totalFrames = 78;
-		const frames = [];
-		const loader = document.getElementById('loader');
-		const progressFill = document.getElementById('progress-fill');
-		const miMusica = document.getElementById('miMusica');
-		const body = document.body;
+    <footer>
+        <p>Hecho con ❤️ para nuestra boda</p>
+        <p>© 2027 - Gemma & Manuel</p>
+    </footer>
 
-		// Detectar orientación una sola vez al inicio
-		let isHorizontal = window.innerWidth > window.innerHeight;
-		let folder = isHorizontal ? '../recursos/frames_1' : '../recursos/frames_3';
-		
-		function ajustarAltura() {
-			// Usamos window.innerHeight para obtener la altura real disponible
-			let vh = window.innerHeight * 0.01;
-			document.documentElement.style.setProperty('--vh', `${vh}px`);
-		}
-		// Ejecutar de inmediato
-		ajustarAltura();
-
-		function preload() {
-			let loaded = 0;
-			for (let i = 1; i <= totalFrames; i++) {
-				const img = new Image();
-				const idx = String(i).padStart(3, '0');
-				img.src = `${folder}/scene00${idx}.jpg`;
-				
-				img.onload = () => {
-					loaded++;
-					let p = Math.floor((loaded / totalFrames) * 100);
-					document.getElementById('loader-text').innerText = `CARGANDO NUESTRA HISTORIA... ${p}%`;
-					progressFill.style.width = `${p}%`;
-					
-					if(loaded === 1) renderFrame();
-
-					if (loaded === totalFrames) {
-						document.getElementById('entrar-btn').style.display = 'block';
-					}
-				};
-				frames[i-1] = img; // Guardar en el índice correcto
-			}
-		}
-
-		function renderFrame() {
-			const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-			const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-			
-			if (maxScroll <= 0) return;
-
-			const scrollFraction = scrollTop / maxScroll;
-			const frameIndex = Math.min(totalFrames - 1, Math.max(0, Math.floor(scrollFraction * totalFrames)));
-			
-			if(frames[frameIndex] && frames[frameIndex].complete) {
-				requestAnimationFrame(() => {
-					// Cambiamos la variable de CSS en el documento
-					document.documentElement.style.setProperty('--bg-image', `url('${frames[frameIndex].src}')`);
-				});
-			}
-		}
-
-		function startExperience() {
-			loader.style.opacity = '0';
-			setTimeout(() => loader.style.display = 'none', 800);
-			
-			// Intentar reproducir música (algunos navegadores lo bloquean)
-			//miMusica.play().then(() => {
-			//	document.getElementById('music-btn').classList.add('playing');
-			//}).catch(err => console.log("Interacción requerida para audio"));
-			
-			renderFrame();
-		}
-
-		// Listener de scroll optimizado
-		let ticking = false;
-		window.addEventListener('scroll', () => {
-			if (!ticking) {
-				window.requestAnimationFrame(() => {
-					renderFrame();
-					ticking = false;
-				});
-				ticking = true;
-			}
-		}, { passive: true });
-
-		// Manejo de cambio de orientación y redimensionado
-		window.addEventListener('resize', () => {
-			ajustarAltura();
-			const currentOrient = window.innerWidth > window.innerHeight;
-			if(currentOrient !== isHorizontal) {
-				// Recargar para cambiar el set de imágenes (vertical/horizontal)
-				location.reload();
-			}
-		});
-		
+    <script>
         function copiarIBAN(btn) {
             const text = document.getElementById('iban').innerText;
             navigator.clipboard.writeText(text).then(() => {
                 const originalText = btn.innerText;
                 btn.innerText = "¡COPIADO!";
-                btn.style.background = "#4CAF50";
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.style.background = "var(--color-oro)";
-                }, 2000);
+                setTimeout(() => { btn.innerText = originalText; }, 2000);
             });
         }
-		
-		function toggleMenu() {
-            const menu = document.getElementById('side-menu');
-            const overlay = document.getElementById('menu-overlay');
-            const isOpen = menu.classList.toggle('open');
-            overlay.style.display = isOpen ? 'block' : 'none';
-        }
 
-        document.getElementById('menu-overlay').addEventListener('click', toggleMenu);
-		
-        function toggleMusic() {
-            if (miMusica.paused) {
-                miMusica.play();
-                document.getElementById('music-btn').classList.add('playing');
-            } else {
-                miMusica.pause();
-                document.getElementById('music-btn').classList.remove('playing');
-            }
-        }
-		
-		// Countdown con validación
-		function updateCountdown() {
-			const target = new Date("April 24, 2027 00:00:00").getTime();
-			const now = new Date().getTime();
-			const diff = target - now;
-
-			if (diff <= 0) {
-				document.querySelector('.countdown-container').innerHTML = "¡LLEGÓ EL DÍA!";
-				return;
-			}
-
-			document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-			document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-			document.getElementById('min').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-			document.getElementById('sec').innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
-		}
-
-		// Inicialización
-		ajustarAltura();
-		preload();
-		setInterval(updateCountdown, 1000);
-	</script>
+        const weddingDate = new Date("April 24, 2027 00:00:00").getTime();
+        setInterval(function() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+            document.getElementById("days").innerHTML = Math.floor(distance / (1000 * 60 * 60 * 24));
+            document.getElementById("hours").innerHTML = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById("minutes").innerHTML = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById("seconds").innerHTML = Math.floor((distance % (1000 * 60)) / 1000);
+        }, 1000);
+    </script>
 </body>
 </html>

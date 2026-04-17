@@ -29,12 +29,6 @@ const proyectos = [
         descripcion: 'Versión 5 de la invitación interactiva.',
         ruta: 'boda/invitacion-v5/index.html'
     },
-	{
-        categoria: 'boda',
-        titulo: 'Invitación Boda V6',
-        descripcion: 'Versión 6 de la invitación interactiva.',
-        ruta: 'boda/invitacion-v6/index.html'
-    },
     {
         categoria: 'boda',
         titulo: 'My Dots',

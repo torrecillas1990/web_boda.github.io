@@ -1,7 +1,12 @@
 // datos.js
+// kcal por cada 100 gramos
 const productosMercadonaBase = [
+    // --- BEBIDAS ---
+    { nombre: "Energy Drink Full Tropic", kcal: 4.1, prot: 0, grasa: 0, carb: 0.4 },
+	
     // --- COMIDAS PREPARADAS ---
     { nombre: "Tabule Oriental Mercadona", kcal: 167, prot: 3.9, grasa: 5.2, carb: 25.4 },
+    { nombre: "Ensalada Pollo Queso", kcal: 179, prot: 9.4, grasa: 13, carb: 5.8 },
 	
     // --- LÁCTEOS Y PROTEÍNAS ---
     { nombre: "Yogur Proteínas Natural Mercadona", kcal: 52, prot: 10, grasa: 0.1, carb: 3.1 },
@@ -9,9 +14,12 @@ const productosMercadonaBase = [
     { nombre: "Yogur Griego Natural", kcal: 129, prot: 3.9, grasa: 10.8, carb: 3.9 },
     { nombre: "Queso Batido 0%", kcal: 46, prot: 8, grasa: 0.1, carb: 3.5 },
     { nombre: "Leche Semidesnatada", kcal: 46, prot: 3.2, grasa: 1.5, carb: 4.8 },
+    { nombre: "Leche Proteinas", kcal: 44, prot: 6, grasa: 0.2, carb: 4.6 },
     { nombre: "Kéfir Natural", kcal: 40, prot: 3.4, grasa: 1.5, carb: 2.5 },
+    { nombre: "Kéfir Natural 0% Bebida", kcal: 36, prot: 3.9, grasa: 0.5, carb: 4.8 },
     { nombre: "Claras de Huevo", kcal: 50, prot: 11, grasa: 0, carb: 0.7 },
     { nombre: "Queso Cottage", kcal: 99, prot: 12, grasa: 4, carb: 3.3 },
+    { nombre: "Barrita de proteinas Chocolate con Leche", kcal: 386, prot: 33, grasa: 17, carb: 38 },
 
     // --- CARNES Y PESCADOS ---
     { nombre: "Pechuga de Pollo", kcal: 110, prot: 23, grasa: 1, carb: 0 },
@@ -60,5 +68,6 @@ const productosMercadonaBase = [
     { nombre: "Arándanos Frescos", kcal: 57, prot: 0.7, grasa: 0.3, carb: 14 },
 	
 	// --- DULCES ---
-    { nombre: "Chocolate con leche", kcal: 523, prot: 5.6, grasa: 28, carb: 59.8 }
+    { nombre: "Chocolate con leche", kcal: 523, prot: 5.6, grasa: 28, carb: 59.8 },
+    { nombre: "Cacao puro en polvo (Cuchara pequeña 5g aprox)", kcal: 375, prot: 25.5, grasa: 16, carb: 16.3 }
 ];

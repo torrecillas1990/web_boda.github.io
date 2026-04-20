@@ -13,13 +13,13 @@ const productosMercadonaBase = [
     { nombre: "Yogur Proteínas Arándanos", kcal: 64, prot: 10, grasa: 0.1, carb: 5 },
     { nombre: "Yogur Griego Natural", kcal: 129, prot: 3.9, grasa: 10.8, carb: 3.9 },
     { nombre: "Queso Batido 0%", kcal: 46, prot: 8, grasa: 0.1, carb: 3.5 },
-    { nombre: "Leche Semidesnatada", kcal: 46, prot: 3.2, grasa: 1.5, carb: 4.8 },
-    { nombre: "Leche Proteinas", kcal: 44, prot: 6, grasa: 0.2, carb: 4.6 },
+    { nombre: "Leche Semidesnatada (1 vaso 250g)", kcal: 46, prot: 3.2, grasa: 1.5, carb: 4.8 },
+    { nombre: "Leche Proteinas (1 vaso 250g)", kcal: 44, prot: 6, grasa: 0.2, carb: 4.6 },
     { nombre: "Kéfir Natural", kcal: 40, prot: 3.4, grasa: 1.5, carb: 2.5 },
-    { nombre: "Kéfir Natural 0% Bebida", kcal: 36, prot: 3.9, grasa: 0.5, carb: 4.8 },
+    { nombre: "Kéfir Natural 0% Bebida de 250g", kcal: 36, prot: 3.9, grasa: 0.5, carb: 4.8 },
     { nombre: "Claras de Huevo", kcal: 50, prot: 11, grasa: 0, carb: 0.7 },
     { nombre: "Queso Cottage", kcal: 99, prot: 12, grasa: 4, carb: 3.3 },
-    { nombre: "Barrita de proteinas Chocolate con Leche", kcal: 386, prot: 33, grasa: 17, carb: 38 },
+    { nombre: "Barrita de proteinas Chocolate con Leche (60g por barrita)", kcal: 386, prot: 33, grasa: 17, carb: 38 },
 
     // --- CARNES Y PESCADOS ---
     { nombre: "Pechuga de Pollo", kcal: 110, prot: 23, grasa: 1, carb: 0 },
@@ -59,7 +59,7 @@ const productosMercadonaBase = [
 
     // --- FRUTAS Y VERDURAS ---
     { nombre: "Plátano", kcal: 89, prot: 1.1, grasa: 0.3, carb: 23 },
-    { nombre: "Manzana", kcal: 52, prot: 0.3, grasa: 0.2, carb: 14 },
+    { nombre: "Manzana 1 pieza son 150 gramos", kcal: 52, prot: 0.3, grasa: 0.2, carb: 14 },
     { nombre: "Naranja 1 pieza son 150 gramos", kcal: 60, prot: 0.94, grasa: 0.12, carb: 11.75 },
     { nombre: "Aguacate", kcal: 160, prot: 2, grasa: 15, carb: 9 },
     { nombre: "Brócoli Congelado", kcal: 34, prot: 3, grasa: 0.4, carb: 4 },

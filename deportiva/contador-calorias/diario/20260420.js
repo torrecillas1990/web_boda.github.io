@@ -41,11 +41,11 @@ const diario_20260420 = [
         "carb": 2
     },
     {
-        "id": 1776690719796,
-        "nombre": "Barrita de proteinas Chocolate con Leche (60g por barrita) (60g)",
-        "kcal": 232,
-        "prot": 19.8,
-        "grasa": 10.2,
-        "carb": 22.8
+        "id": 1776694701152,
+        "nombre": "Barrita de proteinas Chocolate con Leche (60g por barrita) (120g)",
+        "kcal": 463,
+        "prot": 39.6,
+        "grasa": 20.4,
+        "carb": 45.6
     }
 ];

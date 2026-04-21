@@ -1,77 +1,77 @@
 // datos.js
-// kcal por cada 100 gramos
+// Valores por cada 100g de producto (a menos que se indique lo contrario en observaciones)
 const productosMercadonaBase = [
     // --- BEBIDAS ---
-    { nombre: "Energy Drink Full Tropic", kcal: 4.1, prot: 0, grasa: 0, carb: 0.4 },
+    { categoria: "Bebida", nombre: "Energy Drink Full Tropic", kcal: 4.1, prot: 0, grasa: 0, carb: 0.4, obs: "500ml. Sin azúcar." },
 	
     // --- COMIDAS PREPARADAS ---
-    { nombre: "Tabule Oriental Mercadona", kcal: 167, prot: 3.9, grasa: 5.2, carb: 25.4 },
-    { nombre: "Ensalada Pollo Queso", kcal: 179, prot: 9.4, grasa: 13, carb: 5.8 },
+    { categoria: "Preparado", nombre: "Tabule Oriental", kcal: 167, prot: 3.9, grasa: 5.2, carb: 25.4, obs: "Listo para comer." },
+    { categoria: "Preparado", nombre: "Ensalada Pollo Queso", kcal: 179, prot: 9.4, grasa: 13, carb: 5.8, obs: "Incluye salsa y complementos." },
 	
     // --- LÁCTEOS Y PROTEÍNAS ---
-    { nombre: "Yogur Proteínas Natural Mercadona", kcal: 52, prot: 10, grasa: 0.1, carb: 3.1 },
-    { nombre: "Yogur Proteínas Arándanos", kcal: 64, prot: 10, grasa: 0.1, carb: 5 },
-    { nombre: "Yogur Griego Natural", kcal: 129, prot: 3.9, grasa: 10.8, carb: 3.9 },
-    { nombre: "Queso Batido 0%", kcal: 46, prot: 8, grasa: 0.1, carb: 3.5 },
-    { nombre: "Leche Semidesnatada (1 vaso 250g)", kcal: 46, prot: 3.2, grasa: 1.5, carb: 4.8 },
-    { nombre: "Leche Proteinas (1 vaso 250g)", kcal: 44, prot: 6, grasa: 0.2, carb: 4.6 },
-    { nombre: "Kéfir Natural", kcal: 40, prot: 3.4, grasa: 1.5, carb: 2.5 },
-    { nombre: "Kéfir Natural 0% Bebida de 250g", kcal: 36, prot: 3.9, grasa: 0.5, carb: 4.8 },
-    { nombre: "Claras de Huevo", kcal: 50, prot: 11, grasa: 0, carb: 0.7 },
-    { nombre: "Queso Cottage", kcal: 99, prot: 12, grasa: 4, carb: 3.3 },
-    { nombre: "Barrita de proteinas Chocolate con Leche (60g por barrita)", kcal: 386, prot: 33, grasa: 17, carb: 38 },
-
+    { categoria: "Proteina", nombre: "Yogur Proteínas Natural", kcal: 52, prot: 10, grasa: 0.1, carb: 3.1, obs: "Copa de 120g o 200g." },
+    { categoria: "Proteina", nombre: "Yogur Proteínas Arándanos", kcal: 64, prot: 10, grasa: 0.1, carb: 5, obs: "" },
+	{ categoria: "Proteina", nombre: "Yogur Griego Natural", kcal: 129, prot: 3.9, grasa: 10.8, carb: 3.9, obs: "Alto en grasas saludables." },
+    { categoria: "Proteina", nombre: "Queso Batido 0%", kcal: 46, prot: 8, grasa: 0.1, carb: 3.5, obs: "" },
+    { categoria: "Proteina", nombre: "Leche Semidesnatada (1 vaso 250g)", kcal: 46, prot: 3.2, grasa: 1.5, carb: 4.8, obs: "1 vaso 250g aprox." },
+    { categoria: "Proteina", nombre: "Leche Proteinas", kcal: 44, prot: 6, grasa: 0.2, carb: 4.6, obs: "1 vaso 250g aprox. Desnatada con extra de calcio/prot." },
+    { categoria: "Proteina", nombre: "Kéfir Natural", kcal: 40, prot: 3.4, grasa: 1.5, carb: 2.5, obs: "" },
+    { categoria: "Proteina", nombre: "Kéfir Natural 0%", kcal: 36, prot: 3.9, grasa: 0.5, carb: 4.8, obs: "Bebida de 250g" },
+    { categoria: "Proteina", nombre: "Claras de Huevo", kcal: 50, prot: 11, grasa: 0, carb: 0.7, obs: "" },
+    { categoria: "Proteina", nombre: "Queso Cottage", kcal: 99, prot: 12, grasa: 4, carb: 3.3, obs: "Bajo en calorías, alto en caseína." },
+    { categoria: "Suplemento", nombre: "Barrita de proteínas Chocolate", kcal: 386, prot: 33, grasa: 17, carb: 38, obs: "Peso barrita: 60g." },
+    
     // --- CARNES Y PESCADOS ---
-    { nombre: "Pechuga de Pollo", kcal: 110, prot: 23, grasa: 1, carb: 0 },
-    { nombre: "Pechuga de Pavo", kcal: 105, prot: 22, grasa: 1.5, carb: 0 },
-    { nombre: "Cinta de Lomo de Cerdo", kcal: 151, prot: 21, grasa: 7, carb: 0 },
-    { nombre: "Salmón Ahumado", kcal: 191, prot: 23, grasa: 11, carb: 0.5 },
-    { nombre: "Atún Claro al Natural (lata 70g escurrido)", kcal: 98, prot: 21, grasa: 1.2, carb: 0.9 },
-    { nombre: "Atún Claro en Aceite de Oliva (lata 70g escurrido)", kcal: 245, prot: 21, grasa: 18, carb: 0.9 },
-    { nombre: "Bonito del Norte en aceite de oliva (lata 75g escurrido)", kcal: 140, prot: 18, grasa: 7.3, carb: 0.5 },
-    { nombre: "Merluza Congelada", kcal: 71, prot: 16, grasa: 0.6, carb: 0 },
-    { nombre: "Tiras de Pollo Asado", kcal: 165, prot: 30, grasa: 4.5, carb: 0.5 },
-    { nombre: "Huevos duros (1 huevo 50g)", kcal: 121, prot: 13, grasa: 7.7, carb: 0.5 },
-
+    { categoria: "Proteina", nombre: "Pechuga de Pollo", kcal: 110, prot: 23, grasa: 1, carb: 0, obs: "Peso en crudo." },
+    { categoria: "Proteina", nombre: "Pechuga de Pavo", kcal: 105, prot: 22, grasa: 1.5, carb: 0, obs: "Peso en crudo." },
+    { categoria: "Proteina", nombre: "Cinta de Lomo de Cerdo", kcal: 151, prot: 21, grasa: 7, carb: 0, obs: "" },
+    { categoria: "Proteina", nombre: "Salmón Ahumado", kcal: 191, prot: 23, grasa: 11, carb: 0.5, obs: "" },
+    { categoria: "Proteina", nombre: "Atún Claro al Natural", kcal: 98, prot: 21, grasa: 1.2, carb: 0.9, obs: "Lata de 70g según peso escurrido." },
+    { categoria: "Proteina", nombre: "Atún Claro en Aceite de Oliva", kcal: 245, prot: 21, grasa: 18, carb: 0.9, obs: "Lata de 70g según peso escurrido." },
+    { categoria: "Proteina", nombre: "Bonito del Norte en aceite de oliva (lata 75g escurrido)", kcal: 140, prot: 18, grasa: 7.3, carb: 0.5, obs: "" },
+    { categoria: "Proteina", nombre: "Merluza Congelada", kcal: 71, prot: 16, grasa: 0.6, carb: 0, obs: "" },
+    { categoria: "Proteina", nombre: "Tiras de Pollo Asado", kcal: 165, prot: 30, grasa: 4.5, carb: 0.5, obs: "" },
+    { categoria: "Proteina", nombre: "Huevos duros (1 huevo 50g)", kcal: 121, prot: 13, grasa: 7.7, carb: 0.5, obs: "Aprox. 50g-60g por unidad." },
+	
     // --- CEREALES Y LEGUMBRES ---
-    { nombre: "Avena en copos", kcal: 375, prot: 13, grasa: 7, carb: 59 },
-    { nombre: "Arroz Integral", kcal: 350, prot: 7.5, grasa: 2.5, carb: 73 },
-    { nombre: "Quinoa cocida", kcal: 120, prot: 4.4, grasa: 1.9, carb: 21 },
-    { nombre: "Garbanzos Cocidos (bote)", kcal: 105, prot: 6, grasa: 2, carb: 14 },
-    { nombre: "Lentejas Cocidas (bote)", kcal: 85, prot: 7, grasa: 0.5, carb: 11 },
-    { nombre: "Pasta 100% Integral", kcal: 345, prot: 13, grasa: 2, carb: 65 },
-    { nombre: "Tortitas de maíz Hacendado (1 Tortita 7.5g)", kcal: 368, prot: 7.5, grasa: 1.8, carb: 80 },
+    { categoria: "Carbohidrato", nombre: "Avena en copos", kcal: 375, prot: 13, grasa: 7, carb: 59, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Arroz Integral", kcal: 350, prot: 7.5, grasa: 2.5, carb: 73, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Quinoa cocida", kcal: 120, prot: 4.4, grasa: 1.9, carb: 21, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Garbanzos Cocidos (bote)", kcal: 105, prot: 6, grasa: 2, carb: 14, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Lentejas Cocidas (bote)", kcal: 85, prot: 7, grasa: 0.5, carb: 11, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Pasta 100% Integral", kcal: 345, prot: 13, grasa: 2, carb: 65, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Tortitas de maíz Hacendado", kcal: 368, prot: 7.5, grasa: 1.8, carb: 80, obs: "1 Tortita pesa aprox 7.5g." },
 
     // --- GRASAS Y SALSAS ---
-    { nombre: "Hummus de Garbanzos", kcal: 240, prot: 8, grasa: 18, carb: 10 },
-    { nombre: "Guacamole Fresh", kcal: 155, prot: 1.5, grasa: 14, carb: 3 },
-    { nombre: "Aceite de Oliva Virgen Extra", kcal: 884, prot: 0, grasa: 100, carb: 0 },
-    { nombre: "Crema de Cacahuete 100%", kcal: 618, prot: 30, grasa: 50, carb: 7 },
-    { nombre: "Tahini (Pasta de sésamo)", kcal: 710, prot: 25, grasa: 65, carb: 3 },
-    { nombre: "Nueces Peladas", kcal: 654, prot: 15, grasa: 65, carb: 7 },
-    { nombre: "Almendras Tostadas", kcal: 620, prot: 22, grasa: 54, carb: 5 },
+    { categoria: "Carbohidrato", nombre: "Hummus de Garbanzos", kcal: 240, prot: 8, grasa: 18, carb: 10, obs: "" },
+    { categoria: "Grasa", nombre: "Guacamole Fresh", kcal: 155, prot: 1.5, grasa: 14, carb: 3, obs: "" },
+    { categoria: "Grasa", nombre: "Aceite de Oliva Virgen Extra", kcal: 884, prot: 0, grasa: 100, carb: 0, obs: "1 cucharada sopera ≈ 10g-12g." },
+    { categoria: "Grasa", nombre: "Crema de Cacahuete 100%", kcal: 618, prot: 30, grasa: 50, carb: 7, obs: "" },
+    { categoria: "Grasa", nombre: "Tahini (Pasta de sésamo)", kcal: 710, prot: 25, grasa: 65, carb: 3, obs: "" },
+    { categoria: "Grasa", nombre: "Nueces Peladas", kcal: 654, prot: 15, grasa: 65, carb: 7, obs: "" },
+    { categoria: "Grasa", nombre: "Almendras Tostadas", kcal: 620, prot: 22, grasa: 54, carb: 5, obs: "" },
 
     // --- PANES Y OTROS ---
-    { nombre: "Pan 100% Integral Centeno", kcal: 230, prot: 8, grasa: 2, carb: 40 },
-    { nombre: "Pan de Molde Integral", kcal: 245, prot: 9, grasa: 3, carb: 42 },
-    { nombre: "Tostadas de Fibra y Sésamo", kcal: 390, prot: 12, grasa: 7, carb: 60 },
-    { nombre: "Tostadas 100% Espelta Integral (1 tostada 7g)", kcal: 382, prot: 17, grasa: 6.4, carb: 59 },
-    { nombre: "Tofu Firme", kcal: 120, prot: 12, grasa: 7, carb: 2 },
-    { nombre: "Edamame Congelado", kcal: 130, prot: 11, grasa: 5, carb: 10 },
-    { nombre: "Salmorejo Fresco", kcal: 75, prot: 1, grasa: 5, carb: 6 },
-    { nombre: "Gazpacho Suave", kcal: 45, prot: 0.8, grasa: 3, carb: 3.5 },
-
+    { categoria: "Carbohidrato", nombre: "Pan 100% Integral Centeno", kcal: 230, prot: 8, grasa: 2, carb: 40, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Pan de Molde Integral", kcal: 245, prot: 9, grasa: 3, carb: 42, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Tostadas de Fibra y Sésamo", kcal: 390, prot: 12, grasa: 7, carb: 60, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Tostadas 100% Espelta Integral (1 tostada 7g)", kcal: 382, prot: 17, grasa: 6.4, carb: 59, obs: "" },
+    { categoria: "Proteina", nombre: "Tofu Firme", kcal: 120, prot: 12, grasa: 7, carb: 2, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Edamame Congelado", kcal: 130, prot: 11, grasa: 5, carb: 10, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Salmorejo Fresco", kcal: 75, prot: 1, grasa: 5, carb: 6, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Gazpacho Suave", kcal: 45, prot: 0.8, grasa: 3, carb: 3.5, obs: "" },
+	
     // --- FRUTAS Y VERDURAS ---
-    { nombre: "Plátano", kcal: 89, prot: 1.1, grasa: 0.3, carb: 23 },
-    { nombre: "Manzana 1 pieza son 150 gramos", kcal: 52, prot: 0.3, grasa: 0.2, carb: 14 },
-    { nombre: "Naranja 1 pieza son 150 gramos", kcal: 60, prot: 0.94, grasa: 0.12, carb: 11.75 },
-    { nombre: "Aguacate", kcal: 160, prot: 2, grasa: 15, carb: 9 },
-    { nombre: "Brócoli Congelado", kcal: 34, prot: 3, grasa: 0.4, carb: 4 },
-    { nombre: "Espinacas Frescas", kcal: 23, prot: 2.9, grasa: 0.4, carb: 3.6 },
-    { nombre: "Judías Verdes", kcal: 31, prot: 1.8, grasa: 0.2, carb: 7 },
-    { nombre: "Arándanos Frescos", kcal: 57, prot: 0.7, grasa: 0.3, carb: 14 },
+    { categoria: "Carbohidrato", nombre: "Platano", kcal: 89, prot: 1.1, grasa: 0.3, carb: 23, obs: "Sin piel pesa aprox 80-120g." },
+    { categoria: "Carbohidrato", nombre: "Manzana 1 pieza son 150 gramos", kcal: 52, prot: 0.3, grasa: 0.2, carb: 14, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Naranja 1 pieza son 150 gramos", kcal: 60, prot: 0.94, grasa: 0.12, carb: 11.75, obs: "1 pieza mediana 150g." },
+    { categoria: "Carbohidrato", nombre: "Aguacate", kcal: 160, prot: 2, grasa: 15, carb: 9, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Brócoli Congelado", kcal: 34, prot: 3, grasa: 0.4, carb: 4, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Espinacas Frescas", kcal: 23, prot: 2.9, grasa: 0.4, carb: 3.6, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Judías Verdes", kcal: 31, prot: 1.8, grasa: 0.2, carb: 7, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Arándanos Frescos", kcal: 57, prot: 0.7, grasa: 0.3, carb: 14, obs: "" },
 	
 	// --- DULCES ---
-    { nombre: "Chocolate con leche", kcal: 523, prot: 5.6, grasa: 28, carb: 59.8 },
-    { nombre: "Cacao puro en polvo (Cuchara pequeña 5g aprox)", kcal: 375, prot: 25.5, grasa: 16, carb: 16.3 }
+    { categoria: "Carbohidrato", nombre: "Chocolate con leche", kcal: 523, prot: 5.6, grasa: 28, carb: 59.8, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Cacao puro en polvo (Cuchara pequeña 5g aprox)", kcal: 375, prot: 25.5, grasa: 16, carb: 16.3, obs: "" }
 ];

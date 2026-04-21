@@ -33,14 +33,6 @@ const diario_20260421 = [
         "carb": 0.5
     },
     {
-        "id": 1776765023408,
-        "nombre": "Huevos duros (1 huevo 50g) (100g)",
-        "kcal": 121,
-        "prot": 13,
-        "grasa": 7.7,
-        "carb": 0.5
-    },
-    {
         "id": 1776765034216,
         "nombre": "Kéfir Natural 0% Bebida de 250g (250g)",
         "kcal": 90,
@@ -49,19 +41,19 @@ const diario_20260421 = [
         "carb": 12
     },
     {
-        "id": 1776765040928,
-        "nombre": "Barrita de proteinas Chocolate con Leche (60g por barrita) (60g)",
-        "kcal": 232,
-        "prot": 19.8,
-        "grasa": 10.2,
-        "carb": 22.8
-    },
-    {
         "id": 1776765056554,
         "nombre": "Energy Drink Full Tropic (500g)",
         "kcal": 21,
         "prot": 0,
         "grasa": 0,
         "carb": 2
+    },
+    {
+        "id": 1776771279057,
+        "nombre": "Huevos duros (1 huevo 50g) (150g)",
+        "kcal": 182,
+        "prot": 19.5,
+        "grasa": 11.55,
+        "carb": 0.75
     }
 ];

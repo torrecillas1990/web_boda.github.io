@@ -55,11 +55,41 @@ datePicker.onchange = () => {
 // --- FUNCIONES DE CATÁLOGO ---
 const normalizar = (txt) => txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
+// Referencias nuevas
+const categoryFilter = document.getElementById('categoryFilter');
+
+function filtrarYRenderizar() {
+    const query = normalizar(searchInput.value);
+    const cat = categoryFilter.value;
+
+    const filtrados = productosMercadonaBase.filter(p => {
+        const coincideNombre = normalizar(p.nombre).includes(query);
+        const coincideCat = (cat === "todos" || p.categoria === cat);
+        return coincideNombre && coincideCat;
+    });
+
+    renderizarCatalogo(filtrados);
+}
+
+// Escuchar cambios en ambos inputs
+searchInput.addEventListener('input', filtrarYRenderizar);
+categoryFilter.addEventListener('change', filtrarYRenderizar);
+
+// Actualizamos renderizarCatalogo para que incluya las observaciones y badges
 function renderizarCatalogo(lista) {
     fullProductList.innerHTML = '';
     lista.forEach(p => {
         const li = document.createElement('li');
-        li.innerHTML = `<span>${p.nombre}</span> <small>${p.kcal} kcal</small>`;
+        li.className = "product-item";
+        li.innerHTML = `
+            <div style="display: flex; flex-direction: column;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="badge ${p.categoria.toLowerCase().replace('/', '-').replace(' ', '-')}">${p.categoria}</span>
+                    <strong>${p.nombre}</strong>
+                </div>
+                <small style="color: #666; margin-left: 5px;">${p.kcal} kcal | <span style="font-style: italic;">${p.obs}</span></small>
+            </div>
+        `;
         li.onclick = () => abrirModal(p);
         fullProductList.appendChild(li);
     });
@@ -74,9 +104,12 @@ searchInput.addEventListener('input', () => {
 // --- MODAL CANTIDAD ---
 function abrirModal(p) {
     productoSeleccionado = p;
-    modalProductName.innerHTML = `Cantidad para <strong>${p.nombre}</strong> (g):`;
+    modalProductName.innerHTML = `
+        Añadir <strong>${p.nombre}</strong><br>
+        <small style="color: #666;">${p.obs ? '💡 ' + p.obs : ''}</small>
+    `;
     quantityModal.style.display = 'block';
-    quantityInput.value = 100; // Reset a 100g por defecto
+    quantityInput.value = 100;
     quantityInput.focus();
 }
 

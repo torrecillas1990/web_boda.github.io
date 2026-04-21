@@ -50,3 +50,49 @@
 
 #confirmBtn { background: #27ae60; color: white; padding: 5px 15px; }
 #cancelBtn { background: #e74c3c; color: white; padding: 5px 10px; }
+
+/* Estilo para el buscador y select */
+.search-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.filter-select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+/* Estilo de los items de la lista */
+.product-item {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.product-item:hover {
+    background-color: #f0fdf4; /* Un verde muy clarito */
+}
+
+/* Badges de categorías */
+.badge {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+}
+
+.badge.bebida { background-color: #6c757d; }
+.badge.preparado { background-color: #fd7e14; }
+.badge.suplemento { background-color: #fd7e14; }
+.badge.lácteos { background-color: #0dcaf0; }
+.badge.proteina { background-color: #dc3545; }
+.badge.carbohidrato { background-color: #ffc107; color: #000; }
+.badge.grasa { background-color: #6610f2; }
+.badge.fruta { background-color: #198754; }
+.badge.verdura { background-color: #198754; }

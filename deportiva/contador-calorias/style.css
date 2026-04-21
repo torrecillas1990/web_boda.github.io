@@ -59,11 +59,16 @@
     margin-bottom: 15px;
 }
 
+/* Mejoras al selector de categorías */
 .filter-select {
+    width: 100%;
     padding: 10px;
-    border-radius: 8px;
+    margin-bottom: 5px;
     border: 1px solid #ddd;
-    background-color: #f9f9f9;
+    border-radius: 6px;
+    font-family: inherit;
+    background-color: white;
+    cursor: pointer;
 }
 
 /* Estilo de los items de la lista */
@@ -76,6 +81,13 @@
 
 .product-item:hover {
     background-color: #f0fdf4; /* Un verde muy clarito */
+}
+
+.product-item small {
+    display: block;
+    color: #888;
+    line-height: 1.2;
+    margin-top: 4px;
 }
 
 /* Badges de categorías */
@@ -96,3 +108,22 @@
 .badge.grasa { background-color: #6610f2; }
 .badge.fruta { background-color: #198754; }
 .badge.verdura { background-color: #198754; }
+
+/* Contenedor de macros */
+.macro-summary {
+    display: flex;
+    justify-content: space-around;
+    margin: 10px 0;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.macro-item {
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.prot { color: #36A2EB; } /* Azul */
+.fat { color: #FF6384; }  /* Rosa/Rojo */
+.carb { color: #FFCE56; } /* Amarillo/Naranja */

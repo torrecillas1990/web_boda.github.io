@@ -134,27 +134,42 @@ document.getElementById('cancelBtn').onclick = cerrarModal;
 function cerrarModal() { quantityModal.style.display = 'none'; }
 
 // --- LÓGICA DE ACTUALIZACIÓN Y GUARDADO ---
+const totalProtDisplay = document.getElementById('totalProt');
+const totalFatDisplay = document.getElementById('totalFat');
+const totalCarbDisplay = document.getElementById('totalCarb');
+
 function actualizarApp() {
     let t = { kcal: 0, p: 0, g: 0, c: 0 };
     diaryList.innerHTML = '';
 
     registroDiario.forEach(item => {
-        t.kcal += item.kcal; t.p += item.prot; t.g += item.grasa; t.c += item.carb;
+        t.kcal += item.kcal; 
+        t.p += item.prot; 
+        t.g += item.grasa; 
+        t.c += item.carb;
         
         const li = document.createElement('li');
         li.className = "diary-item";
         li.innerHTML = `
             <div><strong>${item.nombre}</strong><br><small>${item.kcal} kcal</small></div>
-            <button class="delete-btn" onclick="removeItem(${item.id})">×</button>
+            <button class="delete-btn">×</button>
         `;
+        // Usamos addEventListener para evitar problemas de scope global
+        li.querySelector('.delete-btn').onclick = () => removeItem(item.id);
         diaryList.appendChild(li);
     });
 
+    // Actualizar Calorías y Macros en texto
     totalCalDisplay.textContent = t.kcal;
+    totalProtDisplay.textContent = t.p.toFixed(1);
+    totalFatDisplay.textContent = t.g.toFixed(1);
+    totalCarbDisplay.textContent = t.c.toFixed(1);
+
+    // Actualizar Gráfico
     macroChart.data.datasets[0].data = [t.p.toFixed(1), t.g.toFixed(1), t.c.toFixed(1)];
     macroChart.update();
 
-    // Guardado en el historial global usando la fecha actual del picker como llave
+    // Guardar en LocalStorage
     historialNutricional[datePicker.value] = registroDiario;
     localStorage.setItem('historialNutricional', JSON.stringify(historialNutricional));
 }

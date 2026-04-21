@@ -33,9 +33,43 @@
 		<h1>🛒 Contador de Calorías Pro</h1>
 
 		<div class="main-layout">
+		
+			<div class="right-column">
+				<div class="diary">
+					<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; margin-bottom: 10px;">
+						<h2>Diario</h2>
+						<input type="date" id="datePicker" style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
+					</div>
+					<ul id="diaryList"></ul>
+					<div class="total">
+						<strong>Total: <span id="totalCalories">0</span> kcal</strong>
+					</div>
+					<div class="macro-summary">
+						<div class="macro-item prot">P: <span id="totalProt">0</span>g</div>
+						<div class="macro-item fat">G: <span id="totalFat">0</span>g</div>
+						<div class="macro-item carb">C: <span id="totalCarb">0</span>g</div>
+					</div>
+					<button id="clearBtn">Vaciar Lista</button>
+					<button id="downloadBtn" style="background-color: #3498db; margin-top: 10px;">Guardar día</button>
+				</div>
+
+				<div class="pro-tip" style="margin-top: 20px; padding: 15px; border: 1px dashed #28a745; border-radius: 10px; font-size: 0.85em;">
+					<strong>💡 Tip Pro:</strong> ¿Te cuesta llegar a tus proteínas? 
+					<a href="TU_LINK_AFILIADO_PROTEINA" target="_blank" style="color: #28a745; text-decoration: underline;">
+						Ver proteína recomendada de calidad.
+					</a>
+				</div>
+
+			</div>
+			
+			<div class="chart-container">
+				<canvas id="macroChart"></canvas>
+			</div>
+				
 			<div class="left-column">
 				<h2>Productos Disponibles</h2>
 				<div class="search-box">
+					<input type="text" id="productSearch" placeholder="Filtrar catálogo...">
 					<select id="categoryFilter" class="filter-select">
 						<option value="todos">Todas las categorías</option>
 						<option value="Bebidas">Bebidas</option>
@@ -48,7 +82,6 @@
 						<option value="Fruta">Frutas</option>
 						<option value="Verdura">Verduras</option>
 					</select>
-					<input type="text" id="productSearch" placeholder="Filtrar catálogo...">
 				</div>
 				
 				<div id="quantityModal" style="display: none;">
@@ -62,32 +95,7 @@
 
 				<ul id="fullProductList" class="catalog-list"></ul>
 			</div>
-			
-			<div class="right-column">
-				<div class="diary">
-					<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; margin-bottom: 10px;">
-						<h2>Diario</h2>
-						<input type="date" id="datePicker" style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
-					</div>
-					<ul id="diaryList"></ul>
-					<div class="total">
-						<strong>Total: <span id="totalCalories">0</span> kcal</strong>
-					</div>
-					<button id="clearBtn">Vaciar Lista</button>
-					<button id="downloadBtn" style="background-color: #3498db; margin-top: 10px;">Guardar día</button>
-				</div>
 
-				<div class="pro-tip" style="margin-top: 20px; padding: 15px; border: 1px dashed #28a745; border-radius: 10px; font-size: 0.85em;">
-					<strong>💡 Tip Pro:</strong> ¿Te cuesta llegar a tus proteínas? 
-					<a href="TU_LINK_AFILIADO_PROTEINA" target="_blank" style="color: #28a745; text-decoration: underline;">
-						Ver proteína recomendada de calidad.
-					</a>
-				</div>
-
-				<div class="chart-container">
-					<canvas id="macroChart"></canvas>
-				</div>
-			</div>
 		</div>
 	</div>
 	

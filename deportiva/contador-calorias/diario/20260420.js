@@ -47,5 +47,29 @@ const diario_20260420 = [
         "prot": 39.6,
         "grasa": 20.4,
         "carb": 45.6
+    },
+    {
+        "id": 1776764687340,
+        "nombre": "Huevos duros (1 huevo 50g) (100g)",
+        "kcal": 121,
+        "prot": 13,
+        "grasa": 7.7,
+        "carb": 0.5
+    },
+    {
+        "id": 1776764699148,
+        "nombre": "Bonito del Norte en aceite de oliva (lata 75g escurrido) (80g)",
+        "kcal": 112,
+        "prot": 14.4,
+        "grasa": 5.84,
+        "carb": 0.4
+    },
+    {
+        "id": 1776764709837,
+        "nombre": "Tostadas 100% Espelta Integral (1 tostada 7g) (28g)",
+        "kcal": 107,
+        "prot": 4.760000000000001,
+        "grasa": 1.7920000000000003,
+        "carb": 16.520000000000003
     }
 ];

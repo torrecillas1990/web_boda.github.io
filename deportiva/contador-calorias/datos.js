@@ -26,9 +26,12 @@ const productosMercadonaBase = [
     { nombre: "Pechuga de Pavo", kcal: 105, prot: 22, grasa: 1.5, carb: 0 },
     { nombre: "Cinta de Lomo de Cerdo", kcal: 151, prot: 21, grasa: 7, carb: 0 },
     { nombre: "Salmón Ahumado", kcal: 191, prot: 23, grasa: 11, carb: 0.5 },
-    { nombre: "Atún al Natural (lata)", kcal: 101, prot: 24, grasa: 0.6, carb: 0 },
+    { nombre: "Atún Claro al Natural (lata 70g escurrido)", kcal: 98, prot: 21, grasa: 1.2, carb: 0.9 },
+    { nombre: "Atún Claro en Aceite de Oliva (lata 70g escurrido)", kcal: 245, prot: 21, grasa: 18, carb: 0.9 },
+    { nombre: "Bonito del Norte en aceite de oliva (lata 75g escurrido)", kcal: 140, prot: 18, grasa: 7.3, carb: 0.5 },
     { nombre: "Merluza Congelada", kcal: 71, prot: 16, grasa: 0.6, carb: 0 },
     { nombre: "Tiras de Pollo Asado", kcal: 165, prot: 30, grasa: 4.5, carb: 0.5 },
+    { nombre: "Huevos duros (1 huevo 50g)", kcal: 121, prot: 13, grasa: 7.7, carb: 0.5 },
 
     // --- CEREALES Y LEGUMBRES ---
     { nombre: "Avena en copos", kcal: 375, prot: 13, grasa: 7, carb: 59 },
@@ -37,7 +40,7 @@ const productosMercadonaBase = [
     { nombre: "Garbanzos Cocidos (bote)", kcal: 105, prot: 6, grasa: 2, carb: 14 },
     { nombre: "Lentejas Cocidas (bote)", kcal: 85, prot: 7, grasa: 0.5, carb: 11 },
     { nombre: "Pasta 100% Integral", kcal: 345, prot: 13, grasa: 2, carb: 65 },
-    { nombre: "Tortitas de Maíz", kcal: 380, prot: 7, grasa: 3, carb: 80 },
+    { nombre: "Tortitas de maíz Hacendado (1 Tortita 7.5g)", kcal: 368, prot: 7.5, grasa: 1.8, carb: 80 },
 
     // --- GRASAS Y SALSAS ---
     { nombre: "Hummus de Garbanzos", kcal: 240, prot: 8, grasa: 18, carb: 10 },
@@ -52,6 +55,7 @@ const productosMercadonaBase = [
     { nombre: "Pan 100% Integral Centeno", kcal: 230, prot: 8, grasa: 2, carb: 40 },
     { nombre: "Pan de Molde Integral", kcal: 245, prot: 9, grasa: 3, carb: 42 },
     { nombre: "Tostadas de Fibra y Sésamo", kcal: 390, prot: 12, grasa: 7, carb: 60 },
+    { nombre: "Tostadas 100% Espelta Integral (1 tostada 7g)", kcal: 382, prot: 17, grasa: 6.4, carb: 59 },
     { nombre: "Tofu Firme", kcal: 120, prot: 12, grasa: 7, carb: 2 },
     { nombre: "Edamame Congelado", kcal: 130, prot: 11, grasa: 5, carb: 10 },
     { nombre: "Salmorejo Fresco", kcal: 75, prot: 1, grasa: 5, carb: 6 },

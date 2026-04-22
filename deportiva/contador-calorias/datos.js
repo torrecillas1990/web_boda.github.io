@@ -31,7 +31,8 @@ const productosMercadonaBase = [
     { categoria: "Proteina", nombre: "Bonito del Norte en aceite de oliva (lata 75g escurrido)", kcal: 140, prot: 18, grasa: 7.3, carb: 0.5, obs: "" },
     { categoria: "Proteina", nombre: "Merluza Congelada", kcal: 71, prot: 16, grasa: 0.6, carb: 0, obs: "" },
     { categoria: "Proteina", nombre: "Tiras de Pollo Asado", kcal: 165, prot: 30, grasa: 4.5, carb: 0.5, obs: "" },
-    { categoria: "Proteina", nombre: "Huevos duros (1 huevo 50g)", kcal: 121, prot: 13, grasa: 7.7, carb: 0.5, obs: "Aprox. 50g-60g por unidad." },
+    { categoria: "Proteina", nombre: "Huevos duros", kcal: 121, prot: 13, grasa: 7.7, carb: 0.5, obs: "Aprox. 50g-60g por unidad." },
+    { categoria: "Proteina", nombre: "Pechuguita de pollo lonchas 99% La Carloteña", kcal: 125, prot: 26.8, grasa: 2, carb: 0.5, obs: "Cada loncha Aprox. 6g" },
 	
     // --- CEREALES Y LEGUMBRES ---
     { categoria: "Carbohidrato", nombre: "Avena en copos", kcal: 375, prot: 13, grasa: 7, carb: 59, obs: "" },
@@ -72,6 +73,7 @@ const productosMercadonaBase = [
     { categoria: "Carbohidrato", nombre: "Arándanos Frescos", kcal: 57, prot: 0.7, grasa: 0.3, carb: 14, obs: "" },
 	
 	// --- DULCES ---
+    { categoria: "Carbohidrato", nombre: "Nestle Extrafino Filipino Blanco", kcal: 557, prot: 4.4, grasa: 33.5, carb: 58.7, obs: "1 onza 8.5g" },
     { categoria: "Carbohidrato", nombre: "Chocolate con leche", kcal: 523, prot: 5.6, grasa: 28, carb: 59.8, obs: "" },
     { categoria: "Carbohidrato", nombre: "Cacao puro en polvo (Cuchara pequeña 5g aprox)", kcal: 375, prot: 25.5, grasa: 16, carb: 16.3, obs: "" }
 ];

@@ -55,5 +55,29 @@ const diario_20260421 = [
         "prot": 19.5,
         "grasa": 11.55,
         "carb": 0.75
+    },
+    {
+        "id": 1776848181162,
+        "nombre": "Nestle Extrafino Filipino Blanco (34g)",
+        "kcal": 189,
+        "prot": 1.4960000000000002,
+        "grasa": 11.39,
+        "carb": 19.958000000000002
+    },
+    {
+        "id": 1776848203633,
+        "nombre": "Tostadas 100% Espelta Integral (1 tostada 7g) (28g)",
+        "kcal": 107,
+        "prot": 4.760000000000001,
+        "grasa": 1.7920000000000003,
+        "carb": 16.520000000000003
+    },
+    {
+        "id": 1776848224249,
+        "nombre": "Pechuguita de pollo lonchas 99% La Carloteña (48g)",
+        "kcal": 60,
+        "prot": 12.863999999999999,
+        "grasa": 0.96,
+        "carb": 0.24
     }
 ];

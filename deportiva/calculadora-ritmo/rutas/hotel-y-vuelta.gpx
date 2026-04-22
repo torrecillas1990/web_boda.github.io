@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="VitalStats Running Pro" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <name>Mi Ruta VitalStats</name>
+    <trkseg>
+      <trkpt lat="37.975557" lon="-0.684185"></trkpt>
+      <trkpt lat="37.975658" lon="-0.679893"></trkpt>
+      <trkpt lat="37.974508" lon="-0.678456"></trkpt>
+      <trkpt lat="37.975574" lon="-0.673735"></trkpt>
+      <trkpt lat="37.976386" lon="-0.671353"></trkpt>
+      <trkpt lat="37.978263" lon="-0.664744"></trkpt>
+      <trkpt lat="37.978212" lon="-0.664594"></trkpt>
+      <trkpt lat="37.980783" lon="-0.663414"></trkpt>
+      <trkpt lat="37.984403" lon="-0.658758"></trkpt>
+      <trkpt lat="37.998963" lon="-0.652556"></trkpt>
+      <trkpt lat="37.981121" lon="-0.662920"></trkpt>
+      <trkpt lat="37.977840" lon="-0.667341"></trkpt>
+      <trkpt lat="37.975574" lon="-0.673735"></trkpt>
+      <trkpt lat="37.974610" lon="-0.678692"></trkpt>
+      <trkpt lat="37.975591" lon="-0.684035"></trkpt>
+    </trkseg>
+  </trk>
+</gpx>

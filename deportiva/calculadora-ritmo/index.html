@@ -114,6 +114,13 @@
 			<input type="file" id="gpx-upload" accept=".gpx" style="display: none;">
 		</div>
 		
+		<div class="group">
+			<label>Rutas Guardadas</label>
+			<select id="ruta-select" class="select-rutas">
+				<option value="">Cargando rutas...</option>
+			</select>
+		</div>
+		
         <div class="instructions">
             💡 <b>Tip:</b> Haz <u>clic derecho</u> en el mapa para añadir puntos y crear tu ruta. La distancia se dividirá automáticamente en Km y Metros.
         </div>
@@ -146,6 +153,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 <script src="../script.js"></script>
+<script src="./rutas/rutas.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

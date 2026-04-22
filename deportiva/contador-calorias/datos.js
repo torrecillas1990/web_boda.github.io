@@ -7,6 +7,10 @@ const productosMercadonaBase = [
     // --- COMIDAS PREPARADAS ---
     { categoria: "Preparado", nombre: "Tabule Oriental", kcal: 167, prot: 3.9, grasa: 5.2, carb: 25.4, obs: "Listo para comer." },
     { categoria: "Preparado", nombre: "Ensalada Pollo Queso", kcal: 179, prot: 9.4, grasa: 13, carb: 5.8, obs: "Incluye salsa y complementos." },
+	{ categoria: "Preparado", nombre: "Pollo con almendras", kcal: 145, prot: 9, grasa: 8, carb: 5, obs: "Racion de 200g aprox." },
+	{ categoria: "Preparado", nombre: "Fideos de arroz", kcal: 150, prot: 2, grasa: 2, carb: 75, obs: "Racion de 100g aprox." },
+	{ categoria: "Preparado", nombre: "Rollito de primavera", kcal: 120, prot: 5, grasa: 2, carb: 22, obs: "Racion de 100g aprox." },
+	{ categoria: "Preparado", nombre: "Gyosa de pollo", kcal: 170, prot: 10, grasa: 5, carb: 20, obs: "Una pesa 22g aprox." },
 	
     // --- LÁCTEOS Y PROTEÍNAS ---
     { categoria: "Proteina", nombre: "Yogur Proteínas Natural", kcal: 52, prot: 10, grasa: 0.1, carb: 3.1, obs: "Copa de 120g o 200g." },

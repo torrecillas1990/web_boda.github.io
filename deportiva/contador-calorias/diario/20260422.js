@@ -23,5 +23,37 @@ const diario_20260422 = [
         "prot": 4.2299999999999995,
         "grasa": 0.54,
         "carb": 52.875
+    },
+    {
+        "id": 1776869255724,
+        "nombre": "Gyosa de pollo (44g)",
+        "kcal": 75,
+        "prot": 4.4,
+        "grasa": 2.2,
+        "carb": 8.8
+    },
+    {
+        "id": 1776869265257,
+        "nombre": "Rollito de primavera (50g)",
+        "kcal": 60,
+        "prot": 2.5,
+        "grasa": 1,
+        "carb": 11
+    },
+    {
+        "id": 1776869274443,
+        "nombre": "Fideos de arroz (50g)",
+        "kcal": 75,
+        "prot": 1,
+        "grasa": 1,
+        "carb": 37.5
+    },
+    {
+        "id": 1776869282032,
+        "nombre": "Pollo con almendras (100g)",
+        "kcal": 145,
+        "prot": 9,
+        "grasa": 8,
+        "carb": 5
     }
 ];

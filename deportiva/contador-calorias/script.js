@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Peso detectado: ${savedWeight}kg. Ajustando cálculos...`);
         // Aquí podrías mostrar un mensaje: "Calculando en base a tus 75kg"
     }
+	
+	// Actualizar Gráfico Semanal
+	inicializarGraficoSemanal();
 });
 
 // --- VARIABLES DE ESTADO ---
@@ -31,7 +34,7 @@ datePicker.value = hoy;
 // Definimos registroDiario basado en la fecha del picker (SIN REDECLARAR)
 let registroDiario = historialNutricional[datePicker.value] || [];
 
-// --- GRÁFICO ---
+// --- GRÁFICO DIARIO ---
 const ctx = document.getElementById('macroChart').getContext('2d');
 let macroChart = new Chart(ctx, {
     type: 'doughnut',
@@ -44,6 +47,61 @@ let macroChart = new Chart(ctx, {
     },
     options: { responsive: true, maintainAspectRatio: false }
 });
+
+// --- GRÁFICO SEMANAL ---
+const ctxWeekly = document.getElementById('weeklyChart').getContext('2d');
+let weeklyChart;
+
+function inicializarGraficoSemanal() {
+    // Generar labels de los últimos 7 días
+    const labels = [];
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        labels.push(d.toISOString().split('T')[0]);
+    }
+
+    // Extraer datos del historial
+    const dataKcal = labels.map(date => (historialNutricional[date] || []).reduce((acc, item) => acc + item.kcal, 0));
+    const dataProt = labels.map(date => (historialNutricional[date] || []).reduce((acc, item) => acc + item.prot, 0));
+    const dataFat = labels.map(date => (historialNutricional[date] || []).reduce((acc, item) => acc + item.grasa, 0));
+    const dataCarb = labels.map(date => (historialNutricional[date] || []).reduce((acc, item) => acc + item.carb, 0));
+
+    if (weeklyChart) weeklyChart.destroy();
+
+    weeklyChart = new Chart(ctxWeekly, {
+        type: 'bar',
+        data: {
+            labels: labels.map(l => l.split('-').reverse().slice(0,2).join('/')), // Formato DD/MM
+            datasets: [
+                { label: 'Kcal', data: dataKcal, backgroundColor: '#9b59b6', hidden: false, yAxisID: 'y' },
+                { label: 'Proteína (g)', data: dataProt, backgroundColor: '#36A2EB', hidden: false, yAxisID: 'y1' },
+                { label: 'Grasas (g)', data: dataFat, backgroundColor: '#FF6384', hidden: false, yAxisID: 'y1' },
+                { label: 'Carbos (g)', data: dataCarb, backgroundColor: '#FFCE56', hidden: false, yAxisID: 'y1' }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { type: 'linear', position: 'left', title: { display: true, text: 'Calorías' } },
+                y1: { type: 'linear', position: 'right', title: { display: true, text: 'Gramos (Macros)' }, grid: { drawOnChartArea: false } }
+            }
+        }
+    });
+}
+
+// Control de visibilidad de datasets
+document.querySelectorAll('.macro-toggle').forEach(checkbox => {
+    checkbox.onchange = (e) => {
+        const index = e.target.value;
+        weeklyChart.setDatasetVisibility(index, e.target.checked);
+        weeklyChart.update();
+    };
+});
+
+// IMPORTANTE: Llama a inicializarGraficoSemanal() dentro de tu función actualizarApp() 
+// para que el gráfico se refresque cada vez que añades comida.
 
 // --- CAMBIAR DE DÍA ---
 datePicker.onchange = () => {
@@ -165,9 +223,12 @@ function actualizarApp() {
     totalFatDisplay.textContent = t.g.toFixed(1);
     totalCarbDisplay.textContent = t.c.toFixed(1);
 
-    // Actualizar Gráfico
+    // Actualizar Gráfico Diario
     macroChart.data.datasets[0].data = [t.p.toFixed(1), t.g.toFixed(1), t.c.toFixed(1)];
     macroChart.update();
+	
+    // Actualizar Gráfico Semanal
+	inicializarGraficoSemanal();
 
     // Guardar en LocalStorage
     historialNutricional[datePicker.value] = registroDiario;

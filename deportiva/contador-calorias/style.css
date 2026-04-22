@@ -127,3 +127,23 @@
 .prot { color: #36A2EB; } /* Azul */
 .fat { color: #FF6384; }  /* Rosa/Rojo */
 .carb { color: #FFCE56; } /* Amarillo/Naranja */
+
+.chart-controls label {
+    background: #eee;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: 0.3s;
+    user-select: none;
+}
+
+.chart-controls input {
+    margin-right: 5px;
+}
+
+/* Cambiar color de fondo al estar activo */
+.chart-controls label:has(input:checked) {
+    background: #2ecc71;
+    color: white;
+}

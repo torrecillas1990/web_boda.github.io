@@ -34,6 +34,36 @@
 
 		<div class="main-layout">
 		
+			<div class="left-column">
+				<h2>Productos Disponibles</h2>
+				<div class="search-box">
+					<input type="text" id="productSearch" placeholder="Filtrar catálogo...">
+					<select id="categoryFilter" class="filter-select">
+						<option value="todos">Todas las categorías</option>
+						<option value="Bebidas">Bebidas</option>
+						<option value="Preparado">Preparados</option>
+						<option value="Suplemento">Preparados</option>
+						<option value="Lacteo">Lácteos</option>
+						<option value="Proteina">Proteina</option>
+						<option value="Carbohidrato">Carbohidratos</option>
+						<option value="Grasa">Grasas</option>
+						<option value="Fruta">Frutas</option>
+						<option value="Verdura">Verduras</option>
+					</select>
+				</div>
+				
+				<div id="quantityModal" style="display: none;">
+					<p id="modalProductName"></p>
+					<div class="modal-controls">
+						<input type="number" id="quantityInput" value="100">
+						<button id="confirmBtn">Añadir</button>
+						<button id="cancelBtn">✕</button>
+					</div>
+				</div>
+
+				<ul id="fullProductList" class="catalog-list"></ul>
+			</div>
+			
 			<div class="right-column">
 				<div class="diary">
 					<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; margin-bottom: 10px;">
@@ -62,40 +92,29 @@
 
 			</div>
 			
-			<div class="chart-container">
-				<canvas id="macroChart"></canvas>
-			</div>
-				
-			<div class="left-column">
-				<h2>Productos Disponibles</h2>
-				<div class="search-box">
-					<input type="text" id="productSearch" placeholder="Filtrar catálogo...">
-					<select id="categoryFilter" class="filter-select">
-						<option value="todos">Todas las categorías</option>
-						<option value="Bebidas">Bebidas</option>
-						<option value="Preparado">Preparados</option>
-						<option value="Suplemento">Preparados</option>
-						<option value="Lacteo">Lácteos</option>
-						<option value="Proteina">Proteína Animal</option>
-						<option value="Carbohidrato">Carbohidratos</option>
-						<option value="Grasa">Grasas</option>
-						<option value="Fruta">Frutas</option>
-						<option value="Verdura">Verduras</option>
-					</select>
+			<div class="weekly-section" style="margin-top: 40px; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+				<h2>Evolución Diaria</h2>
+
+				<div style="height: 300px;">
+					<canvas id="macroChart"></canvas>
 				</div>
+			</div>
+			
+			<div class="weekly-section" style="margin-top: 40px; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+				<h2>Evolución Semanal</h2>
 				
-				<div id="quantityModal" style="display: none;">
-					<p id="modalProductName"></p>
-					<div class="modal-controls">
-						<input type="number" id="quantityInput" value="100">
-						<button id="confirmBtn">Añadir</button>
-						<button id="cancelBtn">✕</button>
-					</div>
+				<div class="chart-controls" style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+					<label><input type="checkbox" class="macro-toggle" value="0" checked> Calorías</label>
+					<label><input type="checkbox" class="macro-toggle" value="1" checked> Proteína</label>
+					<label><input type="checkbox" class="macro-toggle" value="2" checked> Grasas</label>
+					<label><input type="checkbox" class="macro-toggle" value="3" checked> Carbohidratos</label>
 				</div>
 
-				<ul id="fullProductList" class="catalog-list"></ul>
+				<div style="height: 300px;">
+					<canvas id="weeklyChart"></canvas>
+				</div>
 			</div>
-
+			
 		</div>
 	</div>
 	

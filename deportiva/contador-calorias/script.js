@@ -52,44 +52,97 @@ let macroChart = new Chart(ctx, {
 const ctxWeekly = document.getElementById('weeklyChart').getContext('2d');
 let weeklyChart;
 
-function inicializarGraficoSemanal() {
-    // Generar labels de los últimos 7 días
-    const labels = [];
-    for (let i = 6; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        labels.push(d.toISOString().split('T')[0]);
-    }
+const timeRangeFilter = document.getElementById('timeRangeFilter');
 
-    // Extraer datos del historial
-    const dataKcal = labels.map(date => (historialNutricional[date] || []).reduce((acc, item) => acc + item.kcal, 0));
-    const dataProt = labels.map(date => (historialNutricional[date] || []).reduce((acc, item) => acc + item.prot, 0));
-    const dataFat = labels.map(date => (historialNutricional[date] || []).reduce((acc, item) => acc + item.grasa, 0));
-    const dataCarb = labels.map(date => (historialNutricional[date] || []).reduce((acc, item) => acc + item.carb, 0));
+function obtenerRangoFechas(opcion) {
+    let fechas = [];
+    let inicio = new Date();
+    inicio.setHours(0,0,0,0);
+    
+    const hoy = new Date();
+    hoy.setHours(0,0,0,0);
+
+    switch(opcion) {
+        case 'last7':
+            for(let i=6; i>=0; i--) {
+                let d = new Date();
+                d.setDate(hoy.getDate() - i);
+                fechas.push(d.toISOString().split('T')[0]);
+            }
+            break;
+            
+        case 'currentWeek':
+            // Lunes a Domingo
+            let diaSemana = hoy.getDay(); // 0 es Dom, 1 es Lun
+            let dif = hoy.getDate() - diaSemana + (diaSemana === 0 ? -6 : 1);
+            let lunes = new Date(hoy.setDate(dif));
+            for(let i=1; i<=7; i++) {
+                let d = new Date(lunes);
+                d.setDate(lunes.getDate() + i);
+                fechas.push(d.toISOString().split('T')[0]);
+            }
+            break;
+
+        case 'lastMonth':
+            for(let i=29; i>=0; i--) {
+                let d = new Date();
+                d.setDate(hoy.getDate() - i);
+                fechas.push(d.toISOString().split('T')[0]);
+            }
+            break;
+
+        case 'last6Months':
+            for(let i=180; i>=0; i-=5) { // Saltos de 5 días para no saturar el eje X
+                let d = new Date();
+                d.setDate(hoy.getDate() - i);
+                fechas.push(d.toISOString().split('T')[0]);
+            }
+            fechas.reverse();
+            break;
+
+        case 'all':
+            fechas = Object.keys(historialNutricional).sort();
+            break;
+    }
+    return fechas;
+}
+
+function inicializarGraficoSemanal() {
+    const rango = timeRangeFilter.value;
+    const etiquetas = obtenerRangoFechas(rango);
+
+    // Sumar datos para cada fecha del rango
+    const dataKcal = etiquetas.map(f => (historialNutricional[f] || []).reduce((a, b) => a + b.kcal, 0));
+    const dataProt = etiquetas.map(f => (historialNutricional[f] || []).reduce((a, b) => a + b.prot, 0));
+    const dataFat = etiquetas.map(f => (historialNutricional[f] || []).reduce((a, b) => a + b.grasa, 0));
+    const dataCarb = etiquetas.map(f => (historialNutricional[f] || []).reduce((a, b) => a + b.carb, 0));
 
     if (weeklyChart) weeklyChart.destroy();
 
     weeklyChart = new Chart(ctxWeekly, {
         type: 'bar',
         data: {
-            labels: labels.map(l => l.split('-').reverse().slice(0,2).join('/')), // Formato DD/MM
+            labels: etiquetas.map(f => f.split('-').reverse().slice(0,2).join('/')),
             datasets: [
-                { label: 'Kcal', data: dataKcal, backgroundColor: '#9b59b6', hidden: false, yAxisID: 'y' },
-                { label: 'Proteína (g)', data: dataProt, backgroundColor: '#36A2EB', hidden: false, yAxisID: 'y1' },
-                { label: 'Grasas (g)', data: dataFat, backgroundColor: '#FF6384', hidden: false, yAxisID: 'y1' },
-                { label: 'Carbos (g)', data: dataCarb, backgroundColor: '#FFCE56', hidden: false, yAxisID: 'y1' }
+                { label: 'Kcal', data: dataKcal, backgroundColor: '#9b59b6', yAxisID: 'y' },
+                { label: 'Prot (g)', data: dataProt, backgroundColor: '#36A2EB', yAxisID: 'y1' },
+                { label: 'Grasa (g)', data: dataFat, backgroundColor: '#FF6384', yAxisID: 'y1' },
+                { label: 'Carb (g)', data: dataCarb, backgroundColor: '#FFCE56', yAxisID: 'y1' }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: { type: 'linear', position: 'left', title: { display: true, text: 'Calorías' } },
-                y1: { type: 'linear', position: 'right', title: { display: true, text: 'Gramos (Macros)' }, grid: { drawOnChartArea: false } }
+                y: { type: 'linear', position: 'left', title: { display: true, text: 'Kcal' } },
+                y1: { type: 'linear', position: 'right', title: { display: true, text: 'Gramos' } }
             }
         }
     });
 }
+
+// Escuchar cambios en el filtro de tiempo
+timeRangeFilter.addEventListener('change', inicializarGraficoSemanal);
 
 // Control de visibilidad de datasets
 document.querySelectorAll('.macro-toggle').forEach(checkbox => {

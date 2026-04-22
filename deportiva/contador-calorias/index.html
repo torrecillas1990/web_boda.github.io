@@ -103,11 +103,22 @@
 			<div class="weekly-section" style="margin-top: 40px; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
 				<h2>Evolución Semanal</h2>
 				
-				<div class="chart-controls" style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-					<label><input type="checkbox" class="macro-toggle" value="0" checked> Calorías</label>
-					<label><input type="checkbox" class="macro-toggle" value="1" checked> Proteína</label>
-					<label><input type="checkbox" class="macro-toggle" value="2" checked> Grasas</label>
-					<label><input type="checkbox" class="macro-toggle" value="3" checked> Carbohidratos</label>
+				<div class="chart-controls" style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">					
+					<div id="macroToggles">
+						<label><input type="checkbox" class="macro-toggle" value="0" checked> Calorías</label>
+						<label><input type="checkbox" class="macro-toggle" value="1" checked> Proteína</label>
+						<label><input type="checkbox" class="macro-toggle" value="2" checked> Grasas</label>
+						<label><input type="checkbox" class="macro-toggle" value="3" checked> Carbohidratos</label>
+					</div>
+
+					<select id="timeRangeFilter" class="filter-select" style="width: auto;">
+						<option value="currentWeek">Esta semana (Lun - Dom)</option>
+						<option value="last7">Últimos 7 días</option>
+						<option value="lastMonth">Último Mes</option>
+						<option value="last6Months">Últimos 6 meses</option>
+						<option value="lastYear">Último año</option>
+						<option value="all">Todo el registro</option>
+					</select>
 				</div>
 
 				<div style="height: 300px;">

@@ -62,6 +62,16 @@
                 </div>
             </div>
         </div>
+		
+		<div class="group">
+			<label>Velocidad Media</label>
+			<div class="multi-fields">
+				<div>
+					<input type="number" id="v_kmh" placeholder="13.3" step="0.1" min="0">
+					<span class="sub-label">KM/H</span>
+				</div>
+			</div>
+		</div>
 
         <div class="group">
             <label>Tiempo Final</label>
@@ -80,12 +90,54 @@
                 </div>
             </div>
         </div>
-
+		
+		<div class="group">
+			<label>Tu Peso (kg) y Calorías</label>
+			<div class="multi-fields">
+				<div>
+					<input type="number" id="user_weight" placeholder="70" min="0">
+					<span class="sub-label">PESO (KG)</span>
+				</div>
+				<div>
+					<input type="text" id="res_calories" placeholder="0" readonly 
+						   style="background: #f0f0f0; font-weight: bold; color: #d9534f;">
+					<span class="sub-label">CALORÍAS ESTIMADAS</span>
+				</div>
+			</div>
+		</div>
+		
         <button class="btn-clear" onclick="clearAll()">Reiniciar Datos</button>
-        
+        <button class="btn-export" onclick="exportToGPX()">Descargar Ruta (.GPX)</button>
+		
+		<div class="import-section">
+			<label for="gpx-upload" class="btn-import">Subir Ruta GPX</label>
+			<input type="file" id="gpx-upload" accept=".gpx" style="display: none;">
+		</div>
+		
         <div class="instructions">
             💡 <b>Tip:</b> Haz <u>clic derecho</u> en el mapa para añadir puntos y crear tu ruta. La distancia se dividirá automáticamente en Km y Metros.
         </div>
+		
+		<div class="reference-table">
+			<h3>Equivalencias Rápidas</h3>
+			<table>
+				<thead>
+					<tr>
+						<th>Ritmo (min/km)</th>
+						<th>Velocidad (km/h)</th>
+						<th>Nivel (Aprox.)</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr><td>3:30</td><td>17.1</td><td>Élite / Series</td></tr>
+					<tr><td>4:00</td><td>15.0</td><td>Avanzado</td></tr>
+					<tr><td>4:30</td><td>13.3</td><td>Competitivo</td></tr>
+					<tr><td>5:00</td><td>12.0</td><td>Intermedio</td></tr>
+					<tr><td>5:30</td><td>10.9</td><td>Rodaje suave</td></tr>
+					<tr><td>6:00</td><td>10.0</td><td>Iniciación</td></tr>
+				</tbody>
+			</table>
+		</div>
     </div>
 
     <div id="map"></div>

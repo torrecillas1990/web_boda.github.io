@@ -19,6 +19,22 @@
     flex-direction: column;
 }
 
+.multi-fields input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%; /* Asegura que llenen su columna */
+    box-sizing: border-box;
+}
+
+/* Eliminar las flechas laterales de los inputs de número para un look más limpio */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 .sub-label {
     font-size: 0.7rem;
     color: #888;
@@ -45,15 +61,120 @@
 }
 
 .btn-clear {
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s ease;
+}
+
+.btn-clear:hover {
+    background: #5a6268;
+}
+
+.btn-clear:active {
+    transform: translateY(1px);
+}
+
+@media (max-width: 900px) {
+    .container {
+        padding: 10px;
+        gap: 15px;
+    }
+    .card {
+        order: 2; /* Pone la calculadora debajo del mapa en móvil */
+    }
+    #map {
+        order: 1; /* El mapa primero para que puedan marcar la ruta antes de ver resultados */
+    }
+}
+
+.reference-table {
+    margin-top: 25px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.reference-table h3 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.reference-table table {
     width: 100%;
-    background: #6c757d;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.reference-table th {
+    background-color: #f8f9fa;
+    color: #555;
+    font-weight: bold;
+    padding: 8px;
+    border-bottom: 2px solid #dee2e6;
+    text-align: left;
+}
+
+.reference-table td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    color: #666;
+}
+
+.reference-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Color para el "Nivel" */
+.reference-table td:last-child {
+    font-style: italic;
+    color: #007bff;
+}
+
+.btn-export {
+    width: 100%;
+    background: #28a745;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-export:hover {
+    background: #218838;
+}
+
+.btn-import {
+    display: block;
+    width: 100%;
+    background: #007bff;
     color: white;
     padding: 10px;
     border-radius: 6px;
     margin-top: 15px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    box-sizing: border-box;
 }
 
-@media (max-width: 900px) {
-    .container { grid-template-columns: 1fr; }
-    #map { height: 350px; }
+.btn-import:hover {
+    background: #0056b3;
+}
+
+#res_calories {
+    border: 2px solid #d9534f;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+/* Un pequeño efecto para el campo de peso */
+#user_weight:focus {
+    border-color: #d9534f;
+    outline: none;
+    box-shadow: 0 0 5px rgba(217, 83, 79, 0.3);
 }

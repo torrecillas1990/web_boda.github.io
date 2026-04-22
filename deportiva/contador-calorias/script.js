@@ -99,7 +99,16 @@ function obtenerRangoFechas(opcion) {
             }
             fechas.reverse();
             break;
-
+			
+		case 'lastYear':
+			for(let i=364; i>=0; i-=7) { // Agrupamos por semanas para no saturar
+				let d = new Date();
+				d.setDate(hoy.getDate() - i);
+				fechas.push(d.toISOString().split('T')[0]);
+			}
+			fechas.reverse();
+			break;
+			
         case 'all':
             fechas = Object.keys(historialNutricional).sort();
             break;
@@ -111,31 +120,97 @@ function inicializarGraficoSemanal() {
     const rango = timeRangeFilter.value;
     const etiquetas = obtenerRangoFechas(rango);
 
-    // Sumar datos para cada fecha del rango
+    // Determinamos el tipo de gráfico según la cantidad de datos
+    // Si hay más de 31 puntos, usamos líneas para mejor visibilidad
+    const tipoGrafico = etiquetas.length > 31 ? 'line' : 'bar';
+
     const dataKcal = etiquetas.map(f => (historialNutricional[f] || []).reduce((a, b) => a + b.kcal, 0));
     const dataProt = etiquetas.map(f => (historialNutricional[f] || []).reduce((a, b) => a + b.prot, 0));
     const dataFat = etiquetas.map(f => (historialNutricional[f] || []).reduce((a, b) => a + b.grasa, 0));
     const dataCarb = etiquetas.map(f => (historialNutricional[f] || []).reduce((a, b) => a + b.carb, 0));
 
+	// CÁLCULO DE TOTALES DEL RANGO
+    const sumaKcal = dataKcal.reduce((a, b) => a + b, 0);
+    const sumaProt = dataProt.reduce((a, b) => a + b, 0);
+    const sumaFat = dataFat.reduce((a, b) => a + b, 0);
+    const sumaCarb = dataCarb.reduce((a, b) => a + b, 0);
+    
+    // Promedio diario (solo días con registros para no desvirtuar)
+    const diasConDatos = dataKcal.filter(k => k > 0).length || 1;
+    const promedioKcal = Math.round(sumaKcal / diasConDatos);
+
+    // ACTUALIZAR LEYENDA EN EL DOM
+    document.getElementById('rangeKcal').textContent = sumaKcal.toLocaleString();
+    document.getElementById('avgKcal').textContent = promedioKcal.toLocaleString();
+    document.getElementById('rangeProt').textContent = Math.round(sumaProt);
+    document.getElementById('rangeFat').textContent = Math.round(sumaFat);
+    document.getElementById('rangeCarb').textContent = Math.round(sumaCarb);
+	
+	//CREACION O DESTRUCCION DEL CHART
     if (weeklyChart) weeklyChart.destroy();
 
     weeklyChart = new Chart(ctxWeekly, {
-        type: 'bar',
+        type: tipoGrafico,
         data: {
             labels: etiquetas.map(f => f.split('-').reverse().slice(0,2).join('/')),
             datasets: [
-                { label: 'Kcal', data: dataKcal, backgroundColor: '#9b59b6', yAxisID: 'y' },
-                { label: 'Prot (g)', data: dataProt, backgroundColor: '#36A2EB', yAxisID: 'y1' },
-                { label: 'Grasa (g)', data: dataFat, backgroundColor: '#FF6384', yAxisID: 'y1' },
-                { label: 'Carb (g)', data: dataCarb, backgroundColor: '#FFCE56', yAxisID: 'y1' }
+                { 
+                    label: 'Kcal', 
+                    data: dataKcal, 
+                    backgroundColor: '#9b59b6',
+                    tension: 0.3, // Curvatura de la línea
+                    fill: tipoGrafico === 'line', // Relleno solo en modo línea
+                    yAxisID: 'y' 
+                },
+                { 
+                    label: 'Prot (g)', 
+                    data: dataProt, 
+                    backgroundColor: '#36A2EB',
+                    tension: 0.3,
+                    yAxisID: 'y1' 
+                },
+                { 
+                    label: 'Grasa (g)', 
+                    data: dataFat, 
+                    backgroundColor: '#FF6384',
+                    tension: 0.3,
+                    yAxisID: 'y1' 
+                },
+                { 
+                    label: 'Carb (g)', 
+                    data: dataCarb, 
+                    backgroundColor: '#FFCE56',
+                    tension: 0.3,
+                    yAxisID: 'y1' 
+                }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
             scales: {
-                y: { type: 'linear', position: 'left', title: { display: true, text: 'Kcal' } },
-                y1: { type: 'linear', position: 'right', title: { display: true, text: 'Gramos' } }
+                y: { 
+                    type: 'linear', 
+                    position: 'left', 
+                    title: { display: true, text: 'Calorías' },
+                    beginAtZero: true
+                },
+                y1: { 
+                    type: 'linear', 
+                    position: 'right', 
+                    title: { display: true, text: 'Macros (g)' },
+                    beginAtZero: true,
+                    grid: { drawOnChartArea: false }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false // Ocultamos leyenda porque ya tenemos los toggles manuales
+                }
             }
         }
     });

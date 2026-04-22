@@ -1,69 +1,135 @@
-/* Cuadrícula de inputs */
-.grid-inputs {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
+/* Variables de Consistencia */
+:root {
+    --primary: #007bff;
+    --success: #27ae60;
+    --warning: #e67e22;
+    --danger: #e74c3c;
+    --dark: #2c3e50;
+    --light-bg: #f8f9fa;
+    --white: #ffffff;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Layout Principal: Formulario y Resultados Lado a Lado */
+.main-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    align-items: flex-start;
     margin-bottom: 30px;
 }
 
-.input-group {
+#fat-form {
+    flex: 1.2; /* El formulario es un poco más ancho */
+    background: var(--white);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+}
+
+#result-container {
+    flex: 1;
     display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Grid de Inputs interno */
+.grid-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.input-group {
+    display: flex; /* IMPORTANTE: Volvemos a activar flex para alinear label e input */
     flex-direction: column;
 }
 
 .input-group label {
     margin-bottom: 8px;
-    font-weight: bold;
-    color: #555;
-    font-size: 0.9em;
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 0.8rem;
+    text-transform: uppercase;
 }
 
-.input-group input, .input-group select {
+.input-group input, 
+.input-group select {
     padding: 12px;
-    border: 1px solid #ddd;
+    border: 2px solid #edf2f7;
     border-radius: 8px;
-    font-size: 1em;
+    transition: all 0.3s ease;
 }
 
-.full-width { grid-column: 1 / -1; }
+.input-group input:focus {
+    border-color: var(--primary);
+    outline: none;
+}
 
 /* Tarjetas de Resultados */
-#result-container {
-    margin-top: 40px;
-    animation: fadeIn 0.5s ease;
-}
-
 .result-card {
-    background: #fdfdfd;
+    background: var(--white);
     padding: 25px;
-    border-radius: 12px;
-    border-left: 5px solid #007bff;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border-left: 6px solid var(--primary);
 }
 
-.result-card.calories { border-left-color: #27ae60; }
+.result-card.calories { border-left-color: var(--success); }
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas en resultados para que no ocupen mucho alto */
     gap: 15px;
+}
+
+.stats-grid div {
+    padding: 12px;
+    background: var(--light-bg);
+    border-radius: 10px;
     text-align: center;
-    margin-top: 15px;
 }
 
 .stats-grid p {
-    font-size: 1.4em;
-    font-weight: bold;
-    margin: 5px 0;
-    color: #2c3e50;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--dark);
 }
 
-.hidden { display: none; }
+/* Botones */
+.button-group {
+    display: flex;
+    gap: 10px;
+}
 
-/* Colores por objetivo */
-.target-def p { color: #e67e22; }
-.target-maint p { color: #27ae60; }
-.target-gain p { color: #2980b9; }
+button {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    background: var(--primary);
+    font-weight: bold;
+    cursor: pointer;
+}
 
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.btn-clear { background: var(--danger); }
+
+/* Gráfico a pantalla completa debajo */
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Responsividad */
+@media (max-width: 1024px) {
+    .main-layout {
+        flex-direction: column;
+    }
+    #fat-form, #result-container {
+        width: 100%;
+    }
+}

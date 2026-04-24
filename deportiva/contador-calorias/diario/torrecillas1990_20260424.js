@@ -1,5 +1,6 @@
-// Registro Nutricional exportado: 2026-04-24
-const diario_20260424 = [
+// Registro VitalStats - Usuario: runner01
+// Fecha: 2026-04-24
+const diario_runner01_20260424 = [
     {
         "id": 1777021914629,
         "nombre": "Leche Proteinas (250g)",

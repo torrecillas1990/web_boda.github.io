@@ -24,6 +24,7 @@
             <li><a href="../calculadora-grasa-corporal/index.html">Grasa Corporal</a></li>
             <li><a href="../calculadora-ritmo/index.html">Ritmo Runner</a></li>
             <li><a href="../registro-premium/index.html" class="btn-nav">Premium</a></li>
+				<li><a href="#" id="authBtn" class="btn-nav" onclick="abrirLogin()">Login</a></li>
         </ul>
     </div>
 </nav>
@@ -116,8 +117,19 @@
 			</div>
 		</div>
     </div>
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../script.js"></script>
-    <script src="script.js"></script>
+	
+	<div id="authModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+		<div style="background:white; padding:30px; border-radius:15px; width:300px; text-align:center;">
+			<h2>Identificarse</h2>
+			<input type="text" id="loginUser" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:10px;">
+			<input type="password" id="loginPass" placeholder="Contraseña" style="width:100%; margin-bottom:20px; padding:10px;">
+			<button onclick="intentarLogin()" style="background:#28a745; color:white; border:none; padding:10px 20px; cursor:pointer; width:100%; border-radius:5px;">Entrar</button>
+			<button onclick="cerrarLogin()" style="background:none; border:none; color:red; margin-top:10px; cursor:pointer;">Cancelar</button>
+		</div>
+	</div>
 </body>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../recursos/usuarios.js"></script>
+<script src="../script.js"></script>
+<script src="script.js"></script>
 </html>

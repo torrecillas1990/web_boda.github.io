@@ -1,8 +1,0 @@
-nombre,kcal,prot,grasa,carb
-Hummus de Garbanzos,240,8,18,10
-Guacamole,155,1.5,14,3
-Avena en copos,375,13,7,59
-Yogur Proteínas Arándanos,64,10,0.1,5
-Pechuga de Pollo,110,23,1,0
-Tortitas de Maíz,380,7,3,80
-Claras de huevo,50,11,0,0.7

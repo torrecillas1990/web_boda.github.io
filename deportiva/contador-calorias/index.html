@@ -25,6 +25,7 @@
 				<li><a href="../calculadora-grasa-corporal/index.html">Grasa Corporal</a></li>
 				<li><a href="../calculadora-ritmo/index.html">Ritmo Runner</a></li>
 				<li><a href="../registro-premium/index.html" class="btn-nav">Premium</a></li>
+				<li><a href="#" id="authBtn" class="btn-nav" onclick="abrirLogin()">Login</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -40,9 +41,9 @@
 					<input type="text" id="productSearch" placeholder="Filtrar catálogo...">
 					<select id="categoryFilter" class="filter-select">
 						<option value="todos">Todas las categorías</option>
-						<option value="Bebidas">Bebidas</option>
+						<option value="Bebida">Bebidas</option>
 						<option value="Preparado">Preparados</option>
-						<option value="Suplemento">Preparados</option>
+						<option value="Suplemento">Suplementos</option>
 						<option value="Lacteo">Lácteos</option>
 						<option value="Proteina">Proteina</option>
 						<option value="Carbohidrato">Carbohidratos</option>
@@ -82,7 +83,25 @@
 					<button id="clearBtn">Vaciar Lista</button>
 					<button id="downloadBtn" style="background-color: #3498db; margin-top: 10px;">Guardar día</button>
 				</div>
-
+				<div class="import-section" style="margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 10px;">
+					<h3>📅 Carga Masiva de Historial</h3>
+					<div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+						<div>
+							<label>Desde:</label><br>
+							<input type="date" id="importRangeStart">
+						</div>
+						<div>
+							<label>Hasta:</label><br>
+							<input type="date" id="importRangeEnd">
+						</div>
+					</div>
+					
+					<input type="file" id="bulkImportFile" style="display: none;" accept=".js" multiple>
+					<button id="bulkImportBtn" style="background-color: #27ae60; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; width: 100%;">
+						🔄 Sincronizar Rango desde Servidor
+					</button>
+					<p id="importStatus" style="font-size: 0.8em; color: #666; margin-top: 5px;"></p>
+				</div>
 				<div class="pro-tip" style="margin-top: 20px; padding: 15px; border: 1px dashed #28a745; border-radius: 10px; font-size: 0.85em;">
 					<strong>💡 Tip Pro:</strong> ¿Te cuesta llegar a tus proteínas? 
 					<a href="TU_LINK_AFILIADO_PROTEINA" target="_blank" style="color: #28a745; text-decoration: underline;">
@@ -137,9 +156,19 @@
 		</div>
 	</div>
 	
+	<div id="authModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+		<div style="background:white; padding:30px; border-radius:15px; width:300px; text-align:center;">
+			<h2>Identificarse</h2>
+			<input type="text" id="loginUser" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:10px;">
+			<input type="password" id="loginPass" placeholder="Contraseña" style="width:100%; margin-bottom:20px; padding:10px;">
+			<button onclick="intentarLogin()" style="background:#28a745; color:white; border:none; padding:10px 20px; cursor:pointer; width:100%; border-radius:5px;">Entrar</button>
+			<button onclick="cerrarLogin()" style="background:none; border:none; color:red; margin-top:10px; cursor:pointer;">Cancelar</button>
+		</div>
+	</div>
+</body>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="datos.js"></script> 
-    <script src="../script.js"></script>
+	<script src="../recursos/usuarios.js"></script>
+	<script src="../script.js"></script>
 	<script src="script.js"></script>
-</body>
 </html>

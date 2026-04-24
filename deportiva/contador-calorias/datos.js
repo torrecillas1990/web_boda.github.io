@@ -13,7 +13,7 @@ const productosMercadonaBase = [
 	{ categoria: "Preparado", nombre: "Gyosa de pollo", kcal: 170, prot: 10, grasa: 5, carb: 20, obs: "Una pesa 22g aprox." },
 	
     // --- LÁCTEOS Y PROTEÍNAS ---
-    { categoria: "Proteina", nombre: "Yogur Proteínas Natural", kcal: 52, prot: 10, grasa: 0.1, carb: 3.1, obs: "Copa de 120g o 200g." },
+    { categoria: "Proteina", nombre: "Yogur Proteínas Natural", kcal: 52, prot: 10, grasa: 0.1, carb: 3.1, obs: "un yogur de 120g." },
     { categoria: "Proteina", nombre: "Yogur Proteínas Arándanos", kcal: 64, prot: 10, grasa: 0.1, carb: 5, obs: "" },
 	{ categoria: "Proteina", nombre: "Yogur Griego Natural", kcal: 129, prot: 3.9, grasa: 10.8, carb: 3.9, obs: "Alto en grasas saludables." },
     { categoria: "Proteina", nombre: "Queso Batido 0%", kcal: 46, prot: 8, grasa: 0.1, carb: 3.5, obs: "" },
@@ -23,11 +23,12 @@ const productosMercadonaBase = [
     { categoria: "Proteina", nombre: "Kéfir Natural 0%", kcal: 36, prot: 3.9, grasa: 0.5, carb: 4.8, obs: "Bebida de 250g" },
     { categoria: "Proteina", nombre: "Claras de Huevo", kcal: 50, prot: 11, grasa: 0, carb: 0.7, obs: "" },
     { categoria: "Proteina", nombre: "Queso Cottage", kcal: 99, prot: 12, grasa: 4, carb: 3.3, obs: "Bajo en calorías, alto en caseína." },
+    { categoria: "Proteina", nombre: "Queso Curado Mezcla", kcal: 431, prot: 25, grasa: 36, carb: 1.8, obs: "Loncha 20g aprox." },
     { categoria: "Suplemento", nombre: "Barrita de proteínas Chocolate", kcal: 386, prot: 33, grasa: 17, carb: 38, obs: "Peso barrita: 60g." },
     
     // --- CARNES Y PESCADOS ---
-    { categoria: "Proteina", nombre: "Pechuga de Pollo", kcal: 110, prot: 23, grasa: 1, carb: 0, obs: "Peso en crudo." },
-    { categoria: "Proteina", nombre: "Pechuga de Pavo", kcal: 105, prot: 22, grasa: 1.5, carb: 0, obs: "Peso en crudo." },
+    { categoria: "Proteina", nombre: "Pechuga de Pollo", kcal: 110, prot: 23, grasa: 1, carb: 0, obs: "un filete 100g aprox." },
+    { categoria: "Proteina", nombre: "Pechuga de Pavo", kcal: 105, prot: 22, grasa: 1.5, carb: 0, obs: "un filete 100g aprox." },
     { categoria: "Proteina", nombre: "Cinta de Lomo de Cerdo", kcal: 151, prot: 21, grasa: 7, carb: 0, obs: "" },
     { categoria: "Proteina", nombre: "Salmón Ahumado", kcal: 191, prot: 23, grasa: 11, carb: 0.5, obs: "" },
     { categoria: "Proteina", nombre: "Atún Claro al Natural", kcal: 98, prot: 21, grasa: 1.2, carb: 0.9, obs: "Lata de 70g según peso escurrido." },
@@ -37,6 +38,9 @@ const productosMercadonaBase = [
     { categoria: "Proteina", nombre: "Tiras de Pollo Asado", kcal: 165, prot: 30, grasa: 4.5, carb: 0.5, obs: "" },
     { categoria: "Proteina", nombre: "Huevos duros", kcal: 121, prot: 13, grasa: 7.7, carb: 0.5, obs: "Aprox. 50g-60g por unidad." },
     { categoria: "Proteina", nombre: "Pechuguita de pollo lonchas 99% La Carloteña", kcal: 125, prot: 26.8, grasa: 2, carb: 0.5, obs: "Cada loncha Aprox. 6g" },
+	{ categoria: "Proteina", nombre: "Boquerones en Vinagre (Escurrido)", kcal: 156, prot: 24.7, grasa: 6, carb: 0.7, obs: "Cada boqueron escurrido Aprox. 3g" },
+	{ categoria: "Proteina", nombre: "Boquerones en Aliñados en ajo y perejil (Escurrido)", kcal: 149, prot: 22, grasa: 6.8, carb: 0, obs: "Cada boqueron escurrido Aprox. 3g" },
+	{ categoria: "Proteina", nombre: "Lomo de cebo ibérico 50% raza ibérica", kcal: 298, prot: 39.1, grasa: 15.5, carb: 0.7, obs: "Cada loncha 5.5g aprox." },
 	
     // --- CEREALES Y LEGUMBRES ---
     { categoria: "Carbohidrato", nombre: "Avena en copos", kcal: 375, prot: 13, grasa: 7, carb: 59, obs: "" },
@@ -50,6 +54,7 @@ const productosMercadonaBase = [
     // --- GRASAS Y SALSAS ---
     { categoria: "Carbohidrato", nombre: "Hummus de Garbanzos", kcal: 240, prot: 8, grasa: 18, carb: 10, obs: "" },
     { categoria: "Grasa", nombre: "Guacamole Fresh", kcal: 155, prot: 1.5, grasa: 14, carb: 3, obs: "" },
+    { categoria: "Grasa", nombre: "Alioli", kcal: 749, prot: 1.2, grasa: 82, carb: 1.5, obs: "1 cucharada cafe 5g." },
     { categoria: "Grasa", nombre: "Aceite de Oliva Virgen Extra", kcal: 884, prot: 0, grasa: 100, carb: 0, obs: "1 cucharada sopera ≈ 10g-12g." },
     { categoria: "Grasa", nombre: "Crema de Cacahuete 100%", kcal: 618, prot: 30, grasa: 50, carb: 7, obs: "" },
     { categoria: "Grasa", nombre: "Tahini (Pasta de sésamo)", kcal: 710, prot: 25, grasa: 65, carb: 3, obs: "" },
@@ -75,9 +80,12 @@ const productosMercadonaBase = [
     { categoria: "Carbohidrato", nombre: "Espinacas Frescas", kcal: 23, prot: 2.9, grasa: 0.4, carb: 3.6, obs: "" },
     { categoria: "Carbohidrato", nombre: "Judías Verdes", kcal: 31, prot: 1.8, grasa: 0.2, carb: 7, obs: "" },
     { categoria: "Carbohidrato", nombre: "Arándanos Frescos", kcal: 57, prot: 0.7, grasa: 0.3, carb: 14, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Nispero", kcal: 47, prot: 0.4, grasa: 0.2, carb: 12, obs: "Peso de un nispero unos 60g aprox." },
 	
 	// --- DULCES ---
     { categoria: "Carbohidrato", nombre: "Nestle Extrafino Filipino Blanco", kcal: 557, prot: 4.4, grasa: 33.5, carb: 58.7, obs: "1 onza 8.5g" },
+    { categoria: "Carbohidrato", nombre: "Chocolate Valor Puro con Almendras", kcal: 570, prot: 9.9, grasa: 40, carb: 38, obs: "1 onza 13.8g" },
     { categoria: "Carbohidrato", nombre: "Chocolate con leche", kcal: 523, prot: 5.6, grasa: 28, carb: 59.8, obs: "" },
-    { categoria: "Carbohidrato", nombre: "Cacao puro en polvo (Cuchara pequeña 5g aprox)", kcal: 375, prot: 25.5, grasa: 16, carb: 16.3, obs: "" }
+    { categoria: "Carbohidrato", nombre: "Cacao puro en polvo (Cuchara pequeña 5g aprox)", kcal: 375, prot: 25.5, grasa: 16, carb: 16.3, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Bizcocho Chocolate con pepitas", kcal: 436, prot: 9.5, grasa: 24, carb: 45, obs: "" }
 ];

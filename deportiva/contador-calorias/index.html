@@ -33,94 +33,72 @@
 	<div class="container">
 		<h1>🛒 Contador de Calorías</h1>
 
-		<div class="main-layout">
+		<div class="search-row">
+			<input type="text" id="productSearch" placeholder="Buscar producto...">
+			<select id="categoryFilter" class="filter-select">
+				<option value="todos">Todas las categorías</option>
+				<option value="Bebida">Bebidas</option>
+				<option value="Preparado">Preparados</option>
+				<option value="Suplemento">Suplementos</option>
+				<option value="Lacteo">Lácteos</option>
+				<option value="Proteina">Proteina</option>
+				<option value="Carbohidrato">Carbohidratos</option>
+				<option value="Grasa">Grasas</option>
+				<option value="Fruta">Frutas</option>
+				<option value="Verdura">Verduras</option>
+			</select>
+			<button id="clearSearchBtn" class="btn-clear">🧹 Limpiar</button>
+		</div>
 		
-			<div class="left-column">
-				<h2>Productos Disponibles</h2>
-				<div class="search-box">
-					<input type="text" id="productSearch" placeholder="Filtrar catálogo...">
-					<select id="categoryFilter" class="filter-select">
-						<option value="todos">Todas las categorías</option>
-						<option value="Bebida">Bebidas</option>
-						<option value="Preparado">Preparados</option>
-						<option value="Suplemento">Suplementos</option>
-						<option value="Lacteo">Lácteos</option>
-						<option value="Proteina">Proteina</option>
-						<option value="Carbohidrato">Carbohidratos</option>
-						<option value="Grasa">Grasas</option>
-						<option value="Fruta">Frutas</option>
-						<option value="Verdura">Verduras</option>
-					</select>
-				</div>
+		<div id="quantityModal" style="display: none;">
+			<p id="modalProductName"></p>
+			<div class="modal-controls">
+				<input type="number" id="quantityInput" value="100">
+				<button id="confirmBtn">Añadir</button>
+				<button id="cancelBtn">✕</button>
+			</div>
+		</div>
 				
-				<div id="quantityModal" style="display: none;">
-					<p id="modalProductName"></p>
-					<div class="modal-controls">
-						<input type="number" id="quantityInput" value="100">
-						<button id="confirmBtn">Añadir</button>
-						<button id="cancelBtn">✕</button>
-					</div>
-				</div>
+		<div class="product-dropdown-container">
+			<select id="fullProductDropdown" class="main-dropdown">
+				<option value="">-- Selecciona un producto para añadir --</option>
+			</select>
+		</div>
 
-				<ul id="fullProductList" class="catalog-list"></ul>
+		<section class="section-card bulk-section">
+			<h3>📅 Sincronización Servidor</h3>
+			<div class="flex-row">
+				<input type="date" id="importRangeStart">
+				<input type="date" id="importRangeEnd">
+				<button id="bulkImportBtn">🔄 Sincronizar</button>
 			</div>
-			
-			<div class="right-column">
-				<!-- <div class="diary"> --!>
-				<div class="import-section" style="margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 10px;">
-					<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; margin-bottom: 10px;">
-						<h2>Diario</h2>
-						<input type="date" id="datePicker" style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
-					</div>
-					<ul id="diaryList"></ul>
-					<div class="total">
-						<strong>Total: <span id="totalCalories">0</span> kcal</strong>
-					</div>
-					<div class="macro-summary">
-						<div class="macro-item prot">P: <span id="totalProt">0</span>g</div>
-						<div class="macro-item fat">G: <span id="totalFat">0</span>g</div>
-						<div class="macro-item carb">C: <span id="totalCarb">0</span>g</div>
-					</div>
-					<button id="clearBtn">Vaciar Lista</button>
-					<button id="downloadBtn" style="background-color: #3498db; margin-top: 10px;">Guardar día</button>
-				</div>
-				<div class="import-section" style="margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 10px;">
-					<h3>📅 Carga Masiva de Historial</h3>
-					<p id="currentRangeDisplay" style="font-size: 0.85em; color: #27ae60; font-weight: bold; margin-bottom: 10px;"></p>
-					<div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
-						<div>
-							<label>Desde:</label><br>
-							<input type="date" id="importRangeStart">
-						</div>
-						<div>
-							<label>Hasta:</label><br>
-							<input type="date" id="importRangeEnd">
-						</div>
-					</div>
-					
-					<input type="file" id="bulkImportFile" style="display: none;" accept=".js" multiple>
-					<button id="bulkImportBtn" style="background-color: #27ae60; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; width: 100%;">
-						🔄 Sincronizar Rango desde Servidor
-					</button>
-					<p id="importStatus" style="font-size: 0.8em; color: #666; margin-top: 5px;"></p>
-				</div>
-				<div class="pro-tip" style="margin-top: 20px; padding: 15px; border: 1px dashed #28a745; border-radius: 10px; font-size: 0.85em;">
-					<strong>💡 Tip Pro:</strong> ¿Te cuesta llegar a tus proteínas? 
-					<a href="TU_LINK_AFILIADO_PROTEINA" target="_blank" style="color: #28a745; text-decoration: underline;">
-						Ver proteína recomendada de calidad.
-					</a>
-				</div>
+			<p id="currentRangeDisplay"></p>
+		</section>
 
-			</div>
-			
-			<div class="weekly-section" style="margin-top: 40px; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-				<h2>Evolución Diaria</h2>
-
-				<div style="height: 300px;">
-					<canvas id="macroChart"></canvas>
+		<section class="section-card diary-circular-grid">
+			<div class="diary-part">
+				<div class="diary-header">
+					<h2>Diario</h2>
+					<input type="date" id="datePicker">
 				</div>
+				<ul id="diaryList"></ul>
+				<div class="total-row">
+					<strong>Total: <span id="totalCalories">0</span> kcal</strong>
+				</div>
+				<div class="macro-summary">
+					<span class="prot">P: <span id="totalProt">0</span>g</span>
+					<span class="fat">G: <span id="totalFat">0</span>g</span>
+					<span class="carb">C: <span id="totalCarb">0</span>g</span>
+				</div>
+				<button id="clearBtn">Vaciar Lista</button>
+				<button id="downloadBtn">Guardar día</button>
 			</div>
-			
+			<div class="chart-part">
+				<canvas id="macroChart"></canvas>
+			</div>
+		</section>
+
+		<section class="section-card">
 			<div class="weekly-section" style="margin-top: 40px; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
 				<h2>Evolución Semanal</h2>
 				
@@ -154,8 +132,7 @@
 					<div class="total-badge carb">Total Carb: <span id="rangeCarb">0</span>g</div>
 				</div>
 			</div>
-			
-		</div>
+		</section>
 	</div>
 	
 	<div id="authModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">

@@ -1,180 +1,175 @@
-/* Catálogo de productos */
-.catalog-list {
-    list-style: none;
-    padding: 0;
-    max-height: 500px;
-    overflow-y: auto;
-    border: 1px solid #eee;
-    border-radius: 8px;
+/* --- LAYOUT GENERAL --- */
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.catalog-list li {
+h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+
+/* --- LINEA 1: BUSCADOR Y FILTROS --- */
+.search-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap; /* Para móviles */
+}
+
+.search-row input {
+    flex: 2;
     padding: 12px;
-    border-bottom: 1px solid #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    min-width: 200px;
+}
+
+.filter-select {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+}
+
+.btn-clear {
+    padding: 10px 20px;
+    background: #95a5a6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-clear:hover { background: #7f8c8d; }
+
+/* --- LINEA 2: DESPLEGABLE DE PRODUCTOS --- */
+.main-dropdown {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+    border: 2px solid #3498db;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    background-color: #f0f7ff;
+    cursor: pointer;
+    color: #2c3e50;
+}
+
+/* --- ESTILO DE TARJETAS (SECCIONES) --- */
+.section-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    border: 1px solid #eee;
+}
+
+.section-card h2, .section-card h3 {
+    margin-top: 0;
+    color: #34495e;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* --- LINEA 3: CARGA MASIVA --- */
+.flex-row {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.flex-row div { flex: 1; min-width: 150px; }
+
+/* --- LINEA 4: DIARIO Y GRÁFICO CIRCULAR (GRID) --- */
+.diary-circular-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr; /* Diario más ancho que el círculo */
+    gap: 30px;
+}
+
+.diary-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: background 0.2s;
-}
-
-.catalog-list li:hover { background: #f0f7ff; }
-
-/* El Diario (Columna derecha) */
-.diary {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 12px;
-    position: sticky;
-    top: 80px; /* Para que te siga al hacer scroll */
-}
-
-.total {
-    font-size: 1.2rem;
-    padding: 15px 0;
-    color: #27ae60;
-    text-align: right;
-}
-
-/* Modal de cantidad */
-#quantityModal {
-    background: white;
-    padding: 15px;
-    border: 2px solid #007bff;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.modal-controls { display: flex; gap: 10px; margin-top: 10px; }
-.modal-controls input { width: 80px; padding: 5px; }
-
-#confirmBtn { background: #27ae60; color: white; padding: 5px 15px; }
-#cancelBtn { background: #e74c3c; color: white; padding: 5px 10px; }
-
-/* Estilo para el buscador y select */
-.search-box {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
     margin-bottom: 15px;
 }
 
-/* Mejoras al selector de categorías */
-.filter-select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 5px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-family: inherit;
-    background-color: white;
-    cursor: pointer;
+#diaryList {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
-/* Estilo de los items de la lista */
-.product-item {
-    padding: 12px;
+.diary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
     border-bottom: 1px solid #eee;
-    cursor: pointer;
-    transition: background 0.2s;
+    align-items: center;
 }
 
-.product-item:hover {
-    background-color: #f0fdf4; /* Un verde muy clarito */
-}
-
-.product-item small {
-    display: block;
-    color: #888;
-    line-height: 1.2;
-    margin-top: 4px;
-}
-
-/* Badges de categorías */
-.badge {
-    font-size: 0.65rem;
-    padding: 2px 8px;
-    border-radius: 12px;
-    color: white;
-    font-weight: bold;
-}
-
-.badge.bebida { background-color: #6c757d; }
-.badge.preparado { background-color: #fd7e14; }
-.badge.suplemento { background-color: #fd7e14; }
-.badge.lácteos { background-color: #0dcaf0; }
-.badge.proteina { background-color: #dc3545; }
-.badge.carbohidrato { background-color: #ffc107; color: #000; }
-.badge.grasa { background-color: #6610f2; }
-.badge.fruta { background-color: #198754; }
-.badge.verdura { background-color: #198754; }
-
-/* Contenedor de macros */
-.macro-summary {
+/* Gráfico Circular */
+.chart-part {
     display: flex;
-    justify-content: space-around;
-    margin: 10px 0;
-    padding: 10px;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
-
-.macro-item {
-    font-weight: bold;
-    font-size: 0.9em;
-}
-
-.prot { color: #36A2EB; } /* Azul */
-.fat { color: #FF6384; }  /* Rosa/Rojo */
-.carb { color: #FFCE56; } /* Amarillo/Naranja */
-
-.chart-controls label {
-    background: #eee;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.85em;
-    cursor: pointer;
-    transition: 0.3s;
-    user-select: none;
-}
-
-.chart-controls input {
-    margin-right: 5px;
-}
-
-/* Cambiar color de fondo al estar activo */
-.chart-controls label:has(input:checked) {
-    background: #2ecc71;
-    color: white;
-}
-
-.weekly-totals-summary {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 20px;
-    padding: 15px;
-    background: #fdfdfd;
-    border: 1px solid #eee;
-    border-radius: 10px;
+    align-items: center;
     justify-content: center;
+    min-height: 250px;
 }
 
-.total-badge {
-    padding: 8px 15px;
-    background: #f1f1f1;
-    border-radius: 6px;
-    font-size: 0.9em;
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .diary-circular-grid {
+        grid-template-columns: 1fr; /* Uno debajo del otro en móvil */
+    }
+    
+    .search-row {
+        flex-direction: column;
+    }
+    
+    .search-row input, .search-row select, .btn-clear {
+        width: 100%;
+    }
+}
+
+/* --- BOTONES DE ACCIÓN --- */
+#clearBtn, #downloadBtn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
     font-weight: bold;
-    color: #444;
+    margin-top: 10px;
+    transition: 0.3s;
 }
 
-.total-badge.prot { border-left: 4px solid #36A2EB; }
-.total-badge.fat { border-left: 4px solid #FF6384; }
-.total-badge.carb { border-left: 4px solid #FFCE56; }
+#clearBtn { background: #fdf0f0; color: #e74c3c; border: 1px solid #f5c6cb; }
+#clearBtn:hover { background: #e74c3c; color: white; }
 
-/* Resaltar el promedio diario */
-#avgKcal {
-    color: #9b59b6;
-    font-size: 1.1em;
+#downloadBtn { background: #3498db; color: white; }
+#downloadBtn:hover { background: #2980b9; }
+
+/* Modal de cantidad (el de siempre pero retocado) */
+#quantityModal {
+    display: none;
+    border: 2px solid #3498db;
+    background: #fffbe6;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 15px 0;
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
+    /* Añadimos la animación aquí para cuando el JS lo pase a display: block */
+    animation: slideIn 0.3s ease-out forwards; 
+}
+@keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }

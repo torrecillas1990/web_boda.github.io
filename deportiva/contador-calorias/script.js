@@ -8,6 +8,85 @@ let weeklyChart = null;
 // --- INICIALIZACIÓN PRINCIPAL ---
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("🚀 VitalStats Iniciado");
+    
+    // 1. CONFIGURAR BOTONES DEL MODAL (Una sola vez al cargar la página)
+    const confirmBtn = document.getElementById('confirmBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const quantityInput = document.getElementById('quantityInput');
+
+    if (confirmBtn) {
+        confirmBtn.onclick = () => {
+            if (!productoSeleccionado) return;
+
+            const cantidad = parseFloat(quantityInput.value);
+            if (isNaN(cantidad) || cantidad <= 0) {
+                alert("Por favor, introduce una cantidad válida.");
+                return;
+            }
+
+            const nuevoItem = {
+                id: Date.now(),
+                nombre: `${productoSeleccionado.nombre} (${cantidad}g/ml)`,
+                kcal: (productoSeleccionado.kcal * cantidad) / 100,
+                prot: (productoSeleccionado.prot * cantidad) / 100,
+                grasa: (productoSeleccionado.grasa * cantidad) / 100,
+                carb: (productoSeleccionado.carb * cantidad) / 100
+            };
+
+            registroDiario.push(nuevoItem);
+            cerrarModal();
+            actualizarApp();
+            console.log("✅ Añadido:", nuevoItem.nombre);
+        };
+    }
+
+    if (cancelBtn) cancelBtn.onclick = cerrarModal;
+
+    if (quantityInput) {
+        quantityInput.onkeydown = (e) => {
+            if (e.key === 'Enter') confirmBtn.click();
+        };
+    }
+
+    // 2. CONFIGURAR EL BUSCADOR Y LIMPIAR
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    if (clearSearchBtn) {
+        clearSearchBtn.onclick = () => {
+            document.getElementById('productSearch').value = '';
+            document.getElementById('categoryFilter').value = 'todos';
+            filtrarYRenderizar(); 
+        };
+    }
+
+    // 3. ESCUCHADOR DEL DROPDOWN (Seleccionar producto y ABRIR el modal)
+	const productDropdown = document.getElementById('fullProductDropdown');
+	if (productDropdown) {
+		productDropdown.onchange = (e) => {
+			const productId = e.target.value;
+			console.log("🔎 1. ID seleccionado en el selector:", productId);
+
+			if (!productId) return;
+			
+			if (typeof productosMercadonaBase === 'undefined') {
+				console.error("❌ ERROR: La base de datos 'productosMercadonaBase' no existe.");
+				return;
+			}
+
+			// Buscamos el producto. Usamos 'id' o 'nombre' por si acaso
+			const p = productosMercadonaBase.find(item => item.id == productId || item.nombre === productId);
+			
+			console.log("🍔 2. Producto encontrado en la base de datos:", p);
+
+			if (p) {
+				abrirModal(p); 
+				console.log("✅ 3. Modal abierto para:", p.nombre);
+			} else {
+				console.error("❌ ERROR: No se encontró ningún producto que coincida con ese valor.");
+			}
+			
+			e.target.value = ""; // Limpiamos
+		};
+	}
 
     // 1. Cargar datos locales
     const dataString = VitalStats.get('historialNutricional');
@@ -146,16 +225,19 @@ function actualizarApp() {
     if (typeof inicializarGraficoSemanal === 'function') inicializarGraficoSemanal();
 }
 
+// Nueva función para renderizar en el desplegable
 function renderizarCatalogo(lista) {
-    const listEl = document.getElementById('fullProductList');
-    if (!listEl) return;
-    listEl.innerHTML = '';
+    const dropdown = document.getElementById('fullProductDropdown');
+    if (!dropdown) return;
+    
+    // Guardamos la primera opción
+    dropdown.innerHTML = '<option value="">-- Selecciona un producto para añadir --</option>';
+    
     lista.forEach(p => {
-        const li = document.createElement('li');
-        li.className = "product-item";
-        li.innerHTML = `<strong>${p.nombre}</strong><br><small>${p.kcal} kcal | ${p.categoria}</small>`;
-        li.onclick = () => abrirModal(p);
-        listEl.appendChild(li);
+        const opt = document.createElement('option');
+        opt.value = p.nombre;
+        opt.textContent = `${p.nombre} (${p.kcal} kcal)`;
+        dropdown.appendChild(opt);
     });
 }
 
@@ -168,6 +250,7 @@ function abrirModal(p) {
 
 function cerrarModal() {
     document.getElementById('quantityModal').style.display = 'none';
+    document.getElementById('quantityInput').value = '100'; // Reset a 100 por defecto
     productoSeleccionado = null;
 }
 

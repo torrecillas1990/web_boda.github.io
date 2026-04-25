@@ -57,6 +57,14 @@
                 };
             }
             // Transformamos el botón premium en el acceso al perfil
+			// Si el botón no existe, simplemente no hacemos nada.
+			const premiumBtn = document.getElementById('premiumBtn');
+			if (!premiumBtn) {
+				console.log("ℹ️ Nota: premiumBtn no está en el HTML, saltando...");
+				return; 
+			}
+			// Si existe
+			premiumBtn.style.display = 'none'; 
             if (premiumBtn && !premiumBtn.classList.contains('active')) {
                 premiumBtn.innerText = "Mi Perfil";
                 premiumBtn.href = "#"; // O a una página de perfil futuro
@@ -93,7 +101,8 @@
 	logout: function() {
         // 1. Borramos la sesión
         localStorage.removeItem('vs_session');
-        
+        localStorage.removeItem('ultimo_rango_sincronizado');
+		
         // 2. Opcional: Borrar datos temporales de la sesión actual 
         // (Si prefieres que al cerrar sesión los gráficos se limpien)
         // localStorage.removeItem('historialNutricional');

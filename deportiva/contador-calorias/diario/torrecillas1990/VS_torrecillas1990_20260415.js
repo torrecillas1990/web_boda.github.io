@@ -1,5 +1,4 @@
-// Registro Nutricional exportado: 2026-04-15
-const diario_20260415 = [
+var VS_torrecillas1990_20260415 = [
     {
         "id": 1776250975623,
         "nombre": "Yogur Proteínas Arándanos (20g)",

@@ -1,5 +1,4 @@
-// Registro Nutricional exportado: 2026-04-21
-const diario_20260421 = [
+var VS_torrecillas1990_20260421 = [
     {
         "id": 1776764766113,
         "nombre": "Leche Proteinas (1 vaso 250g) (300g)",

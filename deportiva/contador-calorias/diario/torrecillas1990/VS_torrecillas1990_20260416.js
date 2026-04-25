@@ -1,5 +1,4 @@
-// Registro Nutricional exportado: 2026-04-16
-const diario_20260416 = [
+var VS_torrecillas1990_20260416 = [
     {
         "id": 1776341322494,
         "nombre": "Naranja 1 pieza son 150 gramos (450g)",

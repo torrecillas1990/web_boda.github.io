@@ -6,26 +6,45 @@ let macroChart = null;
 let weeklyChart = null;
 
 // --- INICIALIZACIÓN PRINCIPAL ---
-document.addEventListener('DOMContentLoaded', () => {    
-    // 1. Cargar datos usando el prefijo de usuario de VitalStats
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log("🚀 VitalStats Iniciado");
+
+    // 1. Cargar datos locales
     const dataString = VitalStats.get('historialNutricional');
     historialNutricional = JSON.parse(dataString) || {};
 
-    // 2. Configuración de Fecha Inicial
+    // 2. CONFIGURACIÓN PREVIA DEL CALENDARIO (Fundamental)
     const datePicker = document.getElementById('datePicker');
     const hoy = new Date().toISOString().split('T')[0];
     
     if (datePicker) {
-        datePicker.value = hoy;
-        registroDiario = historialNutricional[hoy] || [];
-
+        datePicker.value = hoy; // Ahora el input ya tiene "2026-04-25"
+        
+        // Escuchador de cambios manuales
         datePicker.addEventListener('change', () => {
             registroDiario = historialNutricional[datePicker.value] || [];
             actualizarApp();
         });
     }
 
-    // 3. Inicializar Gráfico Diario
+    // 3. CARGA MASIVA DEL SERVIDOR
+    const pendientes = JSON.parse(localStorage.getItem('pendiente_carga_servidor'));
+    if (pendientes && pendientes.length > 0) {
+        console.log("📥 Detectados archivos pendientes...");
+        await ejecutarCargaMasivaServidor(pendientes);
+        
+        // Tras la carga, actualizamos registroDiario con la fecha que tenga el calendario
+        if (datePicker) {
+            registroDiario = historialNutricional[datePicker.value] || [];
+        }
+    } else {
+        // Si no hay carga, simplemente asignamos lo que haya en LocalStorage para hoy
+        if (datePicker) {
+            registroDiario = historialNutricional[datePicker.value] || [];
+        }
+    }
+
+    // 4. Inicializar Gráficos (Solo si existen)
     const ctx = document.getElementById('macroChart');
     if (ctx) {
         macroChart = new Chart(ctx.getContext('2d'), {
@@ -41,122 +60,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Catálogo y Filtros
-    if (typeof productosMercadonaBase !== 'undefined') {
-        renderizarCatalogo(productosMercadonaBase);
-    }
-
+    // 5. Catálogo y Filtros
+    if (typeof productosMercadonaBase !== 'undefined') renderizarCatalogo(productosMercadonaBase);
     const searchInput = document.getElementById('productSearch');
     const categoryFilter = document.getElementById('categoryFilter');
     if (searchInput) searchInput.addEventListener('input', filtrarYRenderizar);
     if (categoryFilter) categoryFilter.addEventListener('change', filtrarYRenderizar);
 
-    // 5. Lógica del Modal
-    const confirmBtn = document.getElementById('confirmBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
-    if (confirmBtn) {
-        confirmBtn.onclick = () => {
-            const quantityInput = document.getElementById('quantityInput');
-            if (!productoSeleccionado || !quantityInput) return;
+    // 6. Lógica del Botón Sincronizar
+    const bulkBtn = document.getElementById('bulkImportBtn');
+    if (bulkBtn) {
+        bulkBtn.onclick = function() {
+            const start = document.getElementById('importRangeStart').value;
+            const end = document.getElementById('importRangeEnd').value;
+            if (!start || !end) return alert("Selecciona un rango.");
 
-            const gramos = parseFloat(quantityInput.value);
-            if (isNaN(gramos) || gramos <= 0) return;
-
-            const factor = gramos / 100;
-            registroDiario.push({
-                id: Date.now(),
-                nombre: `${productoSeleccionado.nombre} (${gramos}g)`,
-                kcal: Math.round(productoSeleccionado.kcal * factor),
-                prot: productoSeleccionado.prot * factor,
-                grasa: productoSeleccionado.grasa * factor,
-                carb: productoSeleccionado.carb * factor
-            });
-
-            actualizarApp();
-            cerrarModal();
-        };
-    }
-    if (cancelBtn) cancelBtn.onclick = cerrarModal;
-
-    // 6. Botones de Acción (Vaciar y Exportar)
-    const clearBtn = document.getElementById('clearBtn');
-    if (clearBtn) {
-        clearBtn.onclick = () => {
-            if (confirm("¿Vaciar lista de hoy?")) {
-                registroDiario = [];
-                actualizarApp();
-            }
+            const lista = generarNombresArchivosPorRango(start, end);
+            localStorage.setItem('ultimo_rango_sincronizado', JSON.stringify({ start, end }));
+            localStorage.setItem('pendiente_carga_servidor', JSON.stringify(lista));
+            window.location.reload();
         };
     }
 
-    const downloadBtn = document.getElementById('downloadBtn');
-    if (downloadBtn) {
-        downloadBtn.onclick = () => {
-            if (registroDiario.length === 0) return;
-            const session = JSON.parse(localStorage.getItem('vs_session'));
-            const user = session ? session.user : "anonimo";
-            const date = document.getElementById('datePicker').value;
-            const content = `const VS_${user}_${date.replace(/-/g,'')} = ${JSON.stringify(registroDiario, null, 4)};`;
-            const blob = new Blob([content], { type: 'application/javascript' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `VS_${user}_${date.replace(/-/g,'')}.js`;
-            a.click();
-        };
-    }
-
-    // 7. Filtros Gráfico Semanal
-    const timeRangeFilter = document.getElementById('timeRangeFilter');
-    if (timeRangeFilter) timeRangeFilter.addEventListener('change', inicializarGraficoSemanal);
-
-    const macroToggles = document.querySelectorAll('.macro-toggle');
-    macroToggles.forEach(checkbox => {
-        checkbox.addEventListener('change', (e) => {
-            if (weeklyChart) {
-                weeklyChart.setDatasetVisibility(e.target.value, e.target.checked);
-                weeklyChart.update();
-            }
-        });
-    });
-
-    // --- REGISTRAR RANGO Y RECARGAR ---
-	const bulkBtn = document.getElementById('bulkImportBtn');
-	if (bulkBtn) {
-		bulkBtn.onclick = () => {
-			const start = document.getElementById('importRangeStart').value;
-			const end = document.getElementById('importRangeEnd').value;
-
-			if (!start || !end) return alert("Selecciona un rango de fechas.");
-
-			// 1. Generamos los nombres de archivos esperados
-			const listaArchivos = generarNombresArchivosPorRango(start, end);
-			
-			// 2. Guardamos en una clave especial para que el sistema los cargue al reiniciar
-			localStorage.setItem('pendiente_carga_servidor', JSON.stringify(listaArchivos));
-			
-			// 3. Recargamos la página
-			window.location.reload();
-		};
-	}
-
-	// --- DETECTOR DE CARGA PENDIENTE (Se ejecuta cada vez que carga la página) ---
-	const pendientes = JSON.parse(localStorage.getItem('pendiente_carga_servidor'));
-	if (pendientes && pendientes.length > 0) {
-		ejecutarCargaMasivaServidor(pendientes);
-	}
-
+    // 7. PINTADO FINAL
     actualizarApp();
+    
+    // Mostrar rango
+    const display = document.getElementById('currentRangeDisplay');
+    const savedRange = JSON.parse(localStorage.getItem('ultimo_rango_sincronizado'));
+    if (display && savedRange) {
+        const fInicio = savedRange.start.split('-').reverse().join('/');
+        const fFin = savedRange.end.split('-').reverse().join('/');
+        display.innerHTML = `✅ Historial cargado del ${fInicio} al ${fFin}`;
+    }
 });
 
 // --- FUNCIONES DE CORE ---
-
 function actualizarApp() {
     const diaryList = document.getElementById('diaryList');
     if (!diaryList) return;
 
     let t = { kcal: 0, p: 0, g: 0, c: 0 };
     diaryList.innerHTML = '';
-
+    
     registroDiario.forEach(item => {
         t.kcal += item.kcal; t.p += item.prot; t.g += item.grasa; t.c += item.carb;
         const li = document.createElement('li');
@@ -169,6 +115,7 @@ function actualizarApp() {
         diaryList.appendChild(li);
     });
 
+    // Actualizar UI
     document.getElementById('totalCalories').textContent = Math.round(t.kcal);
     document.getElementById('totalProt').textContent = t.p.toFixed(1);
     document.getElementById('totalFat').textContent = t.g.toFixed(1);
@@ -179,12 +126,24 @@ function actualizarApp() {
         macroChart.update();
     }
 
-    // Persistencia con prefijo de usuario
-    const dateVal = document.getElementById('datePicker').value;
-    historialNutricional[dateVal] = registroDiario;
-    VitalStats.save('historialNutricional', JSON.stringify(historialNutricional));
+	// --- PERSISTENCIA SEGURA ---
+    const datePicker = document.getElementById('datePicker');
+    if (datePicker) {
+        const dateVal = datePicker.value;
+        
+        // Solo guardamos si el día tiene datos o si ya existía en el historial
+        // Esto evita que al cargar la página se sobrescriba con "vacío" por error
+        if (registroDiario.length > 0 || (historialNutricional[dateVal] && historialNutricional[dateVal].length > 0)) {
+            historialNutricional[dateVal] = registroDiario;
+            VitalStats.save('historialNutricional', JSON.stringify(historialNutricional));
+        }
+    }
 
-    inicializarGraficoSemanal();
+    if (macroChart) {
+        macroChart.data.datasets[0].data = [t.p.toFixed(1), t.g.toFixed(1), t.c.toFixed(1)];
+        macroChart.update();
+    }
+    if (typeof inicializarGraficoSemanal === 'function') inicializarGraficoSemanal();
 }
 
 function renderizarCatalogo(lista) {
@@ -297,44 +256,65 @@ function obtenerRangoFechas(opcion) {
 }
 
 async function ejecutarCargaMasivaServidor(lista) {
-    let cargados = 0;
     const session = JSON.parse(localStorage.getItem('vs_session'));
     const usuario = session ? session.user : "anonimo";
+    let cargados = 0;
 
     for (const nombre of lista) {
-        // Extraer fecha del nombre: VS_admin_20260424.js -> 2026-04-24
-        const f = nombre.match(/(\d{8})/)[0];
-        const fechaClave = `${f.substring(0,4)}-${f.substring(4,6)}-${f.substring(6,8)}`;
-        const varName = `VS_${usuario}_${f}`;
-
         try {
-            // Cargamos el script desde la carpeta ./diario/
+            const match = nombre.match(/(\d{8})/);
+            if (!match) continue;
+            
+            const f = match[0]; // 20260424
+            const fechaClave = `${f.substring(0,4)}-${f.substring(4,6)}-${f.substring(6,8)}`;
+            const varName = `VS_${usuario}_${f}`;
+
+            // 1. Carga del script (Sin ?t= porque en local puede fallar)
             await new Promise((resolve, reject) => {
                 const s = document.createElement('script');
-                s.src = `./diario/${nombre}`; // Ruta relativa a la carpeta diario
+                s.src = `./diario/${nombre}`; 
                 s.onload = resolve;
                 s.onerror = reject;
                 document.head.appendChild(s);
             });
 
-            if (window[varName]) {
-                historialNutricional[fechaClave] = window[varName];
-                cargados++;
-                delete window[varName];
+            // 2. SISTEMA DE ESPERA (Polling)
+            // A veces en local el script carga pero la variable tarda milisegundos en existir
+            let datos = null;
+            for (let i = 0; i < 10; i++) { // Reintenta durante medio segundo
+                datos = window[varName];
+                if (datos) break;
+                await new Promise(r => setTimeout(r, 50)); 
             }
+
+            // 3. Verificación final
+            if (datos) {
+                historialNutricional[fechaClave] = datos;
+                cargados++;
+                console.log(`✅ LOGRADO: ${fechaClave} ya está en el sistema.`);
+            } else {
+                console.error(`❌ El archivo ${nombre} está ahí, pero la variable ${varName} no responde.`);
+            }
+
         } catch (e) {
-            console.warn(`No se encontró en servidor: ${nombre}`);
+            // Esto captura los días que NO tienes archivo (los 404 que ves en rojo)
+            console.log(`ℹ️ Saltando ${nombre}: No existe el archivo físico.`);
         }
     }
 
     if (cargados > 0) {
-        // Guardamos todo en el historial del usuario
         VitalStats.save('historialNutricional', JSON.stringify(historialNutricional));
-        // Limpiamos la cola de pendientes para que no entre en bucle infinito
-        localStorage.removeItem('pendiente_carga_servidor');
-        // Refrescamos una última vez para ver los datos finales
-        actualizarApp();
+        
+        // Actualizar el diario si la fecha coincide
+        const datePicker = document.getElementById('datePicker');
+        if (datePicker) {
+            registroDiario = historialNutricional[datePicker.value] || [];
+            actualizarApp();
+        }
+        alert(`Sincronización completada. Se han recuperado ${cargados} días.`);
     }
+    
+    localStorage.removeItem('pendiente_carga_servidor');
 }
 
 function generarNombresArchivosPorRango(inicio, fin) {
@@ -351,4 +331,23 @@ function generarNombresArchivosPorRango(inicio, fin) {
         actual.setDate(actual.getDate() + 1);
     }
     return nombres;
+}
+
+const downloadBtn = document.getElementById('downloadBtn');
+if (downloadBtn) {
+    downloadBtn.onclick = () => {
+        if (registroDiario.length === 0) return;
+        const session = JSON.parse(localStorage.getItem('vs_session'));
+        const user = session ? session.user : "anonimo";
+        const date = document.getElementById('datePicker').value;
+        
+        // CAMBIO AQUÍ: Usamos 'var' en lugar de 'const'
+        const content = `var VS_${user}_${date.replace(/-/g,'')} = ${JSON.stringify(registroDiario, null, 4)};`;
+        
+        const blob = new Blob([content], { type: 'application/javascript' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `VS_${user}_${date.replace(/-/g,'')}.js`;
+        a.click();
+    };
 }

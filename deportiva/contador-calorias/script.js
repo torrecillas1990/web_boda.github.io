@@ -257,7 +257,7 @@ function obtenerRangoFechas(opcion) {
 
 async function ejecutarCargaMasivaServidor(lista) {
     const session = JSON.parse(localStorage.getItem('vs_session'));
-    const usuario = session ? session.user : "anonimo";
+    const usuarioApp = session ? session.user : "anonimo";
     let cargados = 0;
 
     for (const nombre of lista) {
@@ -265,53 +265,58 @@ async function ejecutarCargaMasivaServidor(lista) {
             const match = nombre.match(/(\d{8})/);
             if (!match) continue;
             
-            const f = match[0]; // 20260424
+            const f = match[0]; // Ejemplo: 20260424
             const fechaClave = `${f.substring(0,4)}-${f.substring(4,6)}-${f.substring(6,8)}`;
-            const varName = `VS_${usuario}_${f}`;
+            const varEsperada = `VS_${usuarioApp}_${f}`;
 
-            // 1. Carga del script (Sin ?t= porque en local puede fallar)
+            // 1. Cargamos el script de la forma más compatible posible
             await new Promise((resolve, reject) => {
                 const s = document.createElement('script');
                 s.src = `./diario/${nombre}`; 
-                s.onload = resolve;
+                s.async = false; // Forzamos carga secuencial
+                s.onload = () => setTimeout(resolve, 150); // Espera generosa para Windows
                 s.onerror = reject;
                 document.head.appendChild(s);
             });
 
-            // 2. SISTEMA DE ESPERA (Polling)
-            // A veces en local el script carga pero la variable tarda milisegundos en existir
-            let datos = null;
-            for (let i = 0; i < 10; i++) { // Reintenta durante medio segundo
-                datos = window[varName];
-                if (datos) break;
-                await new Promise(r => setTimeout(r, 50)); 
+            // 2. BÚSQUEDA FORENSE: Intentamos capturar los datos
+            let datos = window[varEsperada] || globalThis[varEsperada];
+
+            // 3. PLAN B: Si no aparece por nombre exacto, buscamos cualquier variable 
+            // que empiece por "VS_" y termine con la fecha (por si hay errores de nombre)
+            if (!datos) {
+                const todasLasVariables = Object.keys(window);
+                const llaveEncontrada = todasLasVariables.find(k => k.includes(f) && k.startsWith('VS'));
+                if (llaveEncontrada) {
+                    datos = window[llaveEncontrada];
+                    console.log(`🔎 ¡Encontrado por proximidad! Variable real: ${llaveEncontrada}`);
+                }
             }
 
-            // 3. Verificación final
             if (datos) {
                 historialNutricional[fechaClave] = datos;
                 cargados++;
-                console.log(`✅ LOGRADO: ${fechaClave} ya está en el sistema.`);
+                console.log(`✅ ¡POR FIN! Datos de ${fechaClave} cargados.`);
             } else {
-                console.error(`❌ El archivo ${nombre} está ahí, pero la variable ${varName} no responde.`);
+                console.error(`❌ Fallo total en ${nombre}. La variable no aparece en el mapa global.`);
+                // DEBUG: Vamos a ver qué variables "VS" hay realmente en memoria
+                console.log("Variables VS actuales en memoria:", Object.keys(window).filter(k => k.startsWith('VS')));
             }
 
         } catch (e) {
-            // Esto captura los días que NO tienes archivo (los 404 que ves en rojo)
-            console.log(`ℹ️ Saltando ${nombre}: No existe el archivo físico.`);
+            // Esto ignora los días que no tienen archivo físico (los errores rojos)
+            console.log(`ℹ️ Día sin archivo en carpeta: ${nombre}`);
         }
     }
 
     if (cargados > 0) {
         VitalStats.save('historialNutricional', JSON.stringify(historialNutricional));
-        
-        // Actualizar el diario si la fecha coincide
-        const datePicker = document.getElementById('datePicker');
-        if (datePicker) {
-            registroDiario = historialNutricional[datePicker.value] || [];
+        const dp = document.getElementById('datePicker');
+        if (dp) {
+            registroDiario = historialNutricional[dp.value] || [];
             actualizarApp();
         }
-        alert(`Sincronización completada. Se han recuperado ${cargados} días.`);
+        alert(`Sincronización brutal completada: ${cargados} días recuperados.`);
     }
     
     localStorage.removeItem('pendiente_carga_servidor');

@@ -239,7 +239,7 @@ function obtenerRangoFechas(opcion) {
         let diaSemana = hoy.getDay(); 
         let dif = hoy.getDate() - diaSemana + (diaSemana === 0 ? -6 : 1);
         let lunes = new Date(hoy.setDate(dif));
-        for (let i = 0; i < 7; i++) {
+        for (let i = 1; i <= 7; i++) {
             let d = new Date(lunes);
             d.setDate(lunes.getDate() + i);
             fechas.push(d.toISOString().split('T')[0]);
@@ -269,54 +269,57 @@ async function ejecutarCargaMasivaServidor(lista) {
             const fechaClave = `${f.substring(0,4)}-${f.substring(4,6)}-${f.substring(6,8)}`;
             const varEsperada = `VS_${usuarioApp}_${f}`;
 
-            // 1. Cargamos el script de la forma más compatible posible
+            // --- PASO 1: SNAPSHOT DE MEMORIA ---
+            // Guardamos qué variables existen en window antes de cargar el script
+            const antes = new Set(Object.keys(window));
+
+            // --- PASO 2: CARGA FORZADA ---
             await new Promise((resolve, reject) => {
                 const s = document.createElement('script');
-                s.src = `./diario/${nombre}`; 
-                s.async = false; // Forzamos carga secuencial
-                s.onload = () => setTimeout(resolve, 150); // Espera generosa para Windows
+                s.src = `./diario/${nombre}`; // Ruta limpia sin ?t=
+                s.onload = () => setTimeout(resolve, 150); // Espera generosa
                 s.onerror = reject;
                 document.head.appendChild(s);
             });
 
-            // 2. BÚSQUEDA FORENSE: Intentamos capturar los datos
-            let datos = window[varEsperada] || globalThis[varEsperada];
+            // --- PASO 3: DETECCIÓN DE NUEVAS VARIABLES ---
+            // Miramos qué hay de nuevo en window
+            const despues = Object.keys(window);
+            let datosEncontrados = window[varEsperada];
 
-            // 3. PLAN B: Si no aparece por nombre exacto, buscamos cualquier variable 
-            // que empiece por "VS_" y termine con la fecha (por si hay errores de nombre)
-            if (!datos) {
-                const todasLasVariables = Object.keys(window);
-                const llaveEncontrada = todasLasVariables.find(k => k.includes(f) && k.startsWith('VS'));
-                if (llaveEncontrada) {
-                    datos = window[llaveEncontrada];
-                    console.log(`🔎 ¡Encontrado por proximidad! Variable real: ${llaveEncontrada}`);
+            if (!datosEncontrados) {
+                // Si no está con el nombre esperado, buscamos CUALQUIER variable 
+                // nueva que haya aparecido y que empiece por VS_
+                const nuevas = despues.filter(k => !antes.has(k) && k.startsWith('VS_'));
+                if (nuevas.length > 0) {
+                    datosEncontrados = window[nuevas[0]];
+                    console.log(`🔎 Detectada nueva variable: ${nuevas[0]}`);
                 }
             }
 
-            if (datos) {
-                historialNutricional[fechaClave] = datos;
+            // --- PASO 4: INTEGRACIÓN ---
+            if (datosEncontrados && Array.isArray(datosEncontrados)) {
+                historialNutricional[fechaClave] = datosEncontrados;
                 cargados++;
-                console.log(`✅ ¡POR FIN! Datos de ${fechaClave} cargados.`);
+                console.log(`✅ ¡ÉXITO! Datos de ${fechaClave} recuperados.`);
             } else {
-                console.error(`❌ Fallo total en ${nombre}. La variable no aparece en el mapa global.`);
-                // DEBUG: Vamos a ver qué variables "VS" hay realmente en memoria
-                console.log("Variables VS actuales en memoria:", Object.keys(window).filter(k => k.startsWith('VS')));
+                console.error(`❌ El archivo ${nombre} cargó pero no soltó datos válidos.`);
             }
 
         } catch (e) {
-            // Esto ignora los días que no tienen archivo físico (los errores rojos)
-            console.log(`ℹ️ Día sin archivo en carpeta: ${nombre}`);
+            // Ignoramos silenciosamente los días que no tienen archivo
         }
     }
 
     if (cargados > 0) {
         VitalStats.save('historialNutricional', JSON.stringify(historialNutricional));
+        // Actualizar el diario actual
         const dp = document.getElementById('datePicker');
         if (dp) {
             registroDiario = historialNutricional[dp.value] || [];
             actualizarApp();
         }
-        alert(`Sincronización brutal completada: ${cargados} días recuperados.`);
+        alert(`Sincronización completa: ${cargados} días recuperados.`);
     }
     
     localStorage.removeItem('pendiente_carga_servidor');
@@ -347,7 +350,7 @@ if (downloadBtn) {
         const date = document.getElementById('datePicker').value;
         
         // CAMBIO AQUÍ: Usamos 'var' en lugar de 'const'
-        const content = `var VS_${user}_${date.replace(/-/g,'')} = ${JSON.stringify(registroDiario, null, 4)};`;
+		const content = `window.VS_${user}_${date.replace(/-/g,'')} = ${JSON.stringify(registroDiario, null, 4)};`;
         
         const blob = new Blob([content], { type: 'application/javascript' });
         const a = document.createElement('a');

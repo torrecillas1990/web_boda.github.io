@@ -1,5 +1,4 @@
-// Registro Nutricional exportado: 2026-04-20
-const diario_20260420 = [
+window.VS_torrecillas1990_20260420 = [
     {
         "id": 1776681534027,
         "nombre": "Ensalada Pollo Queso (250g)",

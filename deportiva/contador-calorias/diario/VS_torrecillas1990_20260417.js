@@ -1,5 +1,4 @@
-// Registro Nutricional exportado: 2026-04-17
-const diario_20260417 = [
+window.VS_torrecillas1990_20260417 = [
     {
         "id": 1776684406989,
         "nombre": "Manzana 1 pieza son 150 gramos (150g)",

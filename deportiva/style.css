@@ -186,3 +186,90 @@ button {
         transform: translateY(-9px) rotate(-45deg);
     }
 }
+
+.btn-perfil {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    background: #f1c40f; /* Color oro para Premium */
+    color: #2c3e50;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-right: 10px;
+}
+
+.btn-perfil:hover {
+    transform: scale(1.05);
+    background: #f39c12;
+}
+
+/* Estilo cuando ya es el perfil del usuario */
+.btn-logged {
+    background: #3498db; /* Color azul para perfil */
+    color: white;
+}
+
+/* Estilos específicos para el Perfil */
+.perfil-card {
+    text-align: center;
+    padding: 30px;
+    max-width: 350px;
+}
+
+.perfil-header {
+    margin-bottom: 20px;
+}
+
+.avatar-circle {
+    width: 80px;
+    height: 80px;
+    background: #3498db;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.perfil-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+}
+
+.btn-logout {
+    margin-top: 20px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    background: #c0392b;
+}

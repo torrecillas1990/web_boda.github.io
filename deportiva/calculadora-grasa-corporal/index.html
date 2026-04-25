@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Corporal Pro</title>
+    <title>Calculadora Corporal</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="../recursos/favicon.ico">
@@ -12,20 +12,19 @@
 <nav class="navbar">
     <div class="nav-container">
         <a href="../index.html" class="logo">VitalStats</a>
-        
+		<button id="premiumBtn" class="btn-perfil">Premium</button>
         <button class="menu-toggle" id="mobile-menu">
             <span class="bar"></span>
             <span class="bar"></span>
             <span class="bar"></span>
         </button>
-
         <ul class="nav-links">
             <li><a href="../index.html">Inicio</a></li>
             <li><a href="../contador-calorias/index.html">Calorías</a></li>
             <li><a href="../calculadora-grasa-corporal/index.html">Grasa Corporal</a></li>
             <li><a href="../calculadora-ritmo/index.html">Ritmo Runner</a></li>
             <li><a href="../registro-premium/index.html" class="btn-nav">Premium</a></li>
-				<li><a href="#" id="authBtn" class="btn-nav" onclick="abrirLogin()">Login</a></li>
+			<li><a href="#" id="authBtn" class="btn-nav" onclick="abrirLogin()">Login</a></li>
         </ul>
     </div>
 </nav>
@@ -128,8 +127,27 @@
 			<button onclick="cerrarLogin()" style="background:none; border:none; color:red; margin-top:10px; cursor:pointer;">Cancelar</button>
 		</div>
 	</div>
+	
+	<div id="perfilModal" class="modal">
+		<div class="modal-content perfil-card">
+			<span class="close-modal" id="closePerfil">&times;</span>
+			<div class="perfil-header">
+				<div class="avatar-circle" id="userAvatar">T</div>
+				<h2 id="perfilNombre">Usuario</h2>
+				<p class="user-status">Miembro VitalStats</p>
+			</div>
+			<hr>
+			<div class="perfil-stats">
+				<div class="stat-item">
+					<span class="stat-value" id="statsDias">0</span>
+					<span class="stat-label">Días Registrados</span>
+				</div>
+			</div>
+			<button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
+		</div>
+	</div>
 </body>
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="../recursos/usuarios.js"></script>
 <script src="../script.js"></script>
 <script src="script.js"></script>

@@ -13,13 +13,12 @@
 	<nav class="navbar">
 		<div class="nav-container">
 			<a href="../index.html" class="logo">VitalStats</a>
-			
+			<button id="premiumBtn" class="btn-perfil">Premium</button>
 			<button class="menu-toggle" id="mobile-menu">
 				<span class="bar"></span>
 				<span class="bar"></span>
 				<span class="bar"></span>
 			</button>
-
 			<ul class="nav-links">
 				<li><a href="../index.html">Inicio</a></li>
 				<li><a href="../contador-calorias/index.html">Calorías</a></li>
@@ -165,6 +164,25 @@
 			<input type="password" id="loginPass" placeholder="Contraseña" style="width:100%; margin-bottom:20px; padding:10px;">
 			<button onclick="intentarLogin()" style="background:#28a745; color:white; border:none; padding:10px 20px; cursor:pointer; width:100%; border-radius:5px;">Entrar</button>
 			<button onclick="cerrarLogin()" style="background:none; border:none; color:red; margin-top:10px; cursor:pointer;">Cancelar</button>
+		</div>
+	</div>
+	
+	<div id="perfilModal" class="modal">
+		<div class="modal-content perfil-card">
+			<span class="close-modal" id="closePerfil">&times;</span>
+			<div class="perfil-header">
+				<div class="avatar-circle" id="userAvatar">T</div>
+				<h2 id="perfilNombre">Usuario</h2>
+				<p class="user-status">Miembro VitalStats</p>
+			</div>
+			<hr>
+			<div class="perfil-stats">
+				<div class="stat-item">
+					<span class="stat-value" id="statsDias">0</span>
+					<span class="stat-label">Días Registrados</span>
+				</div>
+			</div>
+			<button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
 		</div>
 	</div>
 </body>

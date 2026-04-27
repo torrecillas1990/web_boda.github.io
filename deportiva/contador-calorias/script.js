@@ -244,6 +244,7 @@ function renderizarCatalogo(lista) {
 function abrirModal(p) {
     productoSeleccionado = p; 
     document.getElementById('modalProductName').innerHTML = `Añadir <strong>${p.nombre}</strong>`;
+    document.getElementById('modalProductDetail').innerHTML = `${p.obs}`;
     document.getElementById('quantityModal').style.display = 'block';
     document.getElementById('quantityInput').focus();
 }

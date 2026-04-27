@@ -41,6 +41,8 @@ const productosMercadonaBase = [
 	{ categoria: "Proteina", nombre: "Boquerones en Vinagre (Escurrido)", kcal: 156, prot: 24.7, grasa: 6, carb: 0.7, obs: "Cada boqueron escurrido Aprox. 3g" },
 	{ categoria: "Proteina", nombre: "Boquerones en Aliñados en ajo y perejil (Escurrido)", kcal: 149, prot: 22, grasa: 6.8, carb: 0, obs: "Cada boqueron escurrido Aprox. 3g" },
 	{ categoria: "Proteina", nombre: "Lomo de cebo ibérico 50% raza ibérica", kcal: 298, prot: 39.1, grasa: 15.5, carb: 0.7, obs: "Cada loncha 5.5g aprox." },
+	{ categoria: "Proteina", nombre: "Lomo de salmon", kcal: 223, prot: 20, grasa: 16, carb: 0, obs: "Cada lomo unos 125g aprox." },
+	{ categoria: "Proteina", nombre: "Gamba roja", kcal: 92, prot: 21, grasa: 1.1, carb: 0, obs: "Cada gamba unos 30g aprox." },
 	
     // --- CEREALES Y LEGUMBRES ---
     { categoria: "Carbohidrato", nombre: "Avena en copos", kcal: 375, prot: 13, grasa: 7, carb: 59, obs: "" },
@@ -85,7 +87,7 @@ const productosMercadonaBase = [
 	// --- DULCES ---
     { categoria: "Carbohidrato", nombre: "Nestle Extrafino Filipino Blanco", kcal: 557, prot: 4.4, grasa: 33.5, carb: 58.7, obs: "1 onza 8.5g" },
     { categoria: "Carbohidrato", nombre: "Chocolate Valor Puro con Almendras", kcal: 570, prot: 9.9, grasa: 40, carb: 38, obs: "1 onza 13.8g" },
-    { categoria: "Carbohidrato", nombre: "Chocolate con leche", kcal: 523, prot: 5.6, grasa: 28, carb: 59.8, obs: "" },
-    { categoria: "Carbohidrato", nombre: "Cacao puro en polvo (Cuchara pequeña 5g aprox)", kcal: 375, prot: 25.5, grasa: 16, carb: 16.3, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Chocolate con leche", kcal: 523, prot: 5.6, grasa: 28, carb: 59.8, obs: "1 onza 15g" },
+    { categoria: "Carbohidrato", nombre: "Cacao puro en polvo", kcal: 375, prot: 25.5, grasa: 16, carb: 16.3, obs: "Cuchara pequeña 5g aprox" },
     { categoria: "Carbohidrato", nombre: "Bizcocho Chocolate con pepitas", kcal: 436, prot: 9.5, grasa: 24, carb: 45, obs: "" }
 ];

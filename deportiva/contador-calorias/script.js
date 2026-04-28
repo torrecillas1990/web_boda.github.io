@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     }
 
-    // 2. CONFIGURAR EL BUSCADOR Y LIMPIAR
+    // 2. CONFIGURAR EL BUSCADOR Y BOTONES DE LIMPIAR
     const clearSearchBtn = document.getElementById('clearSearchBtn');
     if (clearSearchBtn) {
         clearSearchBtn.onclick = () => {
@@ -57,6 +57,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             filtrarYRenderizar(); 
         };
     }
+	
+	const clearBtn = document.getElementById('clearBtn');
+	if (clearBtn) {
+		clearBtn.onclick = () => {
+			if (confirm("¿Seguro que quieres vaciar el registro de hoy?")) {
+				registroDiario = [];
+				actualizarApp();
+			}
+		};
+	}
 
     // 3. ESCUCHADOR DEL DROPDOWN (Seleccionar producto y ABRIR el modal)
 	const productDropdown = document.getElementById('fullProductDropdown');
@@ -164,6 +174,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 7. PINTADO FINAL
     actualizarApp();
     
+	// 8. Lógica de los Checkboxes (Toggles) para el Gráfico Semanal
+    const macroToggles = document.querySelectorAll('.macro-toggle');
+    
+    macroToggles.forEach(toggle => {
+        toggle.addEventListener('change', (e) => {
+            // El 'value' del checkbox coincide exactamente con el índice del dataset (0=Kcal, 1=Prot, 2=Grasa, 3=Carb)
+            const index = parseInt(e.target.value); 
+            const isVisible = e.target.checked;
+            
+            if (weeklyChart) {
+                // Chart.js tiene una función nativa muy cómoda para ocultar/mostrar datasets
+                weeklyChart.setDatasetVisibility(index, isVisible);
+                weeklyChart.update(); // Obligamos a repintar el gráfico
+            }
+        });
+    });
+	
+	// 9. Lógica del Selector de Periodo de Tiempo
+    const timeRangeFilter = document.getElementById('timeRangeFilter');
+    if (timeRangeFilter) {
+        timeRangeFilter.addEventListener('change', () => {
+            // Cada vez que cambiamos de periodo, volvemos a calcular y dibujar la gráfica
+            inicializarGraficoSemanal();
+        });
+    }
+	
     // Mostrar rango
     const display = document.getElementById('currentRangeDisplay');
     const savedRange = JSON.parse(localStorage.getItem('ultimo_rango_sincronizado'));
@@ -307,7 +343,17 @@ function inicializarGraficoSemanal() {
             plugins: { legend: { display: false } }
         }
     });
-}
+	
+    // (AÑADIR ESTO AL FINAL DE LA FUNCIÓN)
+    // Sincronizar la visibilidad inicial con el estado actual de los checkboxes
+    const toggles = document.querySelectorAll('.macro-toggle');
+    toggles.forEach(toggle => {
+        const idx = parseInt(toggle.value);
+        weeklyChart.setDatasetVisibility(idx, toggle.checked);
+    });
+    
+    weeklyChart.update();
+} 
 
 function obtenerRangoFechas(opcion) {
     let fechas = [];
@@ -318,7 +364,8 @@ function obtenerRangoFechas(opcion) {
     if (opcion === 'lastMonth') diasAMostrar = 30;
     if (opcion === 'last6Months') diasAMostrar = 180;
     if (opcion === 'lastYear') diasAMostrar = 365;
-    
+    if (opcion === 'lastTwoYears') diasAMostrar = 730;
+
     if (opcion === 'currentWeek') {
         let diaSemana = hoy.getDay(); 
         let dif = hoy.getDate() - diaSemana + (diaSemana === 0 ? -6 : 1);

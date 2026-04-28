@@ -68,6 +68,7 @@ const productosMercadonaBase = [
     { categoria: "Carbohidrato", nombre: "Pan de Molde Integral", kcal: 245, prot: 9, grasa: 3, carb: 42, obs: "" },
     { categoria: "Carbohidrato", nombre: "Tostadas de Fibra y Sésamo", kcal: 390, prot: 12, grasa: 7, carb: 60, obs: "" },
     { categoria: "Carbohidrato", nombre: "Tostadas 100% Espelta Integral (1 tostada 7g)", kcal: 382, prot: 17, grasa: 6.4, carb: 59, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Tortitas de Maiz", kcal: 368, prot: 7.5, grasa: 1.8, carb: 80, obs: "Cada tortita 7.5g cada paquete de 4 30g" },
     { categoria: "Proteina", nombre: "Tofu Firme", kcal: 120, prot: 12, grasa: 7, carb: 2, obs: "" },
     { categoria: "Carbohidrato", nombre: "Edamame Congelado", kcal: 130, prot: 11, grasa: 5, carb: 10, obs: "" },
     { categoria: "Carbohidrato", nombre: "Salmorejo Fresco", kcal: 75, prot: 1, grasa: 5, carb: 6, obs: "" },
@@ -89,5 +90,6 @@ const productosMercadonaBase = [
     { categoria: "Carbohidrato", nombre: "Chocolate Valor Puro con Almendras", kcal: 570, prot: 9.9, grasa: 40, carb: 38, obs: "1 onza 13.8g" },
     { categoria: "Carbohidrato", nombre: "Chocolate con leche", kcal: 523, prot: 5.6, grasa: 28, carb: 59.8, obs: "1 onza 15g" },
     { categoria: "Carbohidrato", nombre: "Cacao puro en polvo", kcal: 375, prot: 25.5, grasa: 16, carb: 16.3, obs: "Cuchara pequeña 5g aprox" },
-    { categoria: "Carbohidrato", nombre: "Bizcocho Chocolate con pepitas", kcal: 436, prot: 9.5, grasa: 24, carb: 45, obs: "" }
+    { categoria: "Carbohidrato", nombre: "Bizcocho Chocolate con pepitas", kcal: 436, prot: 9.5, grasa: 24, carb: 45, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Gominola Gummy", kcal: 325, prot: 3.6, grasa: 0, carb: 76.5, obs: "Una gummy 6.25g - Cuatro 25g" }
 ];

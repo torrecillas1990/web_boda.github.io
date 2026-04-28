@@ -22,5 +22,37 @@ window.VS_torrecillas1990_20260428 = [
         "prot": 4.23,
         "grasa": 0.54,
         "carb": 52.875
+    },
+    {
+        "id": 1777394664454,
+        "nombre": "Pechuguita de pollo lonchas 99% La Carloteña (48g/ml)",
+        "kcal": 60,
+        "prot": 12.864,
+        "grasa": 0.96,
+        "carb": 0.24
+    },
+    {
+        "id": 1777394686817,
+        "nombre": "Alioli (15g/ml)",
+        "kcal": 112.35,
+        "prot": 0.18,
+        "grasa": 12.3,
+        "carb": 0.225
+    },
+    {
+        "id": 1777394781813,
+        "nombre": "Tortitas de Maiz (30g/ml)",
+        "kcal": 110.4,
+        "prot": 2.25,
+        "grasa": 0.54,
+        "carb": 24
+    },
+    {
+        "id": 1777394806786,
+        "nombre": "Gominola Gummy (65g/ml)",
+        "kcal": 211.25,
+        "prot": 2.34,
+        "grasa": 0,
+        "carb": 49.725
     }
 ];

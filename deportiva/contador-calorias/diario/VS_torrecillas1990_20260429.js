@@ -30,5 +30,29 @@ window.VS_torrecillas1990_20260429 = [
         "prot": 1.125,
         "grasa": 0.27,
         "carb": 12
+    },
+    {
+        "id": 1777472882686,
+        "nombre": "Kéfir Natural 0% (250g/ml)",
+        "kcal": 90,
+        "prot": 9.75,
+        "grasa": 1.25,
+        "carb": 12
+    },
+    {
+        "id": 1777472894976,
+        "nombre": "Yogur Proteínas Natural (120g/ml)",
+        "kcal": 62.4,
+        "prot": 12,
+        "grasa": 0.12,
+        "carb": 3.72
+    },
+    {
+        "id": 1777479849444,
+        "nombre": "Naranja 1 pieza son 150 gramos (250g/ml)",
+        "kcal": 150,
+        "prot": 2.35,
+        "grasa": 0.3,
+        "carb": 29.375
     }
 ];

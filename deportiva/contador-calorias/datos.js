@@ -84,6 +84,8 @@ const productosMercadonaBase = [
     { categoria: "Carbohidrato", nombre: "Judías Verdes", kcal: 31, prot: 1.8, grasa: 0.2, carb: 7, obs: "" },
     { categoria: "Carbohidrato", nombre: "Arándanos Frescos", kcal: 57, prot: 0.7, grasa: 0.3, carb: 14, obs: "" },
     { categoria: "Carbohidrato", nombre: "Nispero", kcal: 47, prot: 0.4, grasa: 0.2, carb: 12, obs: "Peso de un nispero unos 60g aprox." },
+    { categoria: "Carbohidrato", nombre: "Kiwi Verde", kcal: 54, prot: 0.9, grasa: 0.3, carb: 11.1, obs: "Peso de un kiwi unos 115g aprox." },
+    { categoria: "Carbohidrato", nombre: "Kiwi Gold", kcal: 54, prot: 0.9, grasa: 0.3, carb: 11.1, obs: "Peso de un kiwi unos 115g aprox." },
 	
 	// --- DULCES ---
     { categoria: "Carbohidrato", nombre: "Nestle Extrafino Filipino Blanco", kcal: 557, prot: 4.4, grasa: 33.5, carb: 58.7, obs: "1 onza 8.5g" },

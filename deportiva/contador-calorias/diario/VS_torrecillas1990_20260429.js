@@ -54,5 +54,29 @@ window.VS_torrecillas1990_20260429 = [
         "prot": 2.35,
         "grasa": 0.3,
         "carb": 29.375
+    },
+    {
+        "id": 1777533858797,
+        "nombre": "Huevos duros (50g/ml)",
+        "kcal": 60.5,
+        "prot": 6.5,
+        "grasa": 3.85,
+        "carb": 0.25
+    },
+    {
+        "id": 1777533873210,
+        "nombre": "Tortitas de Maiz (30g/ml)",
+        "kcal": 110.4,
+        "prot": 2.25,
+        "grasa": 0.54,
+        "carb": 24
+    },
+    {
+        "id": 1777533897262,
+        "nombre": "Atún Claro en Aceite de Oliva (80g/ml)",
+        "kcal": 196,
+        "prot": 16.8,
+        "grasa": 14.4,
+        "carb": 0.72
     }
 ];

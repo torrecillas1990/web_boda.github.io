@@ -54,5 +54,21 @@ window.VS_torrecillas1990_20260430 = [
         "prot": 2.07,
         "grasa": 0.69,
         "carb": 25.53
+    },
+    {
+        "id": 1777563775224,
+        "nombre": "Kiwi Gold (115g/ml)",
+        "kcal": 62.1,
+        "prot": 1.035,
+        "grasa": 0.345,
+        "carb": 12.765
+    },
+    {
+        "id": 1777563787006,
+        "nombre": "Yogur Proteínas Natural (120g/ml)",
+        "kcal": 62.4,
+        "prot": 12,
+        "grasa": 0.12,
+        "carb": 3.72
     }
 ];

@@ -3,6 +3,8 @@
 const productosMercadonaBase = [
     // --- BEBIDAS ---
     { categoria: "Bebida", nombre: "Energy Drink Full Tropic", kcal: 4.1, prot: 0, grasa: 0, carb: 0.4, obs: "500ml. Sin azúcar." },
+    { categoria: "Bebida", nombre: "Cerveza", kcal: 43, prot: 0.46, grasa: 0, carb: 3.55, obs: "Tercio 350ml" },
+    { categoria: "Bebida", nombre: "Vino tinto", kcal: 84, prot: 0.07, grasa: 0, carb: 2.72, obs: "Copa 150ml" },
 	
     // --- COMIDAS PREPARADAS ---
     { categoria: "Preparado", nombre: "Tabule Oriental", kcal: 167, prot: 3.9, grasa: 5.2, carb: 25.4, obs: "Listo para comer." },
@@ -11,6 +13,12 @@ const productosMercadonaBase = [
 	{ categoria: "Preparado", nombre: "Fideos de arroz", kcal: 150, prot: 2, grasa: 2, carb: 75, obs: "Racion de 100g aprox." },
 	{ categoria: "Preparado", nombre: "Rollito de primavera", kcal: 120, prot: 5, grasa: 2, carb: 22, obs: "Racion de 100g aprox." },
 	{ categoria: "Preparado", nombre: "Gyosa de pollo", kcal: 170, prot: 10, grasa: 5, carb: 20, obs: "Una pesa 22g aprox." },
+	{ categoria: "Preparado", nombre: "Arroz con conejo", kcal: 163, prot: 10, grasa: 5, carb: 25, obs: "Un plato pesa 400g aprox." },
+	{ categoria: "Preparado", nombre: "Arroz a banda", kcal: 203, prot: 8.4, grasa: 7, carb: 26, obs: "Un plato pesa 400g aprox." },
+	{ categoria: "Preparado", nombre: "Fritura de pescado", kcal: 206, prot: 18.15, grasa: 11.42, carb: 6.71, obs: "Un plato pesa 400g aprox." },
+	{ categoria: "Preparado", nombre: "Pizza (Valores genericos)", kcal: 250, prot: 15, grasa: 10, carb: 25, obs: "Un pizza pesa 1000g aprox." },
+	{ categoria: "Preparado", nombre: "Empanada Atun", kcal: 271, prot: 9.69, grasa: 15.19, carb: 23.4, obs: "Un pesa 90g aprox." },
+	{ categoria: "Preparado", nombre: "Empanada Pollo", kcal: 262, prot: 8.8, grasa: 14.84, carb: 22.8, obs: "Un pesa 90g aprox." },
 	
     // --- LÁCTEOS Y PROTEÍNAS ---
     { categoria: "Proteina", nombre: "Yogur Proteínas Natural", kcal: 52, prot: 10, grasa: 0.1, carb: 3.1, obs: "un yogur de 120g." },
@@ -73,6 +81,7 @@ const productosMercadonaBase = [
     { categoria: "Carbohidrato", nombre: "Edamame Congelado", kcal: 130, prot: 11, grasa: 5, carb: 10, obs: "" },
     { categoria: "Carbohidrato", nombre: "Salmorejo Fresco", kcal: 75, prot: 1, grasa: 5, carb: 6, obs: "" },
     { categoria: "Carbohidrato", nombre: "Gazpacho Suave", kcal: 45, prot: 0.8, grasa: 3, carb: 3.5, obs: "" },
+    { categoria: "Carbohidrato", nombre: "Fritos", kcal: 536, prot: 7, grasa: 31, carb: 55, obs: "Bolsa 150g aprox" },
 	
     // --- FRUTAS Y VERDURAS ---
     { categoria: "Carbohidrato", nombre: "Platano", kcal: 89, prot: 1.1, grasa: 0.3, carb: 23, obs: "Sin piel pesa aprox 80-120g." },
@@ -93,5 +102,6 @@ const productosMercadonaBase = [
     { categoria: "Carbohidrato", nombre: "Chocolate con leche", kcal: 523, prot: 5.6, grasa: 28, carb: 59.8, obs: "1 onza 15g" },
     { categoria: "Carbohidrato", nombre: "Cacao puro en polvo", kcal: 375, prot: 25.5, grasa: 16, carb: 16.3, obs: "Cuchara pequeña 5g aprox" },
     { categoria: "Carbohidrato", nombre: "Bizcocho Chocolate con pepitas", kcal: 436, prot: 9.5, grasa: 24, carb: 45, obs: "" },
-    { categoria: "Carbohidrato", nombre: "Gominola Gummy", kcal: 325, prot: 3.6, grasa: 0, carb: 76.5, obs: "Una gummy 6.25g - Cuatro 25g" }
+    { categoria: "Carbohidrato", nombre: "Gominola Gummy", kcal: 325, prot: 3.6, grasa: 0, carb: 76.5, obs: "Una gummy 6.25g - Cuatro 25g" },
+    { categoria: "Carbohidrato", nombre: "Croissant", kcal: 406, prot: 8.2, grasa: 21, carb: 45.8, obs: "Uno suele pesar 56g aprox" }
 ];

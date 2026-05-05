@@ -222,7 +222,7 @@ function actualizarApp() {
         t.kcal += item.kcal; t.p += item.prot; t.g += item.grasa; t.c += item.carb;
         const li = document.createElement('li');
         li.className = "diary-item";
-        li.innerHTML = `<div><strong>${item.nombre}</strong><br><small>${item.kcal} kcal</small></div><button class="delete-btn">×</button>`;
+        li.innerHTML = `<div><strong>${item.nombre}</strong><br><small>${item.kcal} kcal - ${item.prot}g Prot - ${item.grasa}g Grasas - ${item.carb}g Carbos</small></div><button class="delete-btn">×</button>`;
         li.querySelector('.delete-btn').onclick = () => {
             registroDiario = registroDiario.filter(p => p.id !== item.id);
             actualizarApp();

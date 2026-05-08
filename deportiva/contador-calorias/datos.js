@@ -19,6 +19,8 @@ const productosMercadonaBase = [
 	{ categoria: "Preparado", nombre: "Pizza (Valores genericos)", kcal: 250, prot: 15, grasa: 10, carb: 25, obs: "Un pizza pesa 1000g aprox." },
 	{ categoria: "Preparado", nombre: "Empanada Atun", kcal: 271, prot: 9.69, grasa: 15.19, carb: 23.4, obs: "Un pesa 90g aprox." },
 	{ categoria: "Preparado", nombre: "Empanada Pollo", kcal: 262, prot: 8.8, grasa: 14.84, carb: 22.8, obs: "Un pesa 90g aprox." },
+	{ categoria: "Preparado", nombre: "Pollo Asado (al As)", kcal: 237, prot: 27, grasa: 13.5, carb: 1.2, obs: "Una pechuga entera 300g aprox." },
+	{ categoria: "Preparado", nombre: "Patatas Fritas", kcal: 312, prot: 4, grasa: 15, carb: 41, obs: "Un plato grande 200g aprox." },
 	
     // --- LÁCTEOS Y PROTEÍNAS ---
     { categoria: "Proteina", nombre: "Yogur Proteínas Natural", kcal: 52, prot: 10, grasa: 0.1, carb: 3.1, obs: "un yogur de 120g." },
@@ -103,5 +105,6 @@ const productosMercadonaBase = [
     { categoria: "Carbohidrato", nombre: "Cacao puro en polvo", kcal: 375, prot: 25.5, grasa: 16, carb: 16.3, obs: "Cuchara pequeña 5g aprox" },
     { categoria: "Carbohidrato", nombre: "Bizcocho Chocolate con pepitas", kcal: 436, prot: 9.5, grasa: 24, carb: 45, obs: "" },
     { categoria: "Carbohidrato", nombre: "Gominola Gummy", kcal: 325, prot: 3.6, grasa: 0, carb: 76.5, obs: "Una gummy 6.25g - Cuatro 25g" },
-    { categoria: "Carbohidrato", nombre: "Croissant", kcal: 406, prot: 8.2, grasa: 21, carb: 45.8, obs: "Uno suele pesar 56g aprox" }
+    { categoria: "Carbohidrato", nombre: "Croissant", kcal: 406, prot: 8.2, grasa: 21, carb: 45.8, obs: "Uno suele pesar 56g aprox" },
+    { categoria: "Carbohidrato", nombre: "Tarta tres chocolates", kcal: 354, prot: 4.4, grasa: 23, carb: 34, obs: "Una racion generosa 110g aprox" }
 ];

@@ -38,5 +38,37 @@ window.VS_torrecillas1990_20260508 = [
         "prot": 9.75,
         "grasa": 1.25,
         "carb": 12
+    },
+    {
+        "id": 1778256628681,
+        "nombre": "Pollo Asado (al As) (300g/ml)",
+        "kcal": 711,
+        "prot": 81,
+        "grasa": 40.5,
+        "carb": 3.6
+    },
+    {
+        "id": 1778256637531,
+        "nombre": "Patatas Fritas (150g/ml)",
+        "kcal": 468,
+        "prot": 6,
+        "grasa": 22.5,
+        "carb": 61.5
+    },
+    {
+        "id": 1778256645647,
+        "nombre": "Nispero (60g/ml)",
+        "kcal": 28.2,
+        "prot": 0.24,
+        "grasa": 0.12,
+        "carb": 7.2
+    },
+    {
+        "id": 1778256658320,
+        "nombre": "Tarta tres chocolates (70g/ml)",
+        "kcal": 247.8,
+        "prot": 3.08,
+        "grasa": 16.1,
+        "carb": 23.8
     }
 ];

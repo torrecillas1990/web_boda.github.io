@@ -261,3 +261,35 @@ document.querySelectorAll('input').forEach(input => {
         saveToLocal();
     });
 });
+
+// --- FUNCIÓN PARA DESHACER EL ÚLTIMO PUNTO ---
+window.undoLastPoint = function() {
+    // 1. Obtenemos los waypoints actuales filtrando solo los que tienen coordenadas
+    const currentWaypoints = control.getWaypoints().filter(wp => wp.latLng !== null);
+
+    if (currentWaypoints.length > 0) {
+        // 2. Eliminamos el último elemento del array
+        currentWaypoints.pop();
+        
+        // 3. Actualizamos el mapa con el nuevo array (esto disparará 'routesfound')
+        control.setWaypoints(currentWaypoints);
+        
+        // 4. Si después de borrar no quedan puntos, limpiamos los inputs de distancia
+        if (currentWaypoints.length < 2) {
+            document.getElementById('dist_km').value = 0;
+            document.getElementById('dist_m').value = 0;
+            autoCalculate('dist'); // Actualiza calorías a 0
+        }
+        
+        console.log("📍 Punto eliminado. Quedan:", currentWaypoints.length);
+    } else {
+        alert("No hay más puntos para borrar.");
+    }
+};
+
+document.addEventListener('keydown', function(event) {
+    // Detecta Ctrl+Z o Cmd+Z
+    if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
+        undoLastPoint();
+    }
+});

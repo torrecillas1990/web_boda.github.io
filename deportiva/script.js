@@ -125,31 +125,46 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.id === 'perfilModal') document.getElementById('perfilModal').style.display = 'none';
     };
 
+    // --- 1. LÓGICA DE MODO OSCURO ---
     const themeBtn = document.getElementById('theme-toggle');
     const themeIcon = document.getElementById('theme-icon');
     const body = document.body;
 
-    // 1. Revisar si el usuario ya tenía una preferencia guardada
-    const currentTheme = localStorage.getItem('theme');
-    
-    if (currentTheme === 'dark') {
+    // Recuperar preferencia guardada
+    if (localStorage.getItem('theme') === 'dark') {
         body.classList.add('dark-mode');
-        themeIcon.textContent = '☀️'; // Sol para volver a luz
+        if (themeIcon) themeIcon.textContent = '☀️';
     }
 
-    // 2. Evento de clic para cambiar el tema
-    themeBtn.addEventListener('click', () => {
-        body.classList.toggle('dark-mode');
-        
-        let theme = 'light';
-        if (body.classList.contains('dark-mode')) {
-            theme = 'dark';
-            themeIcon.textContent = '☀️';
-        } else {
-            themeIcon.textContent = '🌙';
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            
+            // Guardar preferencia
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            // Cambiar icono (Luna/Sol)
+            if (themeIcon) themeIcon.textContent = isDark ? '☀️' : '🌙';
+            
+            // Opcional: Actualizar colores de Chart.js si existen
+            if (typeof updateChartsTheme === 'function') updateChartsTheme();
+        });
+    }
+
+    // --- 2. LÓGICA DE TAB BAR ACTIVA ---
+    // Ilumina automáticamente el icono de la sección actual
+    const currentPath = window.location.pathname;
+    const tabItems = document.querySelectorAll('.tab-item');
+
+    tabItems.forEach(item => {
+        const href = item.getAttribute('href');
+        // Si la URL contiene el nombre de la carpeta, marcamos como activo
+        if (href !== '../index.html' && currentPath.includes(href.split('/')[1])) {
+            item.classList.add('active');
+        } else if (href === '../index.html' && (currentPath.endsWith('index.html') || currentPath.endsWith('/'))) {
+            // Caso especial para la home
+            item.classList.add('active');
         }
-        
-        // Guardar la elección en el almacenamiento local
-        localStorage.setItem('theme', theme);
     });
 });

@@ -98,7 +98,12 @@ body.dark-mode .btn-premium-action:hover {
     transform: translateY(-2px);
 }
 
-header { text-align: center; padding: 40px 0; background: #f4f4f4; border-radius: 10px; }
+header { 
+    text-align: center; 
+    padding: 40px 0; 
+    background: var(--bg-header); /* Cambiado */
+    border-radius: 10px; 
+}
 
 .grid-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
 
@@ -204,9 +209,9 @@ header { text-align: center; padding: 40px 0; background: #f4f4f4; border-radius
     max-width: 1100px;
     margin: 40px auto;
     padding: 20px;
-    background: #fff;
+    background: var(--bg-card); /* Cambiado */
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    box-shadow: var(--shadow); /* Usamos nuestra variable de sombra */
 }
 
 h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
@@ -345,12 +350,14 @@ button {
 }
 
 .modal-content {
-    background: white;
+    background: var(--bg-card);
+    color: var(--text-main);
     padding: 30px;
     border-radius: 15px;
     position: relative;
     width: 90%;
     max-width: 400px;
+    border: 1px solid var(--border-color);
 }
 
 .close-modal {
@@ -400,23 +407,25 @@ button {
     .menu-toggle.is-active .bar:nth-child(3) {
         transform: translateY(-9px) rotate(-45deg);
     }
-
+	
     .mobile-tab-bar {
         display: flex;
         position: fixed;
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 65px;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-top: 1px solid rgba(0,0,0,0.1);
+        height: 70px;
+        background: var(--bg-card); /* Se adapta al Modo Oscuro */
+        backdrop-filter: blur(15px);
+        border-top: 1px solid var(--border-color);
         justify-content: space-around;
         align-items: center;
         z-index: 2000;
-        padding-bottom: env(safe-area-inset-bottom); /* Soporte para iPhone notch */
+        /* Soporte para el "notch" inferior de iPhone */
+        padding-bottom: env(safe-area-inset-bottom);
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
     }
-
+	
     .tab-item {
         display: flex;
         flex-direction: column;
@@ -428,23 +437,26 @@ button {
         transition: var(--transition);
         flex: 1;
     }
-
+	
     .tab-icon {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
         margin-bottom: 2px;
     }
 
+    /* Clase activa para resaltar la sección actual */
     .tab-item.active {
-        color: var(--primary);
+        color: var(--primary-light);
     }
 
+    /* Feedback visual al tocar */
     .tab-item:active {
         transform: scale(0.9);
+        opacity: 0.7;
     }
 
-    /* Ajuste para que el contenido no se quede debajo del menú */
+    /* Evitar que el contenido se oculte tras la barra */
     body {
-        padding-bottom: 80px;
+        padding-bottom: 90px !important;
     }
 
     /* Opcional: Ocultar el menú hamburguesa superior si usas este */

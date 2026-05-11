@@ -124,4 +124,32 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.id === 'authModal') cerrarLogin();
         if (event.target.id === 'perfilModal') document.getElementById('perfilModal').style.display = 'none';
     };
+
+    const themeBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const body = document.body;
+
+    // 1. Revisar si el usuario ya tenía una preferencia guardada
+    const currentTheme = localStorage.getItem('theme');
+    
+    if (currentTheme === 'dark') {
+        body.classList.add('dark-mode');
+        themeIcon.textContent = '☀️'; // Sol para volver a luz
+    }
+
+    // 2. Evento de clic para cambiar el tema
+    themeBtn.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        
+        let theme = 'light';
+        if (body.classList.contains('dark-mode')) {
+            theme = 'dark';
+            themeIcon.textContent = '☀️';
+        } else {
+            themeIcon.textContent = '🌙';
+        }
+        
+        // Guardar la elección en el almacenamiento local
+        localStorage.setItem('theme', theme);
+    });
 });

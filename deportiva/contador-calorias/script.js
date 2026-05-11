@@ -335,7 +335,7 @@ function inicializarGraficoSemanal() {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: false, // Esto permite que la gráfica se adapte al contenedor CSS
             scales: {
                 y: { type: 'linear', position: 'left' },
                 y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false } }

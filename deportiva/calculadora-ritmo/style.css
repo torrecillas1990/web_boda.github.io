@@ -1,7 +1,12 @@
 /* ==========================================================================
    CALCULADORA DE RITMO - SISTEMA RUNNER PRO
    ========================================================================== */
-   
+
+/* --- MEJORA DE INPUTS (Para evitar zoom en iOS) --- */
+input[type="number"], input[type="text"], select {
+    font-size: 16px !important; /* Evita que el iPhone haga zoom automático al pulsar */
+}
+
 body.dark-mode .leaflet-tile-container {
     filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 }
@@ -171,8 +176,7 @@ body.dark-mode .instructions {
     border: 2px solid #ef4444;
     color: #ef4444;
     text-align: center;
-    font-size: 1.2rem;
-    font-weight: 800;
+    font-size: bold;
 }
 
 .select-rutas {
@@ -184,19 +188,50 @@ body.dark-mode .instructions {
     cursor: pointer;
 }
 
-/* --- RESPONSIVIDAD --- */
-@media (max-width: 900px) {
-    .container { padding: 15px; }
-    
+/* --- OPTIMIZACIÓN MÓVIL PROFESIONAL --- */
+@media (max-width: 768px) {
+    /* 1. Ajuste de la rejilla principal */
     .main-layout {
         display: flex;
-        flex-direction: column; /* Mapa arriba, calculadora abajo */
+        flex-direction: column;
+        gap: 20px;
     }
 
-    .card { order: 2; }
-    #map { 
-        order: 1; 
-        height: 300px; 
-        margin-bottom: 20px; 
+    /* 2. Prioridad visual: Mapa arriba en móvil */
+    #map {
+        order: -1; /* El mapa aparece primero */
+        height: 280px; /* Un poco más pequeño para no ocupar toda la pantalla */
+        margin-bottom: 10px;
+    }
+
+    /* 3. Inputs múltiples: Si la pantalla es muy estrecha, los ponemos en columna */
+    @media (max-width: 480px) {
+        .multi-fields {
+            /*flex-direction: column;*/
+            gap: 5px;
+        }
+        .multi-fields div {
+            width: 50%;
+        }
+    }
+
+    /* 4. Tabla de referencia: Hacerla desplazable horizontalmente si es necesario */
+    .reference-table {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .reference-table table {
+        min-width: 400px; /* Evita que las columnas se colapsen */
+    }
+
+    /* 5. Botones: En móvil es mejor que ocupen todo el ancho para ser pulsables */
+    .button-group {
+        flex-direction: column;
+    }
+
+    .btn-export, .btn-clear, .btn-import {
+        width: 100% !important;
+        margin-top: 8px;
     }
 }

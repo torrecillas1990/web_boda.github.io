@@ -6,7 +6,7 @@
 input[type="number"], 
 input[type="text"], 
 select {
-    width: 100%;
+    width: 45%;
     padding: 12px;
     background-color: var(--bg-card); /* Adaptable */
     color: var(--text-main);
@@ -24,27 +24,20 @@ input:focus, select:focus {
 }
 
 /* --- BUSCADOR Y FILTROS --- */
-.search-row {
+.search-row, .product-dropdown-container {
     display: flex;
     gap: 12px;
     margin-bottom: 20px;
     flex-wrap: wrap;
 }
 
-.search-row input {
+.search-row input, .product-dropdown-container input {
     flex: 2;
     min-width: 200px;
 }
 
-.filter-select {
-    flex: 1;
-    background-color: var(--bg-card);
-    cursor: pointer;
-}
-
 /* --- EL DESPLEGABLE PRINCIPAL (HERO SELECT) --- */
-.main-dropdown {
-    width: 100%;
+.main-dropdown, .filter-select {
     padding: 16px;
     font-size: 1.1rem;
     font-weight: 600;
@@ -57,7 +50,7 @@ input:focus, select:focus {
     transition: var(--transition);
 }
 
-body.dark-mode .main-dropdown {
+body.dark-mode .main-dropdown, body.dark-mode .filter-select {
     background-color: var(--bg-card);
 }
 
@@ -143,7 +136,6 @@ body.dark-mode #quantityModal {
     color: white;
     border-radius: 8px;
     padding: 12px;
-    margin-top: 10px;
 }
 
 #downloadBtn:hover, #confirmBtn:hover, #bulkImportBtn:hover {
@@ -155,7 +147,6 @@ body.dark-mode #quantityModal {
     color: white;
     border-radius: 8px;
     padding: 12px;
-    margin-top: 10px;
 }
 	
 #clearBtn:hover, #clearSearchBtn:hover, #cancelBtn:hover, .delete-btn:hover {

@@ -9,6 +9,13 @@
     <link rel="icon" type="image/x-icon" href="../recursos/favicon.ico">
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<meta name="theme-color" content="#1e3a8a">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<link rel="apple-touch-icon" href="recursos/icon-192.png">
+
+	<link rel="manifest" href="/manifest.json">
 </head>
 <body>
     <nav class="navbar">
@@ -28,9 +35,6 @@
                 <li><a href="../registro-premium/index.html" class="btn-nav active">Premium</a></li>
 				<li><a href="#" id="authBtn" class="btn-nav" onclick="abrirLogin()">Login</a></li>
             </ul>
-			<button id="theme-toggle" class="btn-theme" title="Cambiar modo">
-				<span id="theme-icon">🌙</span>
-			</button>
         </div>
     </nav>
 
@@ -93,6 +97,11 @@
 			</div>
 			<hr>
 			<div class="perfil-stats">
+				<div class="stat-item">
+					<button id="theme-toggle" class="btn-theme" title="Cambiar modo">
+						<span id="theme-icon">🌙</span>
+					</button>
+				</div>
 				<div class="stat-item">
 					<span class="stat-value" id="statsDias">0</span>
 					<span class="stat-label">Días Registrados</span>

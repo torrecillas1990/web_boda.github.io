@@ -55,8 +55,8 @@ body {
 
 /* Variables cuando se activa el Modo Oscuro */
 body.dark-mode {
-    --bg-body: #0f172a;       /* Azul muy oscuro */
-    --bg-card: #1e293b;       /* Azul pizarra */
+    --bg-body: #0a1224;       /* Azul muy oscuro */
+    --bg-card: #141c29;       /* Azul pizarra */
     --text-main: #f1f5f9;     /* Gris casi blanco */
     --text-muted: #94a3b8;    /* Gris azulado */
     --border-color: rgba(255,255,255,0.1);
@@ -125,6 +125,11 @@ header {
     border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
+body.dark-mode .navbar {
+	background: var(--bg-card);
+    color: var(--text-main);
+}
+
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -181,7 +186,7 @@ header {
 
 .nav-links a {
     text-decoration: none;
-    color: #333;
+    color: var(--text-main);
     font-weight: 500;
 }
 

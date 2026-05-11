@@ -1,0 +1,23 @@
+{
+  "name": "VitalStats Fitness & Health",
+  "short_name": "VitalStats",
+  "description": "Calculadoras de salud, running y contador de calorías profesional.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#1e3a8a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "recursos/favicon.png",
+      "sizes": "686x686",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "recursos/icon.png",
+      "sizes": "686x686",
+      "type": "image/png"
+    }
+  ]
+}

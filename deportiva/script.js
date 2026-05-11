@@ -190,3 +190,20 @@ function setActiveTab() {
 
 // Ejecutar al cargar la página
 document.addEventListener('DOMContentLoaded', setActiveTab);
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('✅ VitalStats PWA lista para usar offline'))
+      .catch(err => console.log('❌ Error al registrar PWA', err));
+  });
+}
+
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    // Aquí podrías mostrar un botón de "Instalar VitalStats" en tu navbar
+    console.log("💎 VitalStats puede ser instalada.");
+});

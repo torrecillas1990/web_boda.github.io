@@ -9,6 +9,13 @@
     <link rel="icon" type="image/x-icon" href="../recursos/favicon.ico">
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<meta name="theme-color" content="#1e3a8a">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<link rel="apple-touch-icon" href="recursos/icon-192.png">
+
+	<link rel="manifest" href="/manifest.json">
 </head>
 <body>
 	<nav class="navbar">
@@ -28,9 +35,6 @@
 				<li><a href="../registro-premium/index.html" class="btn-nav">Premium</a></li>
 				<li><a href="#" id="authBtn" class="btn-nav" onclick="abrirLogin()">Login</a></li>
 			</ul>
-			<button id="theme-toggle" class="btn-theme" title="Cambiar modo">
-				<span id="theme-icon">🌙</span>
-			</button>
 		</div>
 	</nav>
 
@@ -39,6 +43,10 @@
 
 		<div class="search-row">
 			<input type="text" id="productSearch" placeholder="Buscar producto...">
+			<button id="clearSearchBtn" class="btn-clear">🧹 Limpiar</button>
+		</div>
+		
+		<div class="product-dropdown-container">
 			<select id="categoryFilter" class="filter-select">
 				<option value="todos">Todas las categorías</option>
 				<option value="Bebida">Bebidas</option>
@@ -51,9 +59,11 @@
 				<option value="Fruta">Frutas</option>
 				<option value="Verdura">Verduras</option>
 			</select>
-			<button id="clearSearchBtn" class="btn-clear">🧹 Limpiar</button>
+			<select id="fullProductDropdown" class="main-dropdown">
+				<option value="">-- Selecciona un producto para añadir --</option>
+			</select>
 		</div>
-		
+
 		<div id="quantityModal" style="display: none;">
 			<p id="modalProductName"></p>
 			<p id="modalProductDetail"></p>
@@ -63,22 +73,6 @@
 				<button id="cancelBtn">✕</button>
 			</div>
 		</div>
-				
-		<div class="product-dropdown-container">
-			<select id="fullProductDropdown" class="main-dropdown">
-				<option value="">-- Selecciona un producto para añadir --</option>
-			</select>
-		</div>
-
-		<section class="section-card bulk-section">
-			<h3>📅 Sincronización Servidor</h3>
-			<div class="flex-row">
-				<input type="date" id="importRangeStart">
-				<input type="date" id="importRangeEnd">
-				<button id="bulkImportBtn">🔄 Sincronizar</button>
-			</div>
-			<p id="currentRangeDisplay"></p>
-		</section>
 
 		<section class="section-card diary-circular-grid">
 			<div class="diary-part">
@@ -138,6 +132,16 @@
 				<div class="total-badge carb">Total Carb: <span id="rangeCarb">0</span>g</div>
 			</div>
 		</section>
+		
+		<section class="section-card bulk-section">
+			<h3>📅 Sincronización Servidor</h3>
+			<div class="flex-row">
+				<input type="date" id="importRangeStart">
+				<input type="date" id="importRangeEnd">
+				<button id="bulkImportBtn">🔄 Sincronizar</button>
+			</div>
+			<p id="currentRangeDisplay"></p>
+		</section>
 	</div>
 	
 	<div id="authModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
@@ -160,6 +164,11 @@
 			</div>
 			<hr>
 			<div class="perfil-stats">
+				<div class="stat-item">
+					<button id="theme-toggle" class="btn-theme" title="Cambiar modo">
+						<span id="theme-icon">🌙</span>
+					</button>
+				</div>
 				<div class="stat-item">
 					<span class="stat-value" id="statsDias">0</span>
 					<span class="stat-label">Días Registrados</span>

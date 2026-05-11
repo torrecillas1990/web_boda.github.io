@@ -95,8 +95,10 @@
 					<span class="fat">G: <span id="totalFat">0</span>g</span>
 					<span class="carb">C: <span id="totalCarb">0</span>g</span>
 				</div>
-				<button id="clearBtn">Vaciar Lista</button>
-				<button id="downloadBtn">Guardar día</button>
+				<div class="button-group">
+					<button id="downloadBtn">Guardar día</button>
+					<button id="clearBtn">Vaciar Lista</button>
+				</div>
 			</div>
 			<div class="chart-part">
 				<canvas id="macroChart"></canvas>
@@ -104,38 +106,36 @@
 		</section>
 
 		<section class="section-card">
-			<div class="weekly-section" style="margin-top: 40px; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-				<h2>Evolución Semanal</h2>
+			<h2>Evolución Semanal</h2>
 				
-				<div class="chart-controls" style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">					
-					<div id="macroToggles">
-						<label><input type="checkbox" class="macro-toggle" value="0" checked> Calorías</label>
-						<label><input type="checkbox" class="macro-toggle" value="1" checked> Proteína</label>
-						<label><input type="checkbox" class="macro-toggle" value="2" checked> Grasas</label>
-						<label><input type="checkbox" class="macro-toggle" value="3" checked> Carbohidratos</label>
-					</div>
-
-					<select id="timeRangeFilter" class="filter-select" style="width: auto;">
-						<option value="currentWeek">Esta semana (Lun - Dom)</option>
-						<option value="last7">Últimos 7 días</option>
-						<option value="lastMonth">Último Mes</option>
-						<option value="last6Months">Últimos 6 meses</option>
-						<option value="lastYear">Último año</option>
-						<option value="lastTwoYears">Últimos 2 años</option>
-					</select>
+			<div class="chart-controls" style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">					
+				<div id="macroToggles">
+					<label><input type="checkbox" class="macro-toggle" value="0" checked> Calorías</label>
+					<label><input type="checkbox" class="macro-toggle" value="1" checked> Proteína</label>
+					<label><input type="checkbox" class="macro-toggle" value="2" checked> Grasas</label>
+					<label><input type="checkbox" class="macro-toggle" value="3" checked> Carbohidratos</label>
 				</div>
 
-				<div style="height: 300px;">
-					<canvas id="weeklyChart"></canvas>
-				</div>
-				
-				<div id="weeklyTotals" class="weekly-totals-summary">
-					<div class="total-badge">Periodo: <span id="rangeKcal">0</span> kcal</div>
-					<div class="total-badge">Promedio diario: <span id="avgKcal">0</span> kcal</div>
-					<div class="total-badge prot">Total Prot: <span id="rangeProt">0</span>g</div>
-					<div class="total-badge fat">Total Grasa: <span id="rangeFat">0</span>g</div>
-					<div class="total-badge carb">Total Carb: <span id="rangeCarb">0</span>g</div>
-				</div>
+				<select id="timeRangeFilter" class="filter-select" style="width: auto;">
+					<option value="currentWeek">Esta semana (Lun - Dom)</option>
+					<option value="last7">Últimos 7 días</option>
+					<option value="lastMonth">Último Mes</option>
+					<option value="last6Months">Últimos 6 meses</option>
+					<option value="lastYear">Último año</option>
+					<option value="lastTwoYears">Últimos 2 años</option>
+				</select>
+			</div>
+
+			<div style="height: 300px;">
+				<canvas id="weeklyChart"></canvas>
+			</div>
+			
+			<div id="weeklyTotals" class="weekly-totals-summary">
+				<div class="total-badge">Periodo: <span id="rangeKcal">0</span> kcal</div>
+				<div class="total-badge">Promedio diario: <span id="avgKcal">0</span> kcal</div>
+				<div class="total-badge prot">Total Prot: <span id="rangeProt">0</span>g</div>
+				<div class="total-badge fat">Total Grasa: <span id="rangeFat">0</span>g</div>
+				<div class="total-badge carb">Total Carb: <span id="rangeCarb">0</span>g</div>
 			</div>
 		</section>
 	</div>

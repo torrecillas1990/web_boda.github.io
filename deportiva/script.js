@@ -168,3 +168,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+function setActiveTab() {
+    const currentPath = window.location.pathname;
+    const tabs = document.querySelectorAll('.tab-item');
+
+    tabs.forEach(tab => {
+        const href = tab.getAttribute('href');
+        // Comprueba si la URL actual contiene el nombre de la carpeta del enlace
+        if (href !== '../index.html' && currentPath.includes(href.split('/')[1])) {
+            tab.classList.add('active');
+        } else if (href.includes('index.html') && (currentPath.endsWith('/') || currentPath.endsWith('index.html'))) {
+            // Caso para la página principal
+            if (!currentPath.includes('calculadora') && !currentPath.includes('registro')) {
+                tab.classList.add('active');
+            }
+        }
+    });
+}
+
+// Ejecutar al cargar la página
+document.addEventListener('DOMContentLoaded', setActiveTab);

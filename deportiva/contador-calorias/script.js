@@ -5,6 +5,10 @@ let productoSeleccionado = null;
 let macroChart = null;
 let weeklyChart = null;
 
+// Configura Chart.js para usar colores de variables CSS
+Chart.defaults.color = getComputedStyle(document.body).getPropertyValue('--text-muted');
+Chart.defaults.borderColor = getComputedStyle(document.body).getPropertyValue('--border-color');
+
 // --- INICIALIZACIÓN PRINCIPAL ---
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("🚀 VitalStats Iniciado");

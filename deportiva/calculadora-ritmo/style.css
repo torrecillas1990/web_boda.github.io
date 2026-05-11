@@ -1,16 +1,16 @@
-/* Layout específico para Running */
-.container {
-    display: grid;
-    grid-template-columns: 400px 1fr;
-    gap: 20px;
-    max-width: 1200px;
+/* ==========================================================================
+   CALCULADORA DE RITMO - SISTEMA RUNNER PRO
+   ========================================================================== */
+   
+body.dark-mode .leaflet-tile-container {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 }
 
-/* Estilo de los grupos de inputs múltiples (KM/M, MIN/SEG) */
+/* --- GRUPOS DE INPUTS MÚLTIPLES (KM/M, MIN/SEG) --- */
 .multi-fields {
     display: flex;
     gap: 10px;
-    margin-top: 5px;
+    margin-top: 8px;
 }
 
 .multi-fields div {
@@ -20,178 +20,183 @@
 }
 
 .multi-fields input {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border: 1.5px solid var(--border-color);
+    padding: 10px;
+    border-radius: 8px;
     font-size: 1rem;
-    width: 100%; /* Asegura que llenen su columna */
-    box-sizing: border-box;
+    transition: var(--transition);
 }
 
-/* Eliminar las flechas laterales de los inputs de número para un look más limpio */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+.multi-fields input:focus {
+    border-color: var(--primary-light);
+    outline: none;
 }
 
 .sub-label {
-    font-size: 0.7rem;
-    color: #888;
+    font-size: 0.65rem;
+    color: var(--text-muted);
     text-transform: uppercase;
-    margin-top: 4px;
-    font-weight: bold;
+    margin-top: 5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
-/* El Mapa */
+/* --- EL MAPA (LEAFLET) --- */
 #map {
     height: 400px;
     width: 100%;
     border-radius: var(--radius);
-    z-index: 1; /* Para no tapar el menú */
+    z-index: 1;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
 }
 
+/* --- INSTRUCCIONES (ADAPTABLES) --- */
 .instructions {
-    background: #fff3cd;
+    background: rgba(245, 158, 11, 0.1); /* Ámbar muy suave */
     padding: 15px;
     border-radius: 8px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     margin-top: 20px;
-    border-left: 4px solid #ffc107;
+    border-left: 4px solid var(--accent);
+    color: var(--text-main);
 }
 
-.btn-clear {
-    cursor: pointer;
-    border: none;
-    transition: background 0.3s ease;
+body.dark-mode .instructions {
+    background: rgba(245, 158, 11, 0.05);
 }
 
-.btn-clear:hover {
-    background: #5a6268;
-}
-
-.btn-clear:active {
-    transform: translateY(1px);
-}
-
-@media (max-width: 900px) {
-    .container {
-        padding: 10px;
-        gap: 15px;
-    }
-    .card {
-        order: 2; /* Pone la calculadora debajo del mapa en móvil */
-    }
-    #map {
-        order: 1; /* El mapa primero para que puedan marcar la ruta antes de ver resultados */
-		height: 300px;
-    }
-}
-
+/* --- TABLA DE REFERENCIA DE RITMOS --- */
 .reference-table {
-    margin-top: 25px;
-    border-top: 1px solid #eee;
-    padding-top: 15px;
+    margin-top: 30px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
 }
 
 .reference-table h3 {
-    font-size: 1rem;
-    color: #333;
-    margin-bottom: 10px;
-    text-align: center;
+    font-size: 0.9rem;
+    padding: 15px;
+    background: var(--bg-header);
+    margin: 0;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .reference-table table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.85rem;
 }
 
 .reference-table th {
-    background-color: #f8f9fa;
-    color: #555;
-    font-weight: bold;
-    padding: 8px;
-    border-bottom: 2px solid #dee2e6;
+    background-color: var(--bg-header);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    padding: 12px;
     text-align: left;
 }
 
 .reference-table td {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
-    color: #666;
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    font-size: 0.85rem;
 }
+
+/* Color para la columna de "Nivel" */
+.reference-table td:last-child {
+    font-weight: 600;
+    color: var(--primary-light);
+}
+
+.reference-table tr:last-child td { border-bottom: none; }
 
 .reference-table tr:hover {
-    background-color: #f1f1f1;
+    background-color: rgba(59, 130, 246, 0.05);
 }
 
-/* Color para el "Nivel" */
-.reference-table td:last-child {
-    font-style: italic;
-    color: #007bff;
+
+/* --- BOTONES ESPECÍFICOS --- */
+.button-group, .import-section {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
 }
 
 .btn-export {
-    width: 100%;
-    background: #28a745;
+    background: var(--primary-light);
     color: white;
-    padding: 10px;
-    border-radius: 6px;
+    padding: 12px;
+    border-radius: 8px;
+    width: 50%;
     margin-top: 10px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.3s;
 }
 
 .btn-export:hover {
-    background: #218838;
+    background: var(--primary);
+}
+
+.btn-clear {
+    background: var(--alert-light);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    width: 50%;
+    margin-top: 10px;
+}
+
+.btn-clear:hover {
+    background: var(--alert);
 }
 
 .btn-import {
-    display: block;
-    width: 100%;
-    background: #007bff;
+    background: var(--secondary-light);
     color: white;
-    padding: 10px;
-    border-radius: 6px;
-    margin-top: 15px;
-    text-align: center;
-    cursor: pointer;
-    font-weight: bold;
-    box-sizing: border-box;
+    padding: 12px;
+    border-radius: 8px;
+    width: 50%;
+    margin-top: 10px;
 }
 
 .btn-import:hover {
-    background: #0056b3;
+    background: var(--secondary);
 }
 
+/* --- CAMPOS ESPECIALES --- */
 #res_calories {
-    border: 2px solid #d9534f;
+    background: rgba(239, 68, 68, 0.05);
+    border: 2px solid #ef4444;
+    color: #ef4444;
     text-align: center;
-    font-size: 1.1rem;
-}
-
-/* Un pequeño efecto para el campo de peso */
-#user_weight:focus {
-    border-color: #d9534f;
-    outline: none;
-    box-shadow: 0 0 5px rgba(217, 83, 79, 0.3);
+    font-size: 1.2rem;
+    font-weight: 800;
 }
 
 .select-rutas {
-    width: 100%;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    font-size: 0.9rem;
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border: 1.5px solid var(--border-color);
+    padding: 12px;
+    border-radius: 8px;
     cursor: pointer;
-    margin-top: 5px;
 }
 
-.select-rutas:focus {
-    border-color: #007bff;
-    outline: none;
+/* --- RESPONSIVIDAD --- */
+@media (max-width: 900px) {
+    .container { padding: 15px; }
+    
+    .main-layout {
+        display: flex;
+        flex-direction: column; /* Mapa arriba, calculadora abajo */
+    }
+
+    .card { order: 2; }
+    #map { 
+        order: 1; 
+        height: 300px; 
+        margin-bottom: 20px; 
+    }
 }

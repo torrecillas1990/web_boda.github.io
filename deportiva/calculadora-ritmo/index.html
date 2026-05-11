@@ -37,8 +37,8 @@
 	</nav>
 
 	<div class="container">
-		<div class="card">
-			<h2>Running Calculator</h2>
+		<div class="section-card">
+			<h1>🏃 Running Calculator</h1>
 			
 			<div class="group">
 				<label>Distancia Recorrida</label>
@@ -111,11 +111,13 @@
 				</div>
 			</div>
 			
-			<button class="btn-clear" onclick="clearAll()">Reiniciar Datos</button>
-			<button class="btn-export" onclick="exportToGPX()">Descargar Ruta (.GPX)</button>
-			
-			<div class="import-section">
+			<div class="button-group">
+				<button class="btn-clear" onclick="clearAll()">Reiniciar Datos</button>
+				<button class="btn-export" onclick="exportToGPX()">Descargar Ruta (.GPX)</button>
 				<label for="gpx-upload" class="btn-import">Subir Ruta GPX</label>
+			</div>
+
+			<div class="import-section">
 				<input type="file" id="gpx-upload" accept=".gpx" style="display: none;">
 			</div>
 			

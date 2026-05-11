@@ -1,25 +1,23 @@
-/* Variables de Consistencia */
-:root {
-    --primary: #007bff;
-    --success: #27ae60;
-    --warning: #e67e22;
-    --danger: #e74c3c;
-    --dark: #2c3e50;
-    --light-bg: #f8f9fa;
-    --white: #ffffff;
-    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
+/* ==========================================================================
+   CALCULADORA DE GRASA CORPORAL - SISTEMA PRO
+   ========================================================================== */
 
-input[type="number"], input[type="text"], select {
+/* Ajuste de Inputs (Globales para esta herramienta) */
+input[type="number"], 
+input[type="text"], 
+select {
     width: 100%;
     padding: 12px;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 8px;
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius);
     font-size: 1rem;
     margin-bottom: 1rem;
+    transition: var(--transition);
 }
 
-/* Layout Principal: Formulario y Resultados Lado a Lado */
+/* Layout Principal: Formulario y Resultados */
 .main-layout {
     display: flex;
     flex-direction: row;
@@ -29,11 +27,12 @@ input[type="number"], input[type="text"], select {
 }
 
 #fat-form {
-    flex: 1.2; /* El formulario es un poco más ancho */
-    background: var(--white);
+    flex: 1.2;
+    background: var(--bg-card);
     padding: 25px;
-    border-radius: 15px;
+    border-radius: var(--radius);
     box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
 }
 
 #result-container {
@@ -46,101 +45,100 @@ input[type="number"], input[type="text"], select {
 /* Grid de Inputs interno */
 .grid-inputs {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 20px;
     margin-bottom: 25px;
 }
 
-.input-group {
-    display: flex; /* IMPORTANTE: Volvemos a activar flex para alinear label e input */
-    flex-direction: column;
-}
-
 .input-group label {
     margin-bottom: 8px;
-    font-weight: 600;
-    color: var(--dark);
-    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 0.75rem;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.input-group input, 
-.input-group select {
-    padding: 12px;
-    border: 2px solid #edf2f7;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.input-group input:focus {
-    border-color: var(--primary);
-    outline: none;
-}
-
-/* Tarjetas de Resultados */
+/* Tarjetas de Resultados con Borde de Acento */
 .result-card {
-    background: var(--white);
+    background: var(--bg-card);
     padding: 25px;
-    border-radius: 16px;
+    border-radius: var(--radius);
     box-shadow: var(--shadow);
-    border-left: 6px solid var(--primary);
+    border: 1px solid var(--border-color);
+    border-left: 6px solid var(--primary-light); /* Indicador visual */
 }
 
-.result-card.calories { border-left-color: var(--success); }
+.result-card.calories { 
+    border-left-color: var(--secondary); 
+}
 
+/* Grid de Stats (Adaptable al Modo Oscuro) */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columnas en resultados para que no ocupen mucho alto */
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
 }
 
 .stats-grid div {
-    padding: 12px;
-    background: var(--light-bg);
+    padding: 15px;
+    background: var(--bg-header); /* Usa el gris suave o azul oscuro */
     border-radius: 10px;
     text-align: center;
+    transition: var(--transition);
 }
 
 .stats-grid p {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     font-weight: 800;
     margin: 0;
-    color: var(--dark);
+    color: var(--text-main);
 }
 
-/* Botones */
+/* Botones de Acción */
 .button-group {
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    margin-top: 10px;
 }
 
 .button-calc {
-    flex: 1;
-    padding: 15px;
-    border: none;
-    border-radius: 10px;
+    background: var(--primary-light);
     color: white;
+    padding: 12px;
+    border-radius: 8px;
+    width: 50%;
+    margin-top: 10px;
+}
+
+.button-calc:hover {
     background: var(--primary);
-    font-weight: bold;
-    cursor: pointer;
 }
 
 .btn-clear {
-	flex: 1;
-    padding: 15px;
-    border: none;
-    border-radius: 10px;
+    background: var(--alert-light);
     color: white;
-    background: var(--danger);
-    font-weight: bold;
-    cursor: pointer;
+    padding: 12px;
+    border-radius: 8px;
+    width: 50%;
+    margin-top: 10px;
 }
 
-/* Gráfico a pantalla completa debajo */
-canvas {
-    width: 100% !important;
-    height: 100% !important;
+.btn-clear:hover {
+    background: var(--alert);
 }
+
+/* Gráfico Evolutivo */
+.chart-container {
+    background: var(--bg-card);
+    padding: 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    margin-top: 20px;
+    height: 350px; /* Altura fija para evitar saltos */
+}
+
+.hidden { display: none; }
 
 /* Responsividad */
 @media (max-width: 1024px) {

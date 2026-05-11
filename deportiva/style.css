@@ -3,8 +3,11 @@
     /* Paleta de Colores */
     --primary: #1e3a8a;       /* Azul profundo */
     --primary-light: #3b82f6;
-    --secondary: #10b981;     /* Verde éxito/premium */
+    --secondary: #00a870;     /* Verde profundo */
+    --secondary-light: #10b981; /* Verde éxito/premium */
     --accent: #f59e0b;        /* Ámbar para avisos/destacados */
+    --alert: #bc1111;        /* Rojo profundo*/
+    --alert-light: #ef4444;  /* Rojo */
     --bg-body: #f8fafc;
     --bg-card: #ffffff;
     --text-main: #1e293b;
@@ -76,19 +79,19 @@ body.dark-mode .price span {
 
 /* La tarjeta "Popular" en Modo Oscuro */
 body.dark-mode .price-card.popular {
-    border: 2px solid var(--secondary); /* El verde esmeralda resalta mucho más */
+    border: 2px solid var(--secondary-light); /* El verde esmeralda resalta mucho más */
     background: linear-gradient(145deg, var(--bg-card), #1e293b);
     box-shadow: 0 0 20px rgba(16, 185, 129, 0.15); /* Un sutil resplandor verde */
 }
 
 body.dark-mode .badge {
-    background: var(--secondary);
+    background: var(--secondary-light);
     color: #064e3b; /* Texto oscuro sobre fondo verde para legibilidad */
 }
 
 /* Botón de acción en modo oscuro */
 body.dark-mode .btn-premium-action {
-    background: var(--secondary);
+    background: var(--secondary-light);
     color: #064e3b;
     font-weight: 700;
 }
@@ -138,6 +141,7 @@ header {
     box-shadow: var(--shadow);
     border: 1px solid rgba(0,0,0,0.05);
     transition: var(--transition);
+	text-align: center;
 }
 
 .card:hover {
@@ -214,7 +218,7 @@ header {
     box-shadow: var(--shadow); /* Usamos nuestra variable de sombra */
 }
 
-h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+h1 { text-align: center; margin-bottom: 30px; }
 
 /* Layout de dos columnas */
 .main-layout {

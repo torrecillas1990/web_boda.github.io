@@ -1,33 +1,35 @@
 /* ==========================================================================
-   VITALSTATS - ENGINE CALCULADORA DE RITMO PRO
+   VITALSTATS - ENGINE CALCULADORA DE RITMO PRO 2026
    ========================================================================== */
 
 // --- 1. CLASE PARA RUTA MANUAL (LÍNEA RECTA) ---
+// Imprescindible para que el mapa no dependa de servidores externos
 const StraightRouter = L.Class.extend({
     route: function(waypoints, callback, context) {
-        const routes = [{
+        const pts = waypoints.filter(wp => wp.latLng).map(wp => wp.latLng);
+        
+        if (pts.length < 2) {
+            return callback.call(context, null, []); 
+        }
+
+        const route = {
             name: 'Ruta Manual',
             summary: { totalDistance: 0, totalTime: 0 },
-            coordinates: [],
-            waypoints: waypoints
-        }];
+            coordinates: pts,
+            waypoints: waypoints,
+            inputWaypoints: waypoints,
+            instructions: [] 
+        };
 
-        // Generamos una lista limpia de coordenadas sin duplicados
-        for (let i = 0; i < waypoints.length; i++) {
-            if (waypoints[i].latLng) {
-                routes[0].coordinates.push(waypoints[i].latLng);
-            }
+        // Cálculo de distancia geométrica (línea recta)
+        for (let i = 0; i < pts.length - 1; i++) {
+            route.summary.totalDistance += pts[i].distanceTo(pts[i+1]);
         }
 
-        // Calculamos la distancia geométrica total
-        for (let i = 0; i < routes[0].coordinates.length - 1; i++) {
-            routes[0].summary.totalDistance += routes[0].coordinates[i].distanceTo(routes[0].coordinates[i+1]);
-        }
-
-        // Ejecutamos el callback de forma asíncrona para que Leaflet lo procese correctamente
+        // Simular respuesta asíncrona para que Leaflet no se bloquee
         setTimeout(() => {
-            callback.call(context, null, routes);
-        }, 10);
+            callback.call(context, null, [route]);
+        }, 50);
     }
 });
 
@@ -46,100 +48,109 @@ const control = L.Routing.control({
     waypoints: [],
     routeWhileDragging: true,
     show: false,
-    router: routers.auto, // Por defecto automático
+    router: routers.auto, 
     createMarker: (i, wp) => L.marker(wp.latLng, { draggable: true })
 }).addTo(map);
 
 // --- 3. GESTIÓN DE EVENTOS DE TRAZADO ---
 
-// Cambio de modo (Auto vs Manual)
+// IMPORTANTE: Cambio de modo Manual/Auto
 document.getElementById('routing-mode')?.addEventListener('change', function(e) {
     const modo = e.target.value;
+    const nuevoRouter = routers[modo];
+
+    // Actualizamos el router en ambos sitios internos del control
+    control.options.router = nuevoRouter;
+    control.getPlan().options.router = nuevoRouter;
     
-    // Cambiamos el router en el objeto de control principal
-    control.options.router = routers[modo];
-    
-    // También lo actualizamos en el plan para mantener la coherencia
-    control.getPlan().options.router = routers[modo];
-    
-    // Si ya hay puntos en el mapa, forzamos el recálculo inmediato
-    if (control.getWaypoints().filter(wp => wp.latLng).length >= 2) {
-        control.route();
+    // Forzamos el recálculo refrescando los waypoints actuales
+    const currentWps = control.getWaypoints();
+    if (currentWps.filter(wp => wp.latLng).length >= 2) {
+        control.setWaypoints(currentWps); 
     }
 });
 
-// Añadir puntos con Clic Derecho
+// Clic derecho para añadir puntos
 map.on('contextmenu', function(e) {
-    const waypoints = control.getWaypoints();
-    const existingWaypoints = waypoints.filter(wp => wp.latLng !== null).map(wp => wp.latLng);
-    existingWaypoints.push(e.latlng);
-    control.setWaypoints(existingWaypoints);
+    const waypoints = control.getWaypoints().filter(wp => wp.latLng !== null).map(wp => wp.latLng);
+    waypoints.push(e.latlng);
+    control.setWaypoints(waypoints);
 });
 
-// --- 4. UTILIDADES Y CÁLCULOS ---
+// --- 4. LÓGICA DE CÁLCULOS Y CALORÍAS ---
 
 function calculateCalories(vKmh, weight, timeHours) {
-    let met = 0;
-    if (vKmh <= 0) met = 0;
-    else if (vKmh < 8) met = 7;
-    else if (vKmh < 10) met = 9.8;
-    else if (vKmh < 12) met = 11.5;
-    else met = 12.8;
+    let met = vKmh < 8 ? 7 : (vKmh < 12 ? 11.5 : 12.8);
     return Math.round(met * weight * timeHours);
 }
 
-function autoCalculate(lastChangedType) {
+function autoCalculate(type) {
     const km = parseFloat(document.getElementById('dist_km').value) || 0;
     const m = parseFloat(document.getElementById('dist_m').value) || 0;
-    const totalDist = km + (m / 1000);
+    const dist = km + (m / 1000);
     
+    const weight = parseFloat(document.getElementById('user_weight').value) || 70;
     const pm = parseFloat(document.getElementById('p_min').value) || 0;
     const ps = parseFloat(document.getElementById('p_sec').value) || 0;
-    const paceInSec = (pm * 60) + ps;
+    const pace = (pm * 60) + ps;
 
     const th = parseFloat(document.getElementById('t_h').value) || 0;
     const tm = parseFloat(document.getElementById('t_m').value) || 0;
     const ts = parseFloat(document.getElementById('t_s').value) || 0;
-    const totalTimeInSec = (th * 3600) + (tm * 60) + ts;
-    
-    const weight = parseFloat(document.getElementById('user_weight').value) || 70;
+    const time = (th * 3600) + (tm * 60) + ts;
 
-    if (totalDist <= 0) return;
+    if (dist <= 0) return;
 
-    if (lastChangedType === 'v') {
-        const vKmh = parseFloat(document.getElementById('v_kmh').value) || 0;
-        if (vKmh > 0) {
-            const paceDecimal = 60 / vKmh;
-            document.getElementById('p_min').value = Math.floor(paceDecimal);
-            document.getElementById('p_sec').value = Math.round((paceDecimal * 60) % 60);
-            autoCalculate('p'); 
+    if (type === 'dist' || type === 'p') {
+        if (pace > 0) {
+            const resT = dist * pace;
+            document.getElementById('t_h').value = Math.floor(resT / 3600);
+            document.getElementById('t_m').value = Math.floor((resT % 3600) / 60);
+            document.getElementById('t_s').value = Math.round(resT % 60);
+            document.getElementById('v_kmh').value = (3600 / pace).toFixed(2);
         }
-        return;
-    }
-
-    if (lastChangedType === 'dist' || lastChangedType === 'p') {
-        if (paceInSec > 0) {
-            const resTime = totalDist * paceInSec;
-            document.getElementById('t_h').value = Math.floor(resTime / 3600);
-            document.getElementById('t_m').value = Math.floor((resTime % 3600) / 60);
-            document.getElementById('t_s').value = Math.round(resTime % 60);
-            document.getElementById('v_kmh').value = (3600 / paceInSec).toFixed(2);
-        }
-    } else if (lastChangedType === 't') {
-        if (totalTimeInSec > 0) {
-            const resPace = totalTimeInSec / totalDist;
-            document.getElementById('p_min').value = Math.floor(resPace / 60);
-            document.getElementById('p_sec').value = Math.round(resPace % 60);
-            document.getElementById('v_kmh').value = ((totalDist / totalTimeInSec) * 3600).toFixed(2);
+    } else if (type === 't') {
+        if (time > 0) {
+            const resP = time / dist;
+            document.getElementById('p_min').value = Math.floor(resP / 60);
+            document.getElementById('p_sec').value = Math.round(resP % 60);
+            document.getElementById('v_kmh').value = ((dist / time) * 3600).toFixed(2);
         }
     }
 
-    const vKmhActual = parseFloat(document.getElementById('v_kmh').value) || 0;
-    const calories = calculateCalories(vKmhActual, weight, totalTimeInSec / 3600);
-    document.getElementById('res_calories').value = calories + " kcal";
+    const v = parseFloat(document.getElementById('v_kmh').value) || 0;
+    document.getElementById('res_calories').value = calculateCalories(v, weight, (dist * (pace || 0)) / 3600) + " kcal";
 }
 
-// --- 5. GESTIÓN DE GPX Y PERSISTENCIA ---
+// --- 5. PERSISTENCIA Y GPX ---
+
+control.on('routesfound', (e) => {
+    const d = e.routes[0].summary.totalDistance;
+    document.getElementById('dist_km').value = Math.floor(d / 1000);
+    document.getElementById('dist_m').value = Math.round(d % 1000);
+    autoCalculate('dist');
+});
+
+window.clearAll = function() {
+    if(confirm("¿Reiniciar ruta?")) {
+        control.setWaypoints([]);
+        document.querySelectorAll('input').forEach(i => i.value = "");
+    }
+};
+
+window.exportToGPX = function() {
+    const wps = control.getWaypoints().filter(wp => wp.latLng);
+    if (wps.length < 2) return alert("Crea una ruta primero");
+    let gpx = `<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="VitalStats"><trk><trkseg>`;
+    wps.forEach(wp => gpx += `<trkpt lat="${wp.latLng.lat}" lon="${wp.latLng.lng}"></trkpt>`);
+    gpx += `</trkseg></trk></gpx>`;
+    const blob = new Blob([gpx], {type: 'application/gpx+xml'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ruta.gpx';
+    a.click();
+};
+
 
 function filterPoints(points, max) {
     const step = Math.ceil(points.length / max);
@@ -223,34 +234,3 @@ document.querySelectorAll('input').forEach(input => {
         saveToLocal();
     });
 });
-
-control.on('routesfound', (e) => {
-    const d = e.routes[0].summary.totalDistance;
-    document.getElementById('dist_km').value = Math.floor(d / 1000);
-    document.getElementById('dist_m').value = Math.round(d % 1000);
-    autoCalculate('dist');
-    saveToLocal();
-});
-
-// Funciones globales (para los botones del HTML)
-window.clearAll = function() {
-    if (confirm("¿Borrar todo?")) {
-        document.querySelectorAll('input').forEach(i => i.value = "");
-        control.setWaypoints([]);
-        localStorage.removeItem('runner_data');
-    }
-};
-
-window.exportToGPX = function() {
-    const waypoints = control.getWaypoints().filter(wp => wp.latLng);
-    if (waypoints.length < 2) return alert("Dibuja una ruta primero");
-
-    let gpx = `<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="VitalStats"><trk><trkseg>`;
-    waypoints.forEach(wp => { gpx += `<trkpt lat="${wp.latLng.lat}" lon="${wp.latLng.lng}"></trkpt>`; });
-    gpx += `</trkseg></trk></gpx>`;
-
-    const blob = new Blob([gpx], { type: 'application/gpx+xml' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'ruta.gpx'; a.click();
-};

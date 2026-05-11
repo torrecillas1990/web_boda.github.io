@@ -20,25 +20,24 @@
 	<link rel="manifest" href="/manifest.json">
 </head>
 <body>
-	<nav class="navbar">
-		<div class="nav-container">
-			<a href="../index.html" class="logo">VitalStats</a>
-			<button id="premiumBtn" class="btn-perfil">Premium</button>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="logo">VitalStats</a>
 			<button class="menu-toggle" id="mobile-menu">
 				<span class="bar"></span>
 				<span class="bar"></span>
 				<span class="bar"></span>
 			</button>
-			<ul class="nav-links">
-				<li><a href="../index.html">Inicio</a></li>
-				<li><a href="../contador-calorias/index.html">Calorías</a></li>
-				<li><a href="../calculadora-grasa-corporal/index.html">Grasa Corporal</a></li>
-				<li><a href="../calculadora-ritmo/index.html">Ritmo Runner</a></li>
-				<li><a href="../registro-premium/index.html" class="btn-nav">Premium</a></li>
-				<li><a href="#" id="authBtn" class="btn-nav" onclick="abrirLogin()">Login</a></li>
-			</ul>
-		</div>
-	</nav>
+            <ul class="nav-links">
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="../contador-calorias/index.html">Calorías</a></li>
+                <li><a href="../calculadora-grasa-corporal/index.html">Grasa Corporal</a></li>
+                <li><a href="../calculadora-ritmo/index.html">Ritmo Runner</a></li>
+            </ul>
+			<a href="./registro-premium/index.html" class="btn-nav">Premium</a>
+			<a href="#" id="authBtn" class="btn-nav">Cargando...</a>
+        </div>
+    </nav>
 
 	<div class="container">
 		<div class="section-card">
@@ -227,6 +226,20 @@
 			<span class="tab-label">Pro</span>
 		</a>
 	</nav>
+	
+	<div id="install-banner" class="install-banner" style="display: none;">
+		<div class="install-content">
+			<img src="recursos/icon-192.png" alt="VitalStats Logo" class="install-icon">
+			<div class="install-text">
+				<strong>Instalar VitalStats</strong>
+				<p>Acceso rápido y modo offline</p>
+			</div>
+		</div>
+		<div class="install-actions">
+			<button id="btn-install-no" class="btn-secondary">Ahora no</button>
+			<button id="btn-install-yes" class="btn-primary">Instalar</button>
+		</div>
+	</div>
 </body>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>

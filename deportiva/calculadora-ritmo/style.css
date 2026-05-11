@@ -11,6 +11,12 @@ body.dark-mode .leaflet-tile-container {
     filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 }
 
+/* Opcional: Color diferente para la línea manual para distinguirla */
+body.dark-mode .leaflet-routing-alt {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+}
+
 /* --- GRUPOS DE INPUTS MÚLTIPLES (KM/M, MIN/SEG) --- */
 .multi-fields {
     display: flex;

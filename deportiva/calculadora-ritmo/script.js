@@ -1,4 +1,42 @@
-// --- CONFIGURACIÓN INICIAL DEL MAPA ---
+/* ==========================================================================
+   VITALSTATS - ENGINE CALCULADORA DE RITMO PRO
+   ========================================================================== */
+
+// --- 1. CLASE PARA RUTA MANUAL (LÍNEA RECTA) ---
+const StraightRouter = L.Class.extend({
+    route: function(waypoints, callback, context) {
+        const routes = [{
+            name: 'Ruta Manual',
+            summary: { totalDistance: 0, totalTime: 0 },
+            coordinates: [],
+            waypoints: waypoints
+        }];
+
+        // Generamos una lista limpia de coordenadas sin duplicados
+        for (let i = 0; i < waypoints.length; i++) {
+            if (waypoints[i].latLng) {
+                routes[0].coordinates.push(waypoints[i].latLng);
+            }
+        }
+
+        // Calculamos la distancia geométrica total
+        for (let i = 0; i < routes[0].coordinates.length - 1; i++) {
+            routes[0].summary.totalDistance += routes[0].coordinates[i].distanceTo(routes[0].coordinates[i+1]);
+        }
+
+        // Ejecutamos el callback de forma asíncrona para que Leaflet lo procese correctamente
+        setTimeout(() => {
+            callback.call(context, null, routes);
+        }, 10);
+    }
+});
+
+const routers = {
+    auto: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1' }),
+    manual: new StraightRouter()
+};
+
+// --- 2. CONFIGURACIÓN INICIAL DEL MAPA ---
 const map = L.map('map').setView([40.4167, -3.7037], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap'
@@ -8,153 +46,47 @@ const control = L.Routing.control({
     waypoints: [],
     routeWhileDragging: true,
     show: false,
+    router: routers.auto, // Por defecto automático
     createMarker: (i, wp) => L.marker(wp.latLng, { draggable: true })
 }).addTo(map);
 
-// --- ACTIVAR CLIC DERECHO PARA AÑADIR PUNTOS ---
-map.on('contextmenu', function(e) {
-    // 1. Obtener los puntos actuales del mapa
-    const waypoints = control.getWaypoints();
+// --- 3. GESTIÓN DE EVENTOS DE TRAZADO ---
+
+// Cambio de modo (Auto vs Manual)
+document.getElementById('routing-mode')?.addEventListener('change', function(e) {
+    const modo = e.target.value;
     
-    // 2. Buscar el primer hueco vacío o añadir uno nuevo
-    const existingWaypoints = waypoints.filter(wp => wp.latLng !== null);
+    // Cambiamos el router en el objeto de control principal
+    control.options.router = routers[modo];
     
-    // 3. Añadir el nuevo punto donde se hizo clic derecho
-    const newWaypoints = existingWaypoints.map(wp => wp.latLng);
-    newWaypoints.push(e.latlng);
+    // También lo actualizamos en el plan para mantener la coherencia
+    control.getPlan().options.router = routers[modo];
     
-    // 4. Actualizar el buscador de rutas
-    control.setWaypoints(newWaypoints);
+    // Si ya hay puntos en el mapa, forzamos el recálculo inmediato
+    if (control.getWaypoints().filter(wp => wp.latLng).length >= 2) {
+        control.route();
+    }
 });
 
-// --- ACTIVAR CLIC DERECHO PARA AÑADIR PUNTOS ---
+// Añadir puntos con Clic Derecho
 map.on('contextmenu', function(e) {
-    // 1. Obtener los puntos actuales del mapa
     const waypoints = control.getWaypoints();
-    
-    // 2. Buscar el primer hueco vacío o añadir uno nuevo
-    const existingWaypoints = waypoints.filter(wp => wp.latLng !== null);
-    
-    // 3. Añadir el nuevo punto donde se hizo clic derecho
-    const newWaypoints = existingWaypoints.map(wp => wp.latLng);
-    newWaypoints.push(e.latlng);
-    
-    // 4. Actualizar el buscador de rutas
-    control.setWaypoints(newWaypoints);
+    const existingWaypoints = waypoints.filter(wp => wp.latLng !== null).map(wp => wp.latLng);
+    existingWaypoints.push(e.latlng);
+    control.setWaypoints(existingWaypoints);
 });
 
-// --- UTILIDADES FALTANTES (Añadidas para que no den error) ---
+// --- 4. UTILIDADES Y CÁLCULOS ---
 
-// 1. Filtro de puntos para no colapsar el mapa
-function filterPoints(points, max) {
-    const step = Math.ceil(points.length / max);
-    return points.filter((_, i) => i % step === 0);
-}
-
-// 2. Cálculo de calorías real según intensidad (METs)
 function calculateCalories(vKmh, weight, timeHours) {
-    // Fórmula basada en METs (Equivalente Metabólico)
-    // Correr a 8km/h ≈ 8 METs, 12km/h ≈ 11.5 METs
     let met = 0;
     if (vKmh <= 0) met = 0;
     else if (vKmh < 8) met = 7;
     else if (vKmh < 10) met = 9.8;
     else if (vKmh < 12) met = 11.5;
     else met = 12.8;
-
     return Math.round(met * weight * timeHours);
 }
-
-// 3. Persistencia (LocalStorage)
-function saveToLocal() {
-    const data = {
-        km: document.getElementById('dist_km').value,
-        m: document.getElementById('dist_m').value,
-        weight: document.getElementById('user_weight').value
-    };
-    localStorage.setItem('runner_data', JSON.stringify(data));
-}
-
-function loadFromLocal() {
-    const data = JSON.parse(localStorage.getItem('runner_data'));
-    if (data) {
-        document.getElementById('dist_km').value = data.km || 0;
-        document.getElementById('dist_m').value = data.m || 0;
-        document.getElementById('user_weight').value = data.weight || 70;
-        autoCalculate('dist');
-    }
-}
-
-// --- GESTIÓN DE GPX ---
-
-function processGPXData(xmlText) {
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(xmlText, "text/xml");
-    const points = xml.querySelectorAll('trkpt');
-    
-    if (points.length === 0) {
-        alert("El archivo GPX no contiene puntos válidos.");
-        return;
-    }
-
-    const newWaypoints = [];
-    points.forEach(pt => {
-        const lat = parseFloat(pt.getAttribute('lat'));
-        const lon = parseFloat(pt.getAttribute('lon'));
-        newWaypoints.push(L.latLng(lat, lon));
-    });
-
-    const sampledPoints = newWaypoints.length > 50 
-        ? filterPoints(newWaypoints, 25) 
-        : newWaypoints;
-
-    control.setWaypoints(sampledPoints);
-    
-    const group = new L.featureGroup(sampledPoints.map(p => L.marker(p)));
-    map.fitBounds(group.getBounds());
-
-    setTimeout(() => autoCalculate('dist'), 600);
-}
-
-function cargarCatalogoRutas() {
-    const select = document.getElementById('ruta-select');
-    if (!select) return;
-
-    select.innerHTML = '<option value="">-- Selecciona una ruta GPX --</option>';
-    
-    if (typeof MIS_RUTAS !== 'undefined') {
-        MIS_RUTAS.forEach(ruta => {
-            const option = document.createElement('option');
-            option.value = ruta.archivo;
-            option.textContent = ruta.nombre;
-            select.appendChild(option);
-        });
-    }
-}
-
-// BUG CORREGIDO: Ruta relativa a la raíz para fetch
-document.getElementById('ruta-select')?.addEventListener('change', async (e) => {
-    if (!e.target.value) return;
-    try {
-        // Cambiado de ./rutas/ a ../rutas/ para subir un nivel
-        const response = await fetch(`../rutas/${e.target.value}`);
-        const gpxData = await response.text();
-        processGPXData(gpxData);
-    } catch (err) {
-        alert("Error al acceder al archivo GPX.");
-    }
-});
-
-// Subida manual
-document.getElementById('gpx-upload')?.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => processGPXData(ev.target.result);
-    reader.readAsText(file);
-});
-
-// --- LÓGICA DE CÁLCULO ---
 
 function autoCalculate(lastChangedType) {
     const km = parseFloat(document.getElementById('dist_km').value) || 0;
@@ -207,6 +139,79 @@ function autoCalculate(lastChangedType) {
     document.getElementById('res_calories').value = calories + " kcal";
 }
 
+// --- 5. GESTIÓN DE GPX Y PERSISTENCIA ---
+
+function filterPoints(points, max) {
+    const step = Math.ceil(points.length / max);
+    return points.filter((_, i) => i % step === 0);
+}
+
+function processGPXData(xmlText) {
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(xmlText, "text/xml");
+    const points = xml.querySelectorAll('trkpt');
+    if (points.length === 0) return alert("GPX no válido");
+
+    const newWaypoints = [];
+    points.forEach(pt => {
+        newWaypoints.push(L.latLng(parseFloat(pt.getAttribute('lat')), parseFloat(pt.getAttribute('lon'))));
+    });
+
+    const sampledPoints = newWaypoints.length > 50 ? filterPoints(newWaypoints, 25) : newWaypoints;
+    control.setWaypoints(sampledPoints);
+    const group = new L.featureGroup(sampledPoints.map(p => L.marker(p)));
+    map.fitBounds(group.getBounds());
+    setTimeout(() => autoCalculate('dist'), 600);
+}
+
+function saveToLocal() {
+    const data = { km: document.getElementById('dist_km').value, m: document.getElementById('dist_m').value, weight: document.getElementById('user_weight').value };
+    localStorage.setItem('runner_data', JSON.stringify(data));
+}
+
+function loadFromLocal() {
+    const data = JSON.parse(localStorage.getItem('runner_data'));
+    if (data) {
+        document.getElementById('dist_km').value = data.km;
+        document.getElementById('dist_m').value = data.m;
+        document.getElementById('user_weight').value = data.weight;
+        autoCalculate('dist');
+    }
+}
+
+// --- FUNCIÓN PARA LLENAR EL SELECTOR DE RUTAS ---
+function cargarCatalogoRutas() {
+    const select = document.getElementById('ruta-select');
+    if (!select) return;
+
+    select.innerHTML = '<option value="">-- Selecciona una ruta GPX --</option>';
+    
+    // Comprobamos si existe la variable global definida en rutas.js
+    if (typeof MIS_RUTAS !== 'undefined') {
+        MIS_RUTAS.forEach(ruta => {
+            const option = document.createElement('option');
+            option.value = ruta.archivo;
+            option.textContent = ruta.nombre;
+            select.appendChild(option);
+        });
+    }
+}
+
+// --- EVENTO PARA CARGAR LA RUTA SELECCIONADA DEL CATÁLOGO ---
+document.getElementById('ruta-select')?.addEventListener('change', async (e) => {
+    if (!e.target.value) return;
+    try {
+        const response = await fetch(`../rutas/${e.target.value}`);
+        const gpxData = await response.text();
+        processGPXData(gpxData);
+    } catch (err) {
+        console.error("Error al acceder al archivo GPX:", err);
+        alert("No se pudo cargar la ruta seleccionada.");
+    }
+});
+
+// --- 6. INICIALIZACIÓN ---
+
 window.addEventListener('DOMContentLoaded', () => {
     cargarCatalogoRutas();
     loadFromLocal();
@@ -214,8 +219,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 document.querySelectorAll('input').forEach(input => {
     input.addEventListener('input', () => {
-        const type = input.id.split('_')[0];
-        autoCalculate(type);
+        autoCalculate(input.id.split('_')[0]);
         saveToLocal();
     });
 });
@@ -228,52 +232,25 @@ control.on('routesfound', (e) => {
     saveToLocal();
 });
 
-function clearAll() {
-    if (confirm("¿Seguro que quieres borrar todos los datos y la ruta actual?")) {
-        // Limpiar inputs
-        document.querySelectorAll('input').forEach(input => input.value = "");
-        document.getElementById('user_weight').value = 70; // Valor por defecto
-        
-        // Limpiar mapa
+// Funciones globales (para los botones del HTML)
+window.clearAll = function() {
+    if (confirm("¿Borrar todo?")) {
+        document.querySelectorAll('input').forEach(i => i.value = "");
         control.setWaypoints([]);
-        
-        // Limpiar LocalStorage
         localStorage.removeItem('runner_data');
-        
-        alert("Datos reiniciados correctamente.");
     }
-}
+};
 
-function exportToGPX() {
-    const waypoints = control.getWaypoints();
-    const validWaypoints = waypoints.filter(wp => wp.latLng);
+window.exportToGPX = function() {
+    const waypoints = control.getWaypoints().filter(wp => wp.latLng);
+    if (waypoints.length < 2) return alert("Dibuja una ruta primero");
 
-    if (validWaypoints.length < 2) {
-        alert("Dibuja una ruta en el mapa antes de exportar.");
-        return;
-    }
+    let gpx = `<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="VitalStats"><trk><trkseg>`;
+    waypoints.forEach(wp => { gpx += `<trkpt lat="${wp.latLng.lat}" lon="${wp.latLng.lng}"></trkpt>`; });
+    gpx += `</trkseg></trk></gpx>`;
 
-    let gpxContent = `<?xml version="1.0" encoding="UTF-8"?>
-<gpx version="1.1" creator="VitalStats">
-  <trk>
-    <name>Ruta VitalStats</name>
-    <trkseg>`;
-
-    validWaypoints.forEach(wp => {
-        gpxContent += `
-      <trkpt lat="${wp.latLng.lat}" lon="${wp.latLng.lng}"></trkpt>`;
-    });
-
-    gpxContent += `
-    </trkseg>
-  </trk>
-</gpx>`;
-
-    const blob = new Blob([gpxContent], { type: 'application/gpx+xml' });
+    const blob = new Blob([gpx], { type: 'application/gpx+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'ruta-vitalstats.gpx';
-    a.click();
-    URL.revokeObjectURL(url);
-}
+    a.href = url; a.download = 'ruta.gpx'; a.click();
+};

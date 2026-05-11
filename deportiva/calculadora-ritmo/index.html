@@ -111,24 +111,11 @@
 			</div>
 			
 			<div class="button-group">
-				<button class="btn-clear" onclick="clearAll()">Reiniciar Datos</button>
-				<button class="btn-export" onclick="exportToGPX()">Descargar Ruta (.GPX)</button>
-				<label for="gpx-upload" class="btn-import">Subir Ruta GPX</label>
+				<button class="btn-clear" onclick="clearAll()">Limpiar Datos</button>
 			</div>
 
 			<div class="import-section">
 				<input type="file" id="gpx-upload" accept=".gpx" style="display: none;">
-			</div>
-			
-			<div class="group">
-				<label>Rutas Guardadas</label>
-				<select id="ruta-select" class="select-rutas">
-					<option value="">Cargando rutas...</option>
-				</select>
-			</div>
-			
-			<div class="instructions">
-				💡 <b>Tip:</b> Haz <u>clic derecho</u> en el mapa para añadir puntos y crear tu ruta. La distancia se dividirá automáticamente en Km y Metros.
 			</div>
 			
 			<div class="reference-table">
@@ -150,6 +137,29 @@
 						<tr><td>6:00</td><td>10.0</td><td>Iniciación</td></tr>
 					</tbody>
 				</table>
+			</div>
+			
+			<div class="group">
+				<label>Rutas Guardadas</label>
+				<select id="ruta-select" class="select-rutas">
+					<option value="">Cargando rutas...</option>
+				</select>
+
+				<label>Modo de Trazado</label>
+				<select id="routing-mode" class="select-rutas">
+					<option value="auto">📍 Automático (Seguir calles/caminos)</option>
+					<option value="manual">📏 Manual (Línea recta entre puntos)</option>
+				</select>
+			</div>
+			
+			<div class="button-group">
+				<button class="btn-clear" onclick="clearAll()">Reiniciar Ruta</button>
+				<button class="btn-export" onclick="exportToGPX()">Descargar Ruta (.GPX)</button>
+				<label for="gpx-upload" class="btn-import">Subir Ruta GPX</label>
+			</div>
+			
+			<div class="instructions">
+				💡 <b>Tip:</b> Haz <u>clic derecho</u> en el mapa para añadir puntos y crear tu ruta. La distancia se dividirá automáticamente en Km y Metros.
 			</div>
 		</div>
 

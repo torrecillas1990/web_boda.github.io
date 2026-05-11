@@ -70,5 +70,21 @@ window.VS_torrecillas1990_20260508 = [
         "prot": 3.08,
         "grasa": 16.1,
         "carb": 23.8
+    },
+    {
+        "id": 1778483289468,
+        "nombre": "Pizza (Valores genericos) (500g/ml)",
+        "kcal": 1250,
+        "prot": 75,
+        "grasa": 50,
+        "carb": 125
+    },
+    {
+        "id": 1778483296961,
+        "nombre": "Cerveza (700g/ml)",
+        "kcal": 301,
+        "prot": 3.22,
+        "grasa": 0,
+        "carb": 24.85
     }
 ];

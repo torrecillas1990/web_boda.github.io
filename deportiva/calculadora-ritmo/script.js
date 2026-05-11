@@ -59,15 +59,11 @@ document.getElementById('routing-mode')?.addEventListener('change', function(e) 
     const modo = e.target.value;
     const nuevoRouter = routers[modo];
 
-    // Actualizamos el router en ambos sitios internos del control
     control.options.router = nuevoRouter;
     control.getPlan().options.router = nuevoRouter;
     
-    // Forzamos el recálculo refrescando los waypoints actuales
-    const currentWps = control.getWaypoints();
-    if (currentWps.filter(wp => wp.latLng).length >= 2) {
-        control.setWaypoints(currentWps); 
-    }
+    // Forzamos el recálculo y el redibujado de la línea
+    control.route(); 
 });
 
 // Clic derecho para añadir puntos
@@ -94,32 +90,51 @@ function autoCalculate(type) {
     const ps = parseFloat(document.getElementById('p_sec').value) || 0;
     const pace = (pm * 60) + ps;
 
-    const th = parseFloat(document.getElementById('t_h').value) || 0;
-    const tm = parseFloat(document.getElementById('t_m').value) || 0;
-    const ts = parseFloat(document.getElementById('t_s').value) || 0;
-    const time = (th * 3600) + (tm * 60) + ts;
-
+    // 1. Manejo de Velocidad -> Ritmo
+    if (type === 'v') {
+        const vKmh = parseFloat(document.getElementById('v_kmh').value) || 0;
+        if (vKmh > 0) {
+            const paceDecimal = 60 / vKmh;
+            document.getElementById('p_min').value = Math.floor(paceDecimal);
+            document.getElementById('p_sec').value = Math.round((paceDecimal * 60) % 60);
+            return autoCalculate('p'); 
+        }
+    }
+    
     if (dist <= 0) return;
+
+    // 2. Cálculos Cruzados (Distancia/Ritmo -> Tiempo o Tiempo -> Ritmo)
+    let finalTimeInSeconds = 0;
 
     if (type === 'dist' || type === 'p') {
         if (pace > 0) {
-            const resT = dist * pace;
-            document.getElementById('t_h').value = Math.floor(resT / 3600);
-            document.getElementById('t_m').value = Math.floor((resT % 3600) / 60);
-            document.getElementById('t_s').value = Math.round(resT % 60);
+            finalTimeInSeconds = dist * pace;
+            document.getElementById('t_h').value = Math.floor(finalTimeInSeconds / 3600);
+            document.getElementById('t_m').value = Math.floor((finalTimeInSeconds % 3600) / 60);
+            document.getElementById('t_s').value = Math.round(finalTimeInSeconds % 60);
             document.getElementById('v_kmh').value = (3600 / pace).toFixed(2);
         }
     } else if (type === 't') {
-        if (time > 0) {
-            const resP = time / dist;
+        const th = parseFloat(document.getElementById('t_h').value) || 0;
+        const tm = parseFloat(document.getElementById('t_m').value) || 0;
+        const ts = parseFloat(document.getElementById('t_s').value) || 0;
+        finalTimeInSeconds = (th * 3600) + (tm * 60) + ts;
+
+        if (finalTimeInSeconds > 0) {
+            const resP = finalTimeInSeconds / dist;
             document.getElementById('p_min').value = Math.floor(resP / 60);
             document.getElementById('p_sec').value = Math.round(resP % 60);
-            document.getElementById('v_kmh').value = ((dist / time) * 3600).toFixed(2);
+            document.getElementById('v_kmh').value = ((dist / finalTimeInSeconds) * 3600).toFixed(2);
         }
     }
 
+    // 3. Cálculo de Calorías con el tiempo RECIÉN CALCULADO
     const v = parseFloat(document.getElementById('v_kmh').value) || 0;
-    document.getElementById('res_calories').value = calculateCalories(v, weight, (dist * (pace || 0)) / 3600) + " kcal";
+    const tiempoHoras = finalTimeInSeconds / 3600;
+    
+    if (tiempoHoras > 0) {
+        document.getElementById('res_calories').value = calculateCalories(v, weight, tiempoHoras) + " kcal";
+    }
 }
 
 // --- 5. PERSISTENCIA Y GPX ---

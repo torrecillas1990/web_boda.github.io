@@ -6,10 +6,12 @@
 // Imprescindible para que el mapa no dependa de servidores externos
 const StraightRouter = L.Class.extend({
     route: function(waypoints, callback, context) {
+        // Filtrar puntos válidos
         const pts = waypoints.filter(wp => wp.latLng).map(wp => wp.latLng);
         
+        // Si no hay suficientes puntos, devolvemos una ruta vacía pero válida
         if (pts.length < 2) {
-            return callback.call(context, null, []); 
+            return callback.call(context, null, []);
         }
 
         const route = {
@@ -18,18 +20,20 @@ const StraightRouter = L.Class.extend({
             coordinates: pts,
             waypoints: waypoints,
             inputWaypoints: waypoints,
-            instructions: [] 
+            instructions: []
         };
 
-        // Cálculo de distancia geométrica (línea recta)
+        // Calcular distancia geométrica entre puntos
         for (let i = 0; i < pts.length - 1; i++) {
             route.summary.totalDistance += pts[i].distanceTo(pts[i+1]);
         }
 
-        // Simular respuesta asíncrona para que Leaflet no se bloquee
+        console.log("📏 Modo Manual: Calculada distancia de", route.summary.totalDistance, "metros");
+
+        // IMPORTANTE: Leaflet necesita una respuesta asíncrona
         setTimeout(() => {
             callback.call(context, null, [route]);
-        }, 50);
+        }, 32); // 32ms es el tiempo ideal para el ciclo de refresco del navegador
     }
 });
 
@@ -37,6 +41,26 @@ const routers = {
     auto: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1' }),
     manual: new StraightRouter()
 };
+
+// --- 2. EL INTERRUPTOR MAESTRO (FORZADO) ---
+document.getElementById('routing-mode')?.addEventListener('change', function(e) {
+    const modo = e.target.value;
+    console.log("🔄 Cambiando a modo:", modo);
+
+    // 1. Cambiamos el router en todas las propiedades internas
+    control.options.router = routers[modo];
+    control.getPlan().options.router = routers[modo];
+    
+    // 2. Limpiamos la caché de rutas anterior
+    if (control._router) control._router = routers[modo];
+
+    // 3. Forzamos el recálculo total refrescando los puntos
+    const currentWps = control.getWaypoints();
+    if (currentWps.filter(wp => wp.latLng).length >= 2) {
+        // Al setear los mismos waypoints, obligamos al control a llamar al nuevo router
+        control.setWaypoints(currentWps);
+    }
+});
 
 // --- 2. CONFIGURACIÓN INICIAL DEL MAPA ---
 const map = L.map('map').setView([40.4167, -3.7037], 13);
@@ -46,25 +70,13 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 const control = L.Routing.control({
     waypoints: [],
-    routeWhileDragging: true,
+    routeWhileDragging: true, // Esto ayuda a que el modo manual sea fluido
     show: false,
     router: routers.auto, 
     createMarker: (i, wp) => L.marker(wp.latLng, { draggable: true })
 }).addTo(map);
 
 // --- 3. GESTIÓN DE EVENTOS DE TRAZADO ---
-
-// IMPORTANTE: Cambio de modo Manual/Auto
-document.getElementById('routing-mode')?.addEventListener('change', function(e) {
-    const modo = e.target.value;
-    const nuevoRouter = routers[modo];
-
-    control.options.router = nuevoRouter;
-    control.getPlan().options.router = nuevoRouter;
-    
-    // Forzamos el recálculo y el redibujado de la línea
-    control.route(); 
-});
 
 // Clic derecho para añadir puntos
 map.on('contextmenu', function(e) {

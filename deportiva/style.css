@@ -127,29 +127,6 @@ header { text-align: center; padding: 40px 0; background: #f4f4f4; border-radius
     transition: 0.4s;
 }
 
-@media (max-width: 768px) {
-    .nav-links {
-        display: none; /* Oculto por defecto */
-        flex-direction: column;
-        width: 100%;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        background-color: #ffffff;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        padding: 20px 0;
-    }
-
-    /* Esta clase la añade el JS al hacer click */
-    .nav-links.active {
-        display: flex;
-    }
-
-    .menu-toggle {
-        display: block; /* Muestra la hamburguesa solo en móvil */
-    }
-}
-
 /* Contenedor principal para todas las herramientas */
 .container {
     max-width: 1100px;
@@ -167,10 +144,6 @@ h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
     display: grid;
     grid-template-columns: 1fr 350px; /* Columna izquierda grande, derecha fija */
     gap: 30px;
-}
-
-@media (max-width: 900px) {
-    .main-layout { grid-template-columns: 1fr; } /* Se apilan en móvil */
 }
 
 /* Estilo común para botones */
@@ -200,41 +173,6 @@ button {
     height: 3px;
     background-color: #333; /* Color de las barras */
     transition: all 0.3s ease-in-out;
-}
-
-/* --- RESPONSIVE (MÓVIL) --- */
-@media (max-width: 768px) {
-    .menu-toggle {
-        display: flex; /* Mostrar solo en móvil */
-    }
-
-    .nav-links {
-        display: none; /* Escondido por defecto */
-        flex-direction: column;
-        position: absolute;
-        top: 100%; /* Justo debajo del navbar */
-        left: 0;
-        width: 100%;
-        background-color: white;
-        padding: 20px 0;
-        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-    }
-
-    /* Clase que activa tu JS */
-    .nav-links.active {
-        display: flex;
-    }
-
-    /* Animación de la X (clase is-active de tu JS) */
-    .menu-toggle.is-active .bar:nth-child(2) {
-        opacity: 0;
-    }
-    .menu-toggle.is-active .bar:nth-child(1) {
-        transform: translateY(9px) rotate(45deg);
-    }
-    .menu-toggle.is-active .bar:nth-child(3) {
-        transform: translateY(-9px) rotate(-45deg);
-    }
 }
 
 .btn-perfil {
@@ -348,4 +286,97 @@ button {
     top: 10px; right: 15px;
     font-size: 24px;
     cursor: pointer;
+}
+
+/* Oculto por defecto en escritorio */
+.mobile-tab-bar {
+    display: none;
+}
+
+/* --- RESPONSIVE (MÓVIL) --- */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Escondido por defecto */
+        flex-direction: column;
+        position: absolute;
+        top: 100%; /* Justo debajo del navbar */
+        left: 0;
+        width: 100%;
+        background-color: white;
+        padding: 20px 0;
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    }
+	
+    /* Esta clase la añade el JS al hacer click */
+    .nav-links.active {
+        display: flex;
+    }
+	
+	.main-layout { grid-template-columns: 1fr; } /* Se apilan en móvil */
+		
+    .menu-toggle {
+        display: flex; /* Mostrar solo en móvil */
+    }
+
+    /* Animación de la X (clase is-active de tu JS) */
+    .menu-toggle.is-active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    .menu-toggle.is-active .bar:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+    .menu-toggle.is-active .bar:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+
+    .mobile-tab-bar {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 65px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(0,0,0,0.1);
+        justify-content: space-around;
+        align-items: center;
+        z-index: 2000;
+        padding-bottom: env(safe-area-inset-bottom); /* Soporte para iPhone notch */
+    }
+
+    .tab-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: var(--text-muted);
+        font-size: 0.7rem;
+        font-weight: 600;
+        transition: var(--transition);
+        flex: 1;
+    }
+
+    .tab-icon {
+        font-size: 1.4rem;
+        margin-bottom: 2px;
+    }
+
+    .tab-item.active {
+        color: var(--primary);
+    }
+
+    .tab-item:active {
+        transform: scale(0.9);
+    }
+
+    /* Ajuste para que el contenido no se quede debajo del menú */
+    body {
+        padding-bottom: 80px;
+    }
+
+    /* Opcional: Ocultar el menú hamburguesa superior si usas este */
+    .navbar .menu-toggle, .navbar .nav-links {
+        display: none !important;
+    }
 }

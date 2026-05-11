@@ -7,28 +7,30 @@
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="../recursos/favicon.ico">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<nav class="navbar">
-    <div class="nav-container">
-        <a href="../index.html" class="logo">VitalStats</a>
-		<button id="premiumBtn" class="btn-perfil">Premium</button>
-        <button class="menu-toggle" id="mobile-menu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </button>
-        <ul class="nav-links">
-            <li><a href="../index.html">Inicio</a></li>
-            <li><a href="../contador-calorias/index.html">Calorías</a></li>
-            <li><a href="../calculadora-grasa-corporal/index.html">Grasa Corporal</a></li>
-            <li><a href="../calculadora-ritmo/index.html">Ritmo Runner</a></li>
-            <li><a href="../registro-premium/index.html" class="btn-nav">Premium</a></li>
-			<li><a href="#" id="authBtn" class="btn-nav" onclick="abrirLogin()">Login</a></li>
-        </ul>
-    </div>
-</nav>
 <body>
+	<nav class="navbar">
+		<div class="nav-container">
+			<a href="../index.html" class="logo">VitalStats</a>
+			<button id="premiumBtn" class="btn-perfil">Premium</button>
+			<button class="menu-toggle" id="mobile-menu">
+				<span class="bar"></span>
+				<span class="bar"></span>
+				<span class="bar"></span>
+			</button>
+			<ul class="nav-links">
+				<li><a href="../index.html">Inicio</a></li>
+				<li><a href="../contador-calorias/index.html">Calorías</a></li>
+				<li><a href="../calculadora-grasa-corporal/index.html">Grasa Corporal</a></li>
+				<li><a href="../calculadora-ritmo/index.html">Ritmo Runner</a></li>
+				<li><a href="../registro-premium/index.html" class="btn-nav">Premium</a></li>
+				<li><a href="#" id="authBtn" class="btn-nav" onclick="abrirLogin()">Login</a></li>
+			</ul>
+		</div>
+	</nav>
+	
     <div class="container">
 		<h1>Análisis Corporal Completo</h1>
 		
@@ -78,7 +80,7 @@
 				</div>
             
 				<div class="button-group">
-					<button type="button" onclick="calculateAll()">Calcular Composición</button>
+					<button type="button" onclick="calculateAll()" class="button-calc">Calcular Composición</button>
 					<button type="button" onclick="clearData()" class="btn-clear">Borrar Datos</button>
 				</div>
 			</form>

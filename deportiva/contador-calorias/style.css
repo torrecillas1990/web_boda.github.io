@@ -1,3 +1,12 @@
+input[type="number"], input[type="text"], select {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
 /* --- LAYOUT GENERAL --- */
 .container {
     max-width: 900px;

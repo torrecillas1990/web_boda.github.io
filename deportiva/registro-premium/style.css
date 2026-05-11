@@ -9,10 +9,11 @@
 
 .pricing-grid {
     display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap; /* Clave para móvil */
     justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
     margin-top: 20px;
+	
 }
 
 .price-card {
@@ -23,6 +24,8 @@
     width: 320px;
     transition: transform 0.3s ease;
     position: relative;
+	flex: 1 1 300px; /* Se estira pero no baja de 300px */
+    max-width: 400px;
 }
 
 .price-card:hover { transform: translateY(-10px); }

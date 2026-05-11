@@ -102,16 +102,15 @@ select {
     margin-top: 10px;
 }
 
-.button-calc {
+.button-calc, .btn-importar {
     background: var(--primary-light);
     color: white;
     padding: 12px;
     border-radius: 8px;
-    width: 50%;
     margin-top: 10px;
 }
 
-.button-calc:hover {
+.button-calc:hover, .btn-importar:hover {
     background: var(--primary);
 }
 
@@ -120,7 +119,6 @@ select {
     color: white;
     padding: 12px;
     border-radius: 8px;
-    width: 50%;
     margin-top: 10px;
 }
 

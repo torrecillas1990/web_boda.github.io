@@ -3,6 +3,7 @@
     /* Paleta de Colores */
     --primary: #1e3a8a;       /* Azul profundo */
     --primary-light: #3b82f6;
+	--azul-suave-traslucido: rgba(59, 130, 246, 0.05); /* Azul suave traslúcido */
     --secondary: #00a870;     /* Verde profundo */
     --secondary-light: #10b981; /* Verde éxito/premium */
     --accent: #f59e0b;        /* Ámbar para avisos/destacados */

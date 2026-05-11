@@ -51,14 +51,14 @@ input:focus, select:focus {
     border: 2px solid var(--primary-light);
     border-radius: var(--radius);
     margin-bottom: 30px;
-    background-color: rgba(59, 130, 246, 0.05); /* Azul suave traslúcido */
+    background-color: var(--azul-suave-traslucido);
     color: var(--text-main);
     cursor: pointer;
     transition: var(--transition);
 }
 
 body.dark-mode .main-dropdown {
-    background-color: rgba(59, 130, 246, 0.15);
+    background-color: var(--bg-card);
 }
 
 /* --- SECCIONES (CARDS) --- */
@@ -128,36 +128,49 @@ body.dark-mode #quantityModal {
 }
 
 /* --- BOTONES ESPECÍFICOS --- */
-.button-group {
+.button-group. .modal-controls {
     display: flex;
     gap: 12px;
     margin-top: 10px;
 }
 
-#downloadBtn {
+#quantityInput, #confirmBtn, #cancelBtn  {
+    width: 30%;
+}
+	
+#downloadBtn, #confirmBtn, #bulkImportBtn {
     background: var(--primary-light);
     color: white;
-    padding: 12px;
     border-radius: 8px;
-    width: 50%;
+    padding: 12px;
     margin-top: 10px;
 }
 
-#downloadBtn:hover {
+#downloadBtn:hover, #confirmBtn:hover, #bulkImportBtn:hover {
     background: var(--primary);
 }
 
-#clearBtn {
+#clearBtn, #clearSearchBtn, #cancelBtn, .delete-btn {
     background: var(--alert-light);
     color: white;
-    padding: 12px;
     border-radius: 8px;
-    width: 50%;
+    padding: 12px;
     margin-top: 10px;
 }
-
-#clearBtn:hover {
+	
+#clearBtn:hover, #clearSearchBtn:hover, #cancelBtn:hover, .delete-btn:hover {
     background: var(--alert);
+}
+
+/* --- Campos de fecha --- */
+#importRangeStart, #importRangeEnd, #datePicker {
+    padding: 12px;
+    border: 2px solid var(--primary-light);
+    border-radius: var(--radius);
+    background-color: var(--azul-suave-traslucido);
+    color: var(--text-main);
+    cursor: pointer;
+    transition: var(--transition);
 }
 
 /* --- RESPONSIVE --- */

@@ -4,9 +4,6 @@
     box-shadow: none;
 }
 
-.premium-header { margin-bottom: 50px; }
-.premium-header h1 { font-size: 2.5rem; color: #1a2a6c; }
-
 .pricing-grid {
     display: flex;
     gap: 1.5rem;

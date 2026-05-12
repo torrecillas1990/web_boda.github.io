@@ -2,6 +2,36 @@
    VITALSTATS - ENGINE CALCULADORA DE RITMO PRO 2026
    ========================================================================== */
 
+// --- GESTIÓN DEL MODAL DEL MAPA ---
+function openMapModal() {
+    const modal = document.getElementById('mapModal');
+    modal.style.display = 'flex';
+    
+    // 1. Evitamos el scroll del body mientras el mapa está abierto
+    document.body.style.overflow = 'hidden';
+
+    // 2. FORZADO DE RENDERIZADO: El secreto de Leaflet
+    setTimeout(() => {
+        map.invalidateSize();
+        // Si hay una ruta ya trazada, centramos el mapa en ella
+        const wps = control.getWaypoints().filter(wp => wp.latLng);
+        if (wps.length >= 2) {
+            const group = new L.featureGroup(wps.map(p => L.marker(p.latLng)));
+            map.fitBounds(group.getBounds(), { padding: [20, 20] });
+        }
+    }, 300);
+}
+
+function closeMapModal() {
+    document.getElementById('mapModal').style.display = 'none';
+    document.body.style.overflow = 'auto'; // Devolvemos el scroll
+}
+
+// Permitir cerrar al hacer clic en el fondo oscuro
+window.addEventListener('click', (e) => {
+    if (e.target.id === 'mapModal') closeMapModal();
+});
+
 // --- 1. CLASE PARA RUTA MANUAL (LÍNEA RECTA) ---
 // Imprescindible para que el mapa no dependa de servidores externos
 const StraightRouter = L.Class.extend({
@@ -150,18 +180,39 @@ function autoCalculate(type) {
 }
 
 // --- 5. PERSISTENCIA Y GPX ---
+// --- ACTUALIZACIÓN DE DISTANCIA EN TIEMPO REAL ---
 
 control.on('routesfound', (e) => {
-    const d = e.routes[0].summary.totalDistance;
+    const d = e.routes[0].summary.totalDistance; // Distancia en metros
+    
+    // 1. Actualiza los campos ocultos del formulario principal
     document.getElementById('dist_km').value = Math.floor(d / 1000);
     document.getElementById('dist_m').value = Math.round(d % 1000);
+    
+    // 2. Actualiza el nuevo visualizador del Modal
+    const modalDisplay = document.getElementById('modal_dist_display');
+    if (modalDisplay) {
+        modalDisplay.value = (d / 1000).toFixed(2) + " km";
+    }
+
+    // 3. Dispara los cálculos de ritmo/tiempo/calorías
     autoCalculate('dist');
 });
 
+// --- AJUSTE EN LA FUNCIÓN DE REINICIO ---
 window.clearAll = function() {
     if(confirm("¿Reiniciar ruta?")) {
         control.setWaypoints([]);
-        document.querySelectorAll('input').forEach(i => i.value = "");
+        
+        // Limpiar inputs del formulario
+        document.getElementById('dist_km').value = "";
+        document.getElementById('dist_m').value = "";
+        
+        // Resetear visualizador del modal
+        const modalDisplay = document.getElementById('modal_dist_display');
+        if (modalDisplay) modalDisplay.value = "0.00 km";
+        
+        autoCalculate('dist');
     }
 };
 

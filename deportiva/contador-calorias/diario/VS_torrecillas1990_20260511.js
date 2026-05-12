@@ -46,5 +46,29 @@ window.VS_torrecillas1990_20260511 = [
         "prot": 9.75,
         "grasa": 1.25,
         "carb": 12
+    },
+    {
+        "id": 1778569486935,
+        "nombre": "Tortitas de Maiz (22.5g/ml)",
+        "kcal": 82.8,
+        "prot": 1.6875,
+        "grasa": 0.405,
+        "carb": 18
+    },
+    {
+        "id": 1778569499325,
+        "nombre": "Atún Claro en Aceite de Oliva (80g/ml)",
+        "kcal": 196,
+        "prot": 16.8,
+        "grasa": 14.4,
+        "carb": 0.72
+    },
+    {
+        "id": 1778569516295,
+        "nombre": "Naranja 1 pieza son 150 gramos (350g/ml)",
+        "kcal": 210,
+        "prot": 3.29,
+        "grasa": 0.42,
+        "carb": 41.125
     }
 ];

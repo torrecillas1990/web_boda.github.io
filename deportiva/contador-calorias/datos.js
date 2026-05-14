@@ -36,6 +36,7 @@ const productosMercadonaBase = [
     { categoria: "Proteina", nombre: "Claras de Huevo", kcal: 50, prot: 11, grasa: 0, carb: 0.7, obs: "" },
     { categoria: "Proteina", nombre: "Queso Cottage", kcal: 99, prot: 12, grasa: 4, carb: 3.3, obs: "Bajo en calorías, alto en caseína." },
     { categoria: "Proteina", nombre: "Queso Curado Mezcla", kcal: 431, prot: 25, grasa: 36, carb: 1.8, obs: "Loncha 20g aprox." },
+    { categoria: "Proteina", nombre: "Queso Fresco de Cabra", kcal: 431, prot: 12.7, grasa: 21.9, carb: 3.4, obs: "La tarrina son 250g" },
     { categoria: "Suplemento", nombre: "Barrita de proteínas Chocolate", kcal: 386, prot: 33, grasa: 17, carb: 38, obs: "Peso barrita: 60g." },
     
     // --- CARNES Y PESCADOS ---
@@ -104,6 +105,7 @@ const productosMercadonaBase = [
     { categoria: "Carbohidrato", nombre: "Nestle Extrafino Filipino Blanco", kcal: 557, prot: 4.4, grasa: 33.5, carb: 58.7, obs: "1 onza 8.5g" },
     { categoria: "Carbohidrato", nombre: "Chocolate Valor Puro con Almendras", kcal: 570, prot: 9.9, grasa: 40, carb: 38, obs: "1 onza 13.8g" },
     { categoria: "Carbohidrato", nombre: "Chocolate con leche", kcal: 523, prot: 5.6, grasa: 28, carb: 59.8, obs: "1 onza 15g" },
+    { categoria: "Carbohidrato", nombre: "Cacao Negro 72%", kcal: 568, prot: 10, grasa: 42, carb: 32, obs: "Onzas individuales de 8g" },
     { categoria: "Carbohidrato", nombre: "Cacao puro en polvo", kcal: 375, prot: 25.5, grasa: 16, carb: 16.3, obs: "Cuchara pequeña 5g aprox" },
     { categoria: "Carbohidrato", nombre: "Bizcocho Chocolate con pepitas", kcal: 436, prot: 9.5, grasa: 24, carb: 45, obs: "" },
     { categoria: "Carbohidrato", nombre: "Gominola Gummy", kcal: 325, prot: 3.6, grasa: 0, carb: 76.5, obs: "Una gummy 6.25g - Cuatro 25g" },

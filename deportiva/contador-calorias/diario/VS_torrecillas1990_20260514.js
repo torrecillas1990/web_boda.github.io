@@ -30,5 +30,29 @@ window.VS_torrecillas1990_20260514 = [
         "prot": 17.875,
         "grasa": 27.3,
         "carb": 39
+    },
+    {
+        "id": 1778780939144,
+        "nombre": "Queso Fresco de Cabra (62g/ml)",
+        "kcal": 267.22,
+        "prot": 7.874,
+        "grasa": 13.578,
+        "carb": 2.1079999999999997
+    },
+    {
+        "id": 1778780983303,
+        "nombre": "Cacao Negro 72% (16g/ml)",
+        "kcal": 90.88,
+        "prot": 1.6,
+        "grasa": 6.72,
+        "carb": 5.12
+    },
+    {
+        "id": 1778780996056,
+        "nombre": "Kiwi Gold (115g/ml)",
+        "kcal": 62.1,
+        "prot": 1.035,
+        "grasa": 0.345,
+        "carb": 12.765
     }
 ];

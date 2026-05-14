@@ -28,6 +28,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     }
 	
+	// Botón resetAllBtn
+    const resetAllBtn = document.getElementById('resetAllBtn');
+    if (resetAllBtn) {
+        resetAllBtn.onclick = () => {
+			// 1. Verificamos primero
+			if (!verificarAcceso(0)) return; 
+
+			// 2. Si pasa la verificación, ejecutamos el resto
+            clearAll();
+        };
+    }
+	
 	// Botón exportToGPX
     const exportToGPXBtn = document.getElementById('exportToGPXBtn');
     if (exportToGPXBtn) {
@@ -41,9 +53,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 	
 	// Botón exportToGPX
-    const importGPXBtn = document.getElementById('importGPXBtn');
     if (!verificarAcceso(1)) {
-		importGPXBtn.style.display = 'none';
+		document.getElementById('importGPXBtn').style.display = 'none';
+		document.getElementById('dist_km').readOnly = true;
+		document.getElementById('p_min').readOnly = true;
+		document.getElementById('t_h').readOnly = true;
+		document.getElementById('user_weight').readOnly = true;
+		document.getElementById('user_weight').value = '70';
     }
 });
 

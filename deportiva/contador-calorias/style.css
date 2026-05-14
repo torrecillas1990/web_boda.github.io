@@ -121,7 +121,7 @@ body.dark-mode #quantityModal {
 }
 
 /* --- BOTONES ESPECÍFICOS --- */
-.button-group. .modal-controls {
+.button-group, .modal-controls {
     display: flex;
     gap: 12px;
     margin-top: 10px;

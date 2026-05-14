@@ -364,23 +364,37 @@ function obtenerRangoFechas(opcion) {
     let hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
 
-    let diasAMostrar = 7;
+    let diasAMostrar = 7; //opcion por defecto para last7
     if (opcion === 'lastMonth') diasAMostrar = 30;
     if (opcion === 'last6Months') diasAMostrar = 180;
     if (opcion === 'lastYear') diasAMostrar = 365;
     if (opcion === 'lastTwoYears') diasAMostrar = 730;
 
     if (opcion === 'currentWeek') {
-        let diaSemana = hoy.getDay(); 
-        let dif = hoy.getDate() - diaSemana + (diaSemana === 0 ? -6 : 1);
-        let lunes = new Date(hoy.setDate(dif));
-        for (let i = 1; i <= 7; i++) {
-            let d = new Date(lunes);
-            d.setDate(lunes.getDate() + i);
-            fechas.push(d.toISOString().split('T')[0]);
-        }
-        return fechas;
-    }
+		let d = new Date();
+		let day = d.getDay(),
+			diff = d.getDate() - day + (day == 0 ? -6 : 1); // Ajuste para que el Lunes sea el día 1
+		let monday = new Date(d.setDate(diff));
+		for (let i = 0; i < 7; i++) {
+			let temp = new Date(monday);
+			temp.setDate(monday.getDate() + i);
+			fechas.push(temp.toISOString().split('T')[0]);
+		}
+		return fechas;
+	}
+	
+	if (opcion === 'lastWeek') {
+		let d = new Date();
+		let day = d.getDay() + diasAMostrar,
+			diff = d.getDate() - day + (day == 0 ? -6 : 1); // Ajuste para que el Lunes sea el día 1
+		let monday = new Date(d.setDate(diff));
+		for (let i = 0; i < 7; i++) {
+			let temp = new Date(monday);
+			temp.setDate(monday.getDate() + i);
+			fechas.push(temp.toISOString().split('T')[0]);
+		}
+		return fechas;
+	}
 
     for (let i = diasAMostrar - 1; i >= 0; i--) {
         let d = new Date();

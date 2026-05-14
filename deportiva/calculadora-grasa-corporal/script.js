@@ -1,40 +1,54 @@
-// 1. VARIABLES GLOBALES (Solo una declaración por variable)
+// --- 1. VARIABLES GLOBALES ---
+let historialCorporal = {}; 
 let fitnessChart = null;
 
-// 2. INICIALIZACIÓN
-document.addEventListener('DOMContentLoaded', () => {
-    loadSavedData();      // Rellenar formulario si hay datos
-    renderFitnessChart(); // Dibujar gráfico con el historial de LocalStorage
+// --- 2. INICIALIZACIÓN ---
+document.addEventListener('DOMContentLoaded', async () => {
+    // Cargar historial principal
+    const savedHistory = VitalStats.get('historialCorporal');
+    historialCorporal = JSON.parse(savedHistory) || {};
+
+    // Carga Masiva de archivos externos (VG_)
+    const pendientes = JSON.parse(localStorage.getItem('pendiente_carga_grasa'));
+    if (pendientes && pendientes.length > 0) {
+        await ejecutarCargaMasivaGrasa(pendientes);
+    }
+
+    // Inicializar Interfaz
+    loadSavedData();
+    renderFitnessChart(); 
+
+    // Eventos de Navegación y Filtros
+    document.getElementById('timeRangeFilter').addEventListener('change', renderFitnessChart);
+    document.getElementById('gender').addEventListener('change', toggleHipField);
     
-    // Escuchar cambios en el género para mostrar/ocultar cadera
-    const genderSelect = document.getElementById('gender');
-    if(genderSelect) genderSelect.addEventListener('change', toggleHipField);
+    // Toggles de visibilidad en el gráfico
+    document.querySelectorAll('.chart-toggle').forEach(toggle => {
+        toggle.addEventListener('change', (e) => {
+            const index = parseInt(e.target.value);
+            if (fitnessChart) {
+                fitnessChart.setDatasetVisibility(index, e.target.checked);
+                fitnessChart.update();
+            }
+        });
+    });
+
+    // Botón Sincronizar Rango
+    const syncBtn = document.getElementById('bulkImportBtn');
+    if (syncBtn) {
+        syncBtn.onclick = () => {
+            const start = document.getElementById('importRangeStart').value;
+            const end = document.getElementById('importRangeEnd').value;
+            if (!start || !end) return alert("Por favor, selecciona un rango válido.");
+            
+            const lista = generarNombresArchivosGrasa(start, end);
+            localStorage.setItem('pendiente_carga_grasa', JSON.stringify(lista));
+            window.location.reload();
+        };
+    }
 });
 
-// 3. LÓGICA DE INTERFAZ
-function toggleHipField() {
-    const gender = document.getElementById('gender').value;
-    const hipContainer = document.getElementById('hip-container');
-    hipContainer.classList.toggle('hidden', gender === 'male');
-}
-
-function updateUI(fat, lean, fatKg, imc, maint) {
-    const container = document.getElementById('result-container');
-    container.classList.remove('hidden');
-
-    document.getElementById('res-fat').innerText = fat.toFixed(1) + "%";
-    document.getElementById('res-lean').innerText = lean.toFixed(1) + " kg";
-    document.getElementById('res-fat-kg').innerText = fatKg.toFixed(1) + " kg";
-    document.getElementById('res-imc').innerText = imc.toFixed(1);
-
-    document.getElementById('cal-lose').innerText = Math.round(maint - 500) + " kcal";
-    document.getElementById('cal-maint').innerText = Math.round(maint) + " kcal";
-    document.getElementById('cal-gain').innerText = Math.round(maint + 500) + " kcal";
-    
-    container.scrollIntoView({ behavior: 'smooth' });
-}
-
-// 4. CÁLCULOS PRINCIPALES
+// --- 3. LÓGICA DE CÁLCULO ---
 function calculateAll() {
     const data = {
         gender: document.getElementById('gender').value,
@@ -52,107 +66,258 @@ function calculateAll() {
         return;
     }
 
-    // Grasa Corporal (Marina)
-    let fatPercentage = (data.gender === 'male') 
+    // Fórmula de la Marina de EE.UU.
+    let fat = (data.gender === 'male') 
         ? (495 / (1.0324 - 0.19077 * Math.log10(data.waist - data.neck) + 0.15456 * Math.log10(data.height)) - 450)
         : (495 / (1.29579 - 0.35004 * Math.log10(data.waist + data.hip - data.neck) + 0.22100 * Math.log10(data.height)) - 450);
 
-    const fatKg = data.weight * (fatPercentage / 100);
-    const leanMass = data.weight - fatKg;
+    const fatKg = data.weight * (fat / 100);
+    const lean = data.weight - fatKg;
     const imc = data.weight / ((data.height / 100) ** 2);
 
-    // Calorías (Mifflin-St Jeor)
+    // Ecuación Mifflin-St Jeor
     let bmr = (10 * data.weight) + (6.25 * data.height) - (5 * data.age);
     bmr = (data.gender === 'male') ? bmr + 5 : bmr - 161;
     const maintenance = bmr * data.activity;
 
-    // Actualizar UI
-    updateUI(fatPercentage, leanMass, fatKg, imc, maintenance);
+    // Actualizar Interfaz
+    updateUI(fat, lean, fatKg, imc, maintenance);
 
-    // Guardar estado actual del formulario
-    localStorage.setItem('fitnessData', JSON.stringify(data));
-
-    // Guardar en Historial para el Gráfico
-    saveToLocalStorage(data.weight, fatPercentage.toFixed(1));
-
-    // Comunicación con script global si existe
-    if (typeof VitalStats !== 'undefined') {
-        VitalStats.save('user_fat', fatPercentage.toFixed(1));
-        VitalStats.save('user_weight', data.weight);
-    }
+    // Persistencia: Guardar en historialCorporal y LocalStorage
+	const hoy = new Date().toISOString().split('T')[0];
+	historialCorporal[hoy] = {
+		peso: data.weight,
+		grasa_pct: parseFloat(fat.toFixed(1)),
+		cintura: data.waist,
+		cuello: data.neck,
+		cadera: data.hip,
+		altura: data.height,
+		genero: data.gender,
+		edad: data.age,
+		actividad: data.activity
+	};
+	VitalStats.save('historialCorporal', JSON.stringify(historialCorporal));
+	renderFitnessChart();
 }
 
-// 5. PERSISTENCIA Y GRÁFICO (LocalStorage)
-function saveToLocalStorage(weight, fat) {
-    let history = JSON.parse(localStorage.getItem('vStats_history')) || [];
-    const now = new Date();
-    const dateId = getFileName(); // AAAAMMDD
-    
-    const newEntry = {
-        id: dateId,
-        date: now.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }),
-        weight: parseFloat(weight),
-        fat: parseFloat(fat)
-    };
-
-    const index = history.findIndex(item => item.id === dateId);
-    if (index > -1) {
-        history[index] = newEntry;
-    } else {
-        history.push(newEntry);
-    }
-
-    localStorage.setItem('vStats_history', JSON.stringify(history));
-    renderFitnessChart();
-}
-
+// --- 4. VISUALIZACIÓN (Chart.js) ---
 function renderFitnessChart() {
-    const history = JSON.parse(localStorage.getItem('vStats_history')) || [];
-    const ctx = document.getElementById('fitnessChart');
-    if (!ctx || history.length === 0) return;
+    const canvas = document.getElementById('fitnessChart');
+    const range = document.getElementById('timeRangeFilter').value;
+    if (!canvas) return;
 
-    history.sort((a, b) => a.id - b.id);
+    const etiquetas = obtenerRangoFechas(range);
+    
+    // Extracción de datos con soporte para el formato antiguo y el nuevo
+    const getVal = (fecha, campo) => historialCorporal[fecha] ? (historialCorporal[fecha][campo] || null) : null;
 
     if (fitnessChart) fitnessChart.destroy();
 
-    fitnessChart = new Chart(ctx.getContext('2d'), {
+    fitnessChart = new Chart(canvas.getContext('2d'), {
         type: 'line',
         data: {
-            labels: history.map(d => d.date),
+            labels: etiquetas.map(f => f.split('-').reverse().slice(0,2).join('/')),
             datasets: [
                 {
                     label: 'Peso (kg)',
-                    data: history.map(d => d.weight),
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    data: etiquetas.map(f => getVal(f, 'peso') || getVal(f, 'weight')),
+                    borderColor: '#3b82f6',
                     yAxisID: 'y',
-                    fill: true,
-                    tension: 0.3
+                    hidden: false // Visible por defecto
                 },
                 {
                     label: 'Grasa (%)',
-                    data: history.map(d => d.fat),
-                    borderColor: '#e67e22',
+                    data: etiquetas.map(f => getVal(f, 'grasa_pct') || getVal(f, 'fat')),
+                    borderColor: '#ef4444',
                     yAxisID: 'y1',
-                    tension: 0.3
+                    hidden: false // Visible por defecto
+                },
+                {
+                    label: 'Cintura (cm)',
+                    data: etiquetas.map(f => getVal(f, 'cintura')),
+                    borderColor: '#10b981',
+                    yAxisID: 'y', // Comparte eje con peso/cm por escala similar
+                    hidden: true // Oculto por defecto
+                },
+                {
+                    label: 'Cuello (cm)',
+                    data: etiquetas.map(f => getVal(f, 'cuello')),
+                    borderColor: '#f59e0b',
+                    yAxisID: 'y',
+                    hidden: true
+                },
+                {
+                    label: 'Cadera (cm)',
+                    data: etiquetas.map(f => getVal(f, 'cadera')),
+                    borderColor: '#8b5cf6',
+                    yAxisID: 'y',
+                    hidden: true
+                },
+                {
+                    label: 'Altura (cm)',
+                    data: etiquetas.map(f => getVal(f, 'altura')),
+                    borderColor: '#6b7280',
+                    yAxisID: 'y',
+                    hidden: true
                 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            spanGaps: true,
+            elements: { line: { tension: 0.3 } },
             scales: {
-                y: { type: 'linear', position: 'left', title: { display: true, text: 'Peso (kg)' } },
-                y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Grasa %' } }
+                y: { 
+                    type: 'linear', 
+                    position: 'left', 
+                    title: { display: true, text: 'kg / cm' } 
+                },
+                y1: { 
+                    type: 'linear', 
+                    position: 'right', 
+                    grid: { drawOnChartArea: false }, 
+                    title: { display: true, text: '%' } 
+                }
+            },
+            plugins: {
+                legend: { display: false } // Usamos nuestros propios checkboxes
             }
         }
     });
+
+    // Sincronizar checkboxes con el estado 'hidden' inicial del gráfico
+    actualizarEstadoCheckboxes();
 }
 
-// 6. UTILIDADES
-function getFileName() {
-    const now = new Date();
-    return now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
+function actualizarEstadoCheckboxes() {
+    const toggles = document.querySelectorAll('.chart-toggle');
+    toggles.forEach(toggle => {
+        const index = parseInt(toggle.value);
+        // Marcamos como "checked" solo si el dataset no está oculto
+        toggle.checked = !fitnessChart.data.datasets[index].hidden;
+    });
+}
+
+// --- 5. PERSISTENCIA Y SINCRONIZACIÓN ---
+function downloadDailyFile() {
+    // Recogemos todos los valores del formulario
+    const weight = document.getElementById('weight').value;
+    const fat = document.getElementById('res-fat').innerText.replace('%', '');
+    
+    if (!weight || fat === "0") return alert("Realiza un cálculo antes de guardar.");
+
+    const dataFull = {
+        fecha: new Date().toISOString().split('T')[0],
+        genero: document.getElementById('gender').value,
+        edad: document.getElementById('age').value,
+        peso: parseFloat(weight),
+        altura: document.getElementById('height').value,
+        cuello: document.getElementById('neck').value,
+        cintura: document.getElementById('waist').value,
+        cadera: document.getElementById('hip').value || 0,
+        actividad: document.getElementById('activity').value,
+        grasa_pct: parseFloat(fat),
+        // Guardamos también los cálculos de calorías
+        objetivos: {
+            definicion: document.getElementById('cal-lose').innerText,
+            mantenimiento: document.getElementById('cal-maint').innerText,
+            volumen: document.getElementById('cal-gain').innerText
+        }
+    };
+
+    const user = JSON.parse(localStorage.getItem('vs_session'))?.user || "anonimo";
+    const varName = `VG_${user}_${dataFull.fecha.replace(/-/g, '')}`;
+    
+    // El archivo .js ahora contendrá el objeto técnico completo
+    const content = `window.${varName} = ${JSON.stringify(dataFull, null, 4)};`;
+    
+    const blob = new Blob([content], { type: 'application/javascript' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${varName}.js`;
+    a.click();
+
+    // Actualizamos el historial local con el objeto completo
+    historialCorporal[dataFull.fecha] = dataFull;
+    VitalStats.save('historialCorporal', JSON.stringify(historialCorporal));
+}
+
+async function ejecutarCargaMasivaGrasa(lista) {
+    let cargados = 0;
+    for (const nombre of lista) {
+        try {
+            await new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = `./diario/${nombre}`;
+                s.onload = resolve;
+                s.onerror = reject;
+                document.head.appendChild(s);
+            });
+
+            const match = nombre.match(/(\d{8})/);
+            if (match) {
+                const f = match[0];
+                const fechaClave = `${f.substring(0,4)}-${f.substring(4,6)}-${f.substring(6,8)}`;
+                const varFound = Object.keys(window).find(k => k.includes(f) && k.startsWith('VG_'));
+                if (window[varFound]) {
+                    historialCorporal[fechaClave] = window[varFound];
+                    cargados++;
+                }
+            }
+        } catch (e) { /* Archivo no encontrado, saltar */ }
+    }
+    if (cargados > 0) VitalStats.save('historialCorporal', JSON.stringify(historialCorporal));
+    localStorage.removeItem('pendiente_carga_grasa');
+}
+
+// --- 6. UTILIDADES ---
+function generarNombresArchivosGrasa(inicio, fin) {
+    const nombres = [];
+    let actual = new Date(inicio);
+    const limite = new Date(fin);
+    const user = JSON.parse(localStorage.getItem('vs_session'))?.user || "anonimo";
+
+    while (actual <= limite) {
+        const y = actual.getFullYear();
+        const m = String(actual.getMonth() + 1).padStart(2, '0');
+        const d = String(actual.getDate()).padStart(2, '0');
+        nombres.push(`VG_${user}_${y}${m}${d}.js`);
+        actual.setDate(actual.getDate() + 1);
+    }
+    return nombres;
+}
+
+function obtenerRangoFechas(opcion) {
+    let fechas = [];
+    let hoy = new Date();
+    let dias = (opcion === 'lastMonth') ? 30 : (opcion === 'last6Months') ? 180 : (opcion === 'lastYear') ? 365 : 7;
+
+    for (let i = dias - 1; i >= 0; i--) {
+        let d = new Date();
+        d.setDate(hoy.getDate() - i);
+        fechas.push(d.toISOString().split('T')[0]);
+    }
+    return fechas;
+}
+
+function toggleHipField() {
+    const isMale = document.getElementById('gender').value === 'male';
+    document.getElementById('hip-container').classList.toggle('hidden', isMale);
+}
+
+function updateUI(fat, lean, fatKg, imc, maint) {
+    document.getElementById('result-container').classList.remove('hidden');
+    document.getElementById('res-fat').innerText = fat.toFixed(1) + "%";
+    document.getElementById('res-lean').innerText = lean.toFixed(1) + " kg";
+    document.getElementById('res-fat-kg').innerText = fatKg.toFixed(1) + " kg";
+    document.getElementById('res-imc').innerText = imc.toFixed(1);
+
+    document.getElementById('cal-lose').innerText = Math.round(maint - 500);
+    document.getElementById('cal-maint').innerText = Math.round(maint);
+    document.getElementById('cal-gain').innerText = Math.round(maint + 500);
+    
+    document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
 }
 
 function loadSavedData() {
@@ -160,33 +325,35 @@ function loadSavedData() {
     if (saved) {
         const data = JSON.parse(saved);
         for (const key in data) {
-            const input = document.getElementById(key);
-            if (input) input.value = data[key];
+            const el = document.getElementById(key);
+            if (el) el.value = data[key];
         }
         toggleHipField();
     }
 }
 
 function clearData() {
-    if (confirm("¿Borrar todos los datos y el historial del gráfico?")) {
+    if (confirm("¿Borrar todos los datos actuales e historial?")) {
         localStorage.removeItem('fitnessData');
-        localStorage.removeItem('vStats_history');
+        VitalStats.save('historialCorporal', null);
         location.reload();
     }
 }
 
-function downloadDailyFile() {
-    const now = new Date();
-    const dateId = getFileName();
-    const entry = {
-        fecha: now.toLocaleDateString(),
-        peso: document.getElementById('weight').value,
-        grasa: document.getElementById('res-fat').innerText
-    };
-    const fileContent = `/** Registro VitalStats **/\nif (typeof diarioStats === 'undefined') var diarioStats = [];\ndiarioStats.push(${JSON.stringify(entry, null, 4)});`;
-    const blob = new Blob([fileContent], { type: 'text/javascript' });
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download = `${dateId}.js`;
-    link.click();
+function cargarDatosEnFormulario(fecha) {
+    const data = historialCorporal[fecha];
+    if (!data) return;
+
+    // Rellenamos todos los campos automáticamente
+    const campos = ['gender', 'age', 'weight', 'height', 'neck', 'waist', 'hip', 'activity'];
+    
+    campos.forEach(campo => {
+        const el = document.getElementById(campo);
+        if (el && data[campo]) {
+            el.value = data[campo];
+        }
+    });
+
+    toggleHipField(); // Para mostrar/ocultar cadera si es necesario
+    calculateAll();   // Refrescamos los cálculos de calorías y grasa en la UI
 }

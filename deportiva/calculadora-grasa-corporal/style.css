@@ -1,6 +1,90 @@
 /* ==========================================================================
    CALCULADORA DE GRASA CORPORAL - SISTEMA PRO
    ========================================================================== */
+/* --- EXTENSIÓN PARA SINCRONIZACIÓN Y CONTROLES PRO --- */
+
+.bulk-section {
+    border-left-color: var(--primary-light);
+    margin-top: 20px;
+}
+
+.bulk-section h3 {
+    color: var(--primary-light);
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Ajuste para que los inputs de fecha no rompan el diseño */
+.bulk-section div {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.bulk-section input[type="date"] {
+    flex: 1;
+    min-width: 140px;
+    padding: 10px;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-header);
+    color: var(--text-main);
+    font-family: inherit;
+}
+
+/* Estilo para los Toggles del gráfico */
+.chart-controls {
+    display: flex;
+    align-items: center;
+    background: var(--bg-header);
+    padding: 10px 15px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+#chartToggles {
+    display: flex;
+    gap: 15px;
+    margin-left: 10px;
+}
+
+#chartToggles label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#chartToggles input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--primary-light);
+}
+
+/* Botón de sincronización con estilo nav */
+#currentRangeDisplay {
+    color: var(--text-muted);
+    font-weight: 500;
+    padding-left: 5px;
+}
+
+#downloadBtn, #confirmBtn, #bulkImportBtn {
+    background: var(--primary-light);
+    color: white;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+#downloadBtn:hover, #confirmBtn:hover, #bulkImportBtn:hover {
+    background: var(--primary);
+}
 
 /* Ajuste de Inputs (Globales para esta herramienta) */
 input[type="number"], 
@@ -145,5 +229,16 @@ select {
     }
     #fat-form, #result-container {
         width: 100%;
+    }
+    .chart-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    #chartToggles {
+        margin-left: 0;
+        width: 100%;
+        justify-content: space-between;
     }
 }

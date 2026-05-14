@@ -62,5 +62,21 @@ window.VS_torrecillas1990_20260513 = [
         "prot": 1.88,
         "grasa": 0.24,
         "carb": 23.5
+    },
+    {
+        "id": 1778744197414,
+        "nombre": "Gominola Gummy (25g/ml)",
+        "kcal": 81.25,
+        "prot": 0.9,
+        "grasa": 0,
+        "carb": 19.125
+    },
+    {
+        "id": 1778744232272,
+        "nombre": "Tortilla Patata Calabacin (325g/ml)",
+        "kcal": 477.75,
+        "prot": 17.875,
+        "grasa": 27.3,
+        "carb": 39
     }
 ];

@@ -99,7 +99,7 @@
 						<div><small>Grasa Total</small><p id="res-fat-kg">0 kg</p></div>
 						<div><small>IMC</small><p id="res-imc">0</p></div>
 					</div>
-					<button type="button" onclick="downloadDailyFile()" class="btn-importar">💾 Guardar archivo diario (.js)</button>
+					<button type="button" onclick="downloadDailyFile()" class="btn-importar">💾 Guardar registro</button>
 				</div>
 
 				<div class="result-card calories">
@@ -112,13 +112,41 @@
 				</div>
 			</div>
 		</div>
-
-		<div class="result-card" style="min-height: 300px;">
-			<h3>📈 Evolución Temporal</h3>
-			<div style="height: 250px;">
+		
+		<!-- Sección de Evolución (Sustituye o amplía la actual) -->
+		<section class="result-card">
+			<h3>📈 Evolución de Composición</h3>
+			<div class="chart-controls" style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+				<div id="chartToggles" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+					<label><input type="checkbox" class="chart-toggle" value="0" checked> Peso</label>
+					<label><input type="checkbox" class="chart-toggle" value="1" checked> % Grasa</label>
+					<label><input type="checkbox" class="chart-toggle" value="2"> Cintura</label>
+					<label><input type="checkbox" class="chart-toggle" value="3"> Cuello</label>
+					<label><input type="checkbox" class="chart-toggle" value="4"> Cadera</label>
+					<label><input type="checkbox" class="chart-toggle" value="5"> Altura</label>
+				</div>
+				<select id="timeRangeFilter" class="filter-select" style="width: auto;">
+					<option value="last7">Últimos 7 días</option>
+					<option value="lastMonth">Último Mes</option>
+					<option value="last6Months">6 Meses</option>
+					<option value="lastYear">Un año</option>
+				</select>
+			</div>
+			<div style="height: 300px;">
 				<canvas id="fitnessChart"></canvas>
 			</div>
-		</div>
+		</section>
+
+		<!-- Sección de Sincronización -->
+		<section class="result-card bulk-section">
+			<h3>📅 Sincronización Historial Servidor</h3>
+			<div class="flex-row">
+				<input type="date" id="importRangeStart">
+				<input type="date" id="importRangeEnd">
+				<button id="bulkImportBtn">🔄 Sincronizar</button>
+			</div>
+			<p id="currentRangeDisplay"></p>
+		</section>
     </div>
 	
 	<div id="authModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">

@@ -21,6 +21,8 @@ const productosMercadonaBase = [
 	{ categoria: "Preparado", nombre: "Empanada Pollo", kcal: 262, prot: 8.8, grasa: 14.84, carb: 22.8, obs: "Un pesa 90g aprox." },
 	{ categoria: "Preparado", nombre: "Pollo Asado (al As)", kcal: 237, prot: 27, grasa: 13.5, carb: 1.2, obs: "Una pechuga entera 300g aprox." },
 	{ categoria: "Preparado", nombre: "Patatas Fritas", kcal: 312, prot: 4, grasa: 15, carb: 41, obs: "Un plato grande 200g aprox." },
+	{ categoria: "Preparado", nombre: "Tortilla Patata Calabacin", kcal: 147, prot: 5.5, grasa: 8.4, carb: 12, obs: "(Mercadona listo para comer) Entera 1300g, mitad 650g, un cuarto 215g" },
+	{ categoria: "Preparado", nombre: "Tortilla Patata Cebolla", kcal: 153, prot: 5, grasa: 8.4, carb: 14, obs: "(Mercadona listo para comer) Entera 1300g, mitad 650g, un cuarto 215g" },
 	
     // --- LÁCTEOS Y PROTEÍNAS ---
     { categoria: "Proteina", nombre: "Yogur Proteínas Natural", kcal: 52, prot: 10, grasa: 0.1, carb: 3.1, obs: "un yogur de 120g." },

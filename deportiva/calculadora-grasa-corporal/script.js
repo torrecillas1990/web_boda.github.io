@@ -37,6 +37,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const syncBtn = document.getElementById('bulkImportBtn');
     if (syncBtn) {
         syncBtn.onclick = () => {
+			// 1. Verificamos primero
+			if (!verificarAcceso()) return; 
+
+			// 2. Si pasa la verificación, ejecutamos el resto
             const start = document.getElementById('importRangeStart').value;
             const end = document.getElementById('importRangeEnd').value;
             if (!start || !end) return alert("Por favor, selecciona un rango válido.");
@@ -44,6 +48,42 @@ document.addEventListener('DOMContentLoaded', async () => {
             const lista = generarNombresArchivosGrasa(start, end);
             localStorage.setItem('pendiente_carga_grasa', JSON.stringify(lista));
             window.location.reload();
+        };
+    }
+	
+	// Botón Descargar Registro
+    const downloadBtn = document.getElementById('downloadImportBtn');
+    if (downloadBtn) {
+        downloadBtn.onclick = () => {
+			// 1. Verificamos primero
+			if (!verificarAcceso()) return; 
+
+			// 2. Si pasa la verificación, ejecutamos el resto
+            downloadDailyFile();
+        };
+    }
+	
+	// Botón Calcular datos
+    const calcBtn = document.getElementById('calcBtn');
+    if (calcBtn) {
+        calcBtn.onclick = () => {
+			// 1. Verificamos primero
+			if (!verificarAcceso()) return; 
+
+			// 2. Si pasa la verificación, ejecutamos el resto
+            calculateAll();
+        };
+    }
+	
+	// Botón Limpiar Calculos
+    const clearBtn = document.getElementById('clearBtn');
+    if (clearBtn) {
+        clearBtn.onclick = () => {
+			// 1. Verificamos primero
+			if (!verificarAcceso()) return; 
+
+			// 2. Si pasa la verificación, ejecutamos el resto
+            clearData();
         };
     }
 });

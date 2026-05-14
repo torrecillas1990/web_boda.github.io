@@ -20,6 +20,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (confirmBtn) {
         confirmBtn.onclick = () => {
+			// 1. Verificamos primero
+			if (!verificarAcceso()) return; 
+
+			// 2. Si pasa la verificación, ejecutamos el resto
             if (!productoSeleccionado) return;
 
             const cantidad = parseFloat(quantityInput.value);
@@ -164,6 +168,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const bulkBtn = document.getElementById('bulkImportBtn');
     if (bulkBtn) {
         bulkBtn.onclick = function() {
+			// 1. Verificamos primero
+			if (!verificarAcceso()) return; 
+
+			// 2. Si pasa la verificación, ejecutamos el resto
             const start = document.getElementById('importRangeStart').value;
             const end = document.getElementById('importRangeEnd').value;
             if (!start || !end) return alert("Selecciona un rango.");
@@ -493,6 +501,10 @@ function generarNombresArchivosPorRango(inicio, fin) {
 const downloadBtn = document.getElementById('downloadBtn');
 if (downloadBtn) {
     downloadBtn.onclick = () => {
+		// 1. Verificamos primero
+		if (!verificarAcceso()) return; 
+
+		// 2. Si pasa la verificación, ejecutamos el resto
         if (registroDiario.length === 0) return;
         const session = JSON.parse(localStorage.getItem('vs_session'));
         const user = session ? session.user : "anonimo";

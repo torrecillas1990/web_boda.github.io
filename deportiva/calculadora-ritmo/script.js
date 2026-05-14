@@ -2,6 +2,45 @@
    VITALSTATS - ENGINE CALCULADORA DE RITMO PRO 2026
    ========================================================================== */
 
+// --- INICIALIZACIÓN ---
+document.addEventListener('DOMContentLoaded', async () => {
+    // Botón undoLastPointBtn
+    const undoBtn = document.getElementById('undoLastPointBtn');
+    if (undoBtn) {
+        undoBtn.onclick = () => {
+			// 1. Verificamos primero
+			if (!verificarAcceso()) return; 
+
+			// 2. Si pasa la verificación, ejecutamos el resto
+            undoLastPoint();
+        };
+    }
+	
+	// Botón clearAllBtn
+    const clearAllBtn = document.getElementById('clearAllBtn');
+    if (clearAllBtn) {
+        clearAllBtn.onclick = () => {
+			// 1. Verificamos primero
+			if (!verificarAcceso()) return; 
+
+			// 2. Si pasa la verificación, ejecutamos el resto
+            clearAll();
+        };
+    }
+	
+	// Botón exportToGPX
+    const exportToGPXBtn = document.getElementById('exportToGPXBtn');
+    if (exportToGPXBtn) {
+        exportToGPXBtn.onclick = () => {
+			// 1. Verificamos primero
+			if (!verificarAcceso()) return; 
+
+			// 2. Si pasa la verificación, ejecutamos el resto
+            exportToGPX();
+        };
+    }
+});
+
 // --- GESTIÓN DEL MODAL DEL MAPA ---
 function openMapModal() {
     const modal = document.getElementById('mapModal');

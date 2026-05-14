@@ -143,6 +143,27 @@ function intentarLogin() {
 }
 
 /**
+ * Verifica si el usuario está autenticado.
+ * Si no lo está, abre el modal de login y lanza un aviso.
+ */
+function verificarAcceso() {
+    const session = JSON.parse(localStorage.getItem('vs_session'));
+    
+    if (session && session.user) {
+        return true; // Acceso permitido
+    } else {
+        alert("🔒 Esta función requiere estar identificado.");
+        // Si tienes la función abrirLogin() definida:
+        if (typeof abrirLogin === 'function') {
+            abrirLogin(); 
+        } else {
+            document.getElementById('authModal').style.display = 'flex';
+        }
+        return false; // Acceso denegado
+    }
+}
+
+/**
  * INICIALIZACIÓN DE EVENTOS (ÚNICO PUNTO DE ENTRADA)
  */
 document.addEventListener('DOMContentLoaded', () => {

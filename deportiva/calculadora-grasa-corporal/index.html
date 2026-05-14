@@ -85,8 +85,8 @@
 				</div>
             
 				<div class="button-group">
-					<button type="button" onclick="calculateAll()" class="button-calc">Calcular Composición</button>
-					<button type="button" onclick="clearData()" class="btn-clear">Borrar Datos</button>
+					<button type="button" id="calcBtn" class="button-calc">Calcular Composición</button>
+					<button type="button" id="clearBtn" class="btn-clear">Borrar Datos</button>
 				</div>
 			</form>
         
@@ -99,7 +99,7 @@
 						<div><small>Grasa Total</small><p id="res-fat-kg">0 kg</p></div>
 						<div><small>IMC</small><p id="res-imc">0</p></div>
 					</div>
-					<button type="button" onclick="downloadDailyFile()" class="btn-importar">💾 Guardar registro</button>
+					<button type="button" id="downloadImportBtn" class="btn-importar">💾 Guardar registro</button>
 				</div>
 
 				<div class="result-card calories">

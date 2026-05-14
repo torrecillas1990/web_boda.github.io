@@ -50,6 +50,18 @@ const VitalStats = {
                 abrirLogin(); 
             };
         }
+		
+		const perfilNombre = document.getElementById('perfilNombre');
+		if (perfilNombre) perfilNombre.textContent =  session.nombre;
+		
+		const userAvatar = document.getElementById('userAvatar');
+		if (userAvatar) userAvatar.textContent = (session.nombre || 'U').charAt(0).toUpperCase();
+		
+		// Calcular días registrados basados en el historial del usuario
+		const historial = JSON.parse(this.get('historialNutricional')) || {};
+		const statsDias = document.getElementById('statsDias');
+        if (statsDias) statsDias.textContent = Object.keys(historial).length;
+
         // Sincronizar también la Tab Bar
         this.setActiveTab();
     },
@@ -58,14 +70,14 @@ const VitalStats = {
     abrirPerfil: function(session) {
         const modal = document.getElementById('perfilModal');
         if (!modal) return;
-
-        document.getElementById('perfilNombre').textContent = session.nombre;
-        document.getElementById('userAvatar').textContent = (session.nombre || 'U').charAt(0).toUpperCase();
-        
+		
+		document.getElementById('perfilNombreModalPerfil').textContent = session.nombre;
+        document.getElementById('userAvatarModalPerfil').textContent = (session.nombre || 'U').charAt(0).toUpperCase();
+		
         // Calcular días registrados basados en el historial del usuario
         const historial = JSON.parse(this.get('historialNutricional')) || {};
-        const statsDias = document.getElementById('statsDias');
-        if (statsDias) statsDias.textContent = Object.keys(historial).length;
+        const statsDiasModalPerfil = document.getElementById('statsDiasModalPerfil');
+        if (statsDiasModalPerfil) statsDiasModalPerfil.textContent = Object.keys(historial).length;
 
         modal.style.display = 'flex';
     },

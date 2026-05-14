@@ -195,9 +195,11 @@
 		</div>
 	</div>
 
-	<div id="authModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
-		<div style="background:white; padding:30px; border-radius:15px; width:300px; text-align:center;">
-			<h2>Identificarse</h2>
+	<div id="authModal" class="modal">
+		<div class="modal-content perfil-card">
+			<div class="perfil-header">
+				<h2 id="perfilNombre">Identificarse</h2>
+			</div>
 			<input type="text" id="loginUser" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:10px;">
 			<input type="password" id="loginPass" placeholder="Contraseña" style="width:100%; margin-bottom:20px; padding:10px;">
 			<button onclick="intentarLogin()" style="background:#28a745; color:white; border:none; padding:10px 20px; cursor:pointer; width:100%; border-radius:5px;">Entrar</button>
@@ -209,8 +211,8 @@
 		<div class="modal-content perfil-card">
 			<span class="close-modal" id="closePerfil">&times;</span>
 			<div class="perfil-header">
-				<div class="avatar-circle" id="userAvatar">T</div>
-				<h2 id="perfilNombre">Usuario</h2>
+				<div class="avatar-circle" id="userAvatarModalPerfil">T</div>
+				<h2 id="perfilNombreModalPerfil">Usuario</h2>
 				<p class="user-status">Miembro VitalStats</p>
 			</div>
 			<hr>
@@ -221,7 +223,7 @@
 					</button>
 				</div>
 				<div class="stat-item">
-					<span class="stat-value" id="statsDias">0</span>
+					<span class="stat-value" id="statsDiasModalPerfil">0</span>
 					<span class="stat-label">Días Registrados</span>
 				</div>
 			</div>

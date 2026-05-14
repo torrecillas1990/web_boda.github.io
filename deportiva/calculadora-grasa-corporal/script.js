@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (syncBtn) {
         syncBtn.onclick = () => {
 			// 1. Verificamos primero
-			if (!verificarAcceso()) return; 
+			if (!verificarAcceso(0)) return; 
 
 			// 2. Si pasa la verificación, ejecutamos el resto
             const start = document.getElementById('importRangeStart').value;
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (downloadBtn) {
         downloadBtn.onclick = () => {
 			// 1. Verificamos primero
-			if (!verificarAcceso()) return; 
+			if (!verificarAcceso(0)) return; 
 
 			// 2. Si pasa la verificación, ejecutamos el resto
             downloadDailyFile();
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (calcBtn) {
         calcBtn.onclick = () => {
 			// 1. Verificamos primero
-			if (!verificarAcceso()) return; 
+			if (!verificarAcceso(0)) return; 
 
 			// 2. Si pasa la verificación, ejecutamos el resto
             calculateAll();
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (clearBtn) {
         clearBtn.onclick = () => {
 			// 1. Verificamos primero
-			if (!verificarAcceso()) return; 
+			if (!verificarAcceso(0)) return; 
 
 			// 2. Si pasa la verificación, ejecutamos el resto
             clearData();

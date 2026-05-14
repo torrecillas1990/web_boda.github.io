@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (confirmBtn) {
         confirmBtn.onclick = () => {
 			// 1. Verificamos primero
-			if (!verificarAcceso()) return; 
+			if (!verificarAcceso(0)) return; 
 
 			// 2. Si pasa la verificación, ejecutamos el resto
             if (!productoSeleccionado) return;
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (bulkBtn) {
         bulkBtn.onclick = function() {
 			// 1. Verificamos primero
-			if (!verificarAcceso()) return; 
+			if (!verificarAcceso(0)) return; 
 
 			// 2. Si pasa la verificación, ejecutamos el resto
             const start = document.getElementById('importRangeStart').value;
@@ -502,7 +502,7 @@ const downloadBtn = document.getElementById('downloadBtn');
 if (downloadBtn) {
     downloadBtn.onclick = () => {
 		// 1. Verificamos primero
-		if (!verificarAcceso()) return; 
+		if (!verificarAcceso(0)) return; 
 
 		// 2. Si pasa la verificación, ejecutamos el resto
         if (registroDiario.length === 0) return;

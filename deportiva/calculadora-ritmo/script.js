@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (undoBtn) {
         undoBtn.onclick = () => {
 			// 1. Verificamos primero
-			if (!verificarAcceso()) return; 
+			if (!verificarAcceso(0)) return; 
 
 			// 2. Si pasa la verificación, ejecutamos el resto
             undoLastPoint();
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (clearAllBtn) {
         clearAllBtn.onclick = () => {
 			// 1. Verificamos primero
-			if (!verificarAcceso()) return; 
+			if (!verificarAcceso(0)) return; 
 
 			// 2. Si pasa la verificación, ejecutamos el resto
             clearAll();
@@ -33,11 +33,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (exportToGPXBtn) {
         exportToGPXBtn.onclick = () => {
 			// 1. Verificamos primero
-			if (!verificarAcceso()) return; 
+			if (!verificarAcceso(0)) return; 
 
 			// 2. Si pasa la verificación, ejecutamos el resto
             exportToGPX();
         };
+    }
+	
+	// Botón exportToGPX
+    const importGPXBtn = document.getElementById('importGPXBtn');
+    if (!verificarAcceso(1)) {
+		importGPXBtn.style.display = 'none';
     }
 });
 

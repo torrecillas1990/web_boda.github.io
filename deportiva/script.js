@@ -144,22 +144,24 @@ function intentarLogin() {
 
 /**
  * Verifica si el usuario está autenticado.
- * Si no lo está, abre el modal de login y lanza un aviso.
+ * Si no lo está, abre el modal de login y lanza un aviso si la variable aviso es igual a 0.
  */
-function verificarAcceso() {
+function verificarAcceso(aviso) {
     const session = JSON.parse(localStorage.getItem('vs_session'));
     
     if (session && session.user) {
         return true; // Acceso permitido
     } else {
-        alert("🔒 Esta función requiere estar identificado.");
-        // Si tienes la función abrirLogin() definida:
-        if (typeof abrirLogin === 'function') {
-            abrirLogin(); 
-        } else {
-            document.getElementById('authModal').style.display = 'flex';
-        }
-        return false; // Acceso denegado
+		if(aviso == 0){
+			alert("🔒 Esta función requiere estar identificado.");
+			// Si tienes la función abrirLogin() definida:
+			if (typeof abrirLogin === 'function') {
+				abrirLogin(); 
+			} else {
+				document.getElementById('authModal').style.display = 'flex';
+			}
+			return false; // Acceso denegado
+		}
     }
 }
 

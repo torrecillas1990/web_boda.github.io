@@ -117,12 +117,18 @@ header {
 
 /* Navegación Profesional */
 .navbar {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.8); 
     backdrop-filter: blur(10px);
+    /* Añade padding arriba para respetar el notch */
+    padding-top: env(safe-area-inset-top); 
+    
+    /* Mantenemos el resto de tus propiedades */
+    height: calc(70px + env(safe-area-inset-top)); /* Ajusta la altura total */
+    /*display: flex;*/
+    align-items: center;
     position: sticky;
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 body.dark-mode .navbar {
@@ -418,36 +424,43 @@ button {
         transform: translateY(-9px) rotate(-45deg);
     }
 	
-    .mobile-tab-bar {
-        display: flex;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 70px;
-        background: var(--bg-card); /* Se adapta al Modo Oscuro */
-        backdrop-filter: blur(15px);
-        border-top: 1px solid var(--border-color);
-        justify-content: space-around;
-        align-items: center;
-        z-index: 2000;
-        /* Soporte para el "notch" inferior de iPhone */
-        padding-bottom: env(safe-area-inset-bottom);
-        box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
-    }
+	.mobile-tab-bar {
+		/* Mantenemos tus estilos actuales (posición, fondo, flex...) */
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		background-color: var(--bg-card);
+		border-top: 1px solid var(--border-color);
+		
+		/* --- EL TRUCO PARA IPHONE --- */
+		/* Añadimos el padding de la zona segura inferior */
+		padding-bottom: env(safe-area-inset-bottom); 
+		
+		/* Ajustamos la altura para que sea la base + el notch inferior */
+		height: calc(65px + env(safe-area-inset-bottom));
+		
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		z-index: 1000;
+	}
 	
-    .tab-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-decoration: none;
-        color: var(--text-muted);
+	/* Centramos los iconos verticalmente dentro del nuevo espacio */
+	.tab-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
         font-size: 0.7rem;
         font-weight: 600;
         transition: var(--transition);
         flex: 1;
-    }
-	
+        text-decoration: none;
+        color: var(--text-muted);
+		justify-content: center;
+		height: 100%;
+		padding-bottom: 5px; /* Un pequeño ajuste visual */
+	}
+
     .tab-icon {
         font-size: 1.5rem;
         margin-bottom: 2px;

@@ -54,5 +54,37 @@ window.VS_torrecillas1990_20260514 = [
         "prot": 1.035,
         "grasa": 0.345,
         "carb": 12.765
+    },
+    {
+        "id": 1778829874980,
+        "nombre": "Cerveza (700g/ml)",
+        "kcal": 301,
+        "prot": 3.22,
+        "grasa": 0,
+        "carb": 24.85
+    },
+    {
+        "id": 1778829927770,
+        "nombre": "Pollo Asado (al As) (100g/ml)",
+        "kcal": 237,
+        "prot": 27,
+        "grasa": 13.5,
+        "carb": 1.2
+    },
+    {
+        "id": 1778829949627,
+        "nombre": "Pan de Molde Integral (60g/ml)",
+        "kcal": 147,
+        "prot": 5.4,
+        "grasa": 1.8,
+        "carb": 25.2
+    },
+    {
+        "id": 1778829964717,
+        "nombre": "Huesito (80g/ml)",
+        "kcal": 400,
+        "prot": 5.2,
+        "grasa": 18.4,
+        "carb": 52.8
     }
 ];

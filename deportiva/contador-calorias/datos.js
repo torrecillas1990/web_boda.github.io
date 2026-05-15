@@ -110,5 +110,6 @@ const productosMercadonaBase = [
     { categoria: "Carbohidrato", nombre: "Bizcocho Chocolate con pepitas", kcal: 436, prot: 9.5, grasa: 24, carb: 45, obs: "" },
     { categoria: "Carbohidrato", nombre: "Gominola Gummy", kcal: 325, prot: 3.6, grasa: 0, carb: 76.5, obs: "Una gummy 6.25g - Cuatro 25g" },
     { categoria: "Carbohidrato", nombre: "Croissant", kcal: 406, prot: 8.2, grasa: 21, carb: 45.8, obs: "Uno suele pesar 56g aprox" },
-    { categoria: "Carbohidrato", nombre: "Tarta tres chocolates", kcal: 354, prot: 4.4, grasa: 23, carb: 34, obs: "Una racion generosa 110g aprox" }
+    { categoria: "Carbohidrato", nombre: "Tarta tres chocolates", kcal: 354, prot: 4.4, grasa: 23, carb: 34, obs: "Una racion generosa 110g aprox" },
+    { categoria: "Carbohidrato", nombre: "Huesito", kcal: 500, prot: 6.5, grasa: 23, carb: 66, obs: "Una barrita son 20g" }
 ];

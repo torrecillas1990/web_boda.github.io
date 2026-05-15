@@ -38,5 +38,13 @@ window.VS_torrecillas1990_20260515 = [
         "prot": 8.001,
         "grasa": 13.796999999999999,
         "carb": 2.142
+    },
+    {
+        "id": 1778853838935,
+        "nombre": "Naranja 1 pieza son 150 gramos (200g/ml)",
+        "kcal": 120,
+        "prot": 1.88,
+        "grasa": 0.24,
+        "carb": 23.5
     }
 ];

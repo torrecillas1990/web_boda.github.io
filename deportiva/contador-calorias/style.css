@@ -127,19 +127,30 @@ body.dark-mode #quantityModal {
     margin-top: 10px;
 }
 
-#quantityInput, #confirmBtn, #cancelBtn  {
+#quantityInput, #confirmBtn, #cancelBtn, #confirmTemplateBtn, #applyTemplateBtn, #saveToTemplateBtn {
     width: 30%;
 }
 	
-#downloadBtn, #confirmBtn, #bulkImportBtn {
+#downloadBtn, #confirmBtn, #bulkImportBtn, #applyTemplateBtn {
     background: var(--primary-light);
     color: white;
     border-radius: 8px;
     padding: 12px;
 }
 
-#downloadBtn:hover, #confirmBtn:hover, #bulkImportBtn:hover {
+#downloadBtn:hover, #confirmBtn:hover, #bulkImportBtn:hover, #applyTemplateBtn:hover {
     background: var(--primary);
+}
+
+#confirmTemplateBtn, #saveToTemplateBtn {
+    background: var(--secondary-light);
+    color: white;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+#confirmTemplateBtn:hover, #saveToTemplateBtn:hover {
+    background: var(--secondary);
 }
 
 #clearBtn, #clearSearchBtn, #cancelBtn, .delete-btn {

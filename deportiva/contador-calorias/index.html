@@ -68,9 +68,26 @@
 			<div class="modal-controls">
 				<input type="number" id="quantityInput" value="100">
 				<button id="confirmBtn">Añadir</button>
+				<button id="confirmTemplateBtn">A plantilla ⭐</button>
 				<button id="cancelBtn">✕</button>
 			</div>
 		</div>
+		
+		<section class="section-card">
+			<h2>⭐ Mi Plantilla Diaria</h2>
+			<p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+				Configura aquí los alimentos que consumes a diario (desayuno fijo, suplementos, etc.)
+			</p>
+			
+			<ul id="templateList" class="diary-list">
+				<!-- Se llenará dinámicamente -->
+			</ul>
+
+			<div class="button-group">
+				<button id="applyTemplateBtn">➕ Copiar plantilla al día</button>
+				<button id="saveToTemplateBtn">⚙️ Gestionar Plantilla</button>
+			</div>
+		</section>
 
 		<section class="section-card diary-circular-grid">
 			<div class="diary-part">

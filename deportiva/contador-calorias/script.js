@@ -4,6 +4,7 @@ let registroDiario = [];
 let productoSeleccionado = null;
 let macroChart = null;
 let weeklyChart = null;
+let plantillaBase = JSON.parse(VitalStats.get('plantillaNutricional')) || [];
 
 // Configura Chart.js para usar colores de variables CSS
 Chart.defaults.color = getComputedStyle(document.body).getPropertyValue('--text-muted');
@@ -47,12 +48,53 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log("✅ Añadido:", nuevoItem.nombre);
         };
     }
+	
+	if (confirmTemplateBtn) {
+        confirmTemplateBtn.onclick = () => {
+            if (!verificarAcceso(0) || !productoSeleccionado) return;
+            const cantidad = parseFloat(quantityInput.value);
+            if (isNaN(cantidad) || cantidad <= 0) return alert("Cantidad no válida");
 
+            const nuevoItemTemplate = crearObjetoNutricional(productoSeleccionado, cantidad);
+            plantillaBase.push(nuevoItemTemplate);
+            VitalStats.save('plantillaNutricional', JSON.stringify(plantillaBase));
+            renderizarPlantilla();
+            cerrarModal();
+            console.log("⭐ Añadido a plantilla");
+        };
+    }
+	
     if (cancelBtn) cancelBtn.onclick = cerrarModal;
 
     if (quantityInput) {
         quantityInput.onkeydown = (e) => {
             if (e.key === 'Enter') confirmBtn.click();
+        };
+    }
+	
+	// BOTONES DE PLANTILLA E HISTORIAL	
+    const applyTemplateBtn = document.getElementById('applyTemplateBtn');
+    if (applyTemplateBtn) {
+        applyTemplateBtn.onclick = () => {
+            if (plantillaBase.length === 0) return alert("La plantilla está vacía.");
+            const itemsCopiados = plantillaBase.map(item => ({ ...item, id: Date.now() + Math.random() }));
+            registroDiario = [...registroDiario, ...itemsCopiados];
+            actualizarApp();
+        };
+    }
+
+    const saveToTemplateBtn = document.getElementById('saveToTemplateBtn');
+    if (saveToTemplateBtn) {
+        saveToTemplateBtn.onclick = () => {
+            if (!verificarAcceso(0) || plantillaBase.length === 0) return;
+            const user = JSON.parse(localStorage.getItem('vs_session'))?.user || "anonimo";
+            const varName = `VS_${user}_PLANTILLA`;
+            const content = `window.${varName} = ${JSON.stringify(plantillaBase, null, 4)};`;
+            const blob = new Blob([content], { type: 'application/javascript' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${varName}.js`;
+            a.click();
         };
     }
 
@@ -159,6 +201,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 5. Catálogo y Filtros
     if (typeof productosMercadonaBase !== 'undefined') renderizarCatalogo(productosMercadonaBase);
+	
+	renderizarPlantilla();
+	
     const searchInput = document.getElementById('productSearch');
     const categoryFilter = document.getElementById('categoryFilter');
     if (searchInput) searchInput.addEventListener('input', filtrarYRenderizar);
@@ -179,6 +224,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const lista = generarNombresArchivosPorRango(start, end);
             localStorage.setItem('ultimo_rango_sincronizado', JSON.stringify({ start, end }));
             localStorage.setItem('pendiente_carga_servidor', JSON.stringify(lista));
+			
+			// Aprovechamos y traemos la plantilla también
+			cargarPlantillaDesdeServidor();
+	
             window.location.reload();
         };
     }
@@ -519,4 +568,42 @@ if (downloadBtn) {
         a.download = `VS_${user}_${date.replace(/-/g,'')}.js`;
         a.click();
     };
+}
+
+function renderizarPlantilla() {
+    const list = document.getElementById('templateList');
+    if (!list) return;
+    list.innerHTML = '';
+    plantillaBase.forEach((item, idx) => {
+        const li = document.createElement('li');
+        li.className = "diary-item";
+        li.innerHTML = `<div><strong>${item.nombre}</strong><br><small>${Math.round(item.kcal)} kcal</small></div>
+                        <button class="delete-btn" onclick="eliminarDePlantilla(${idx})">×</button>`;
+        list.appendChild(li);
+    });
+}
+
+function eliminarDePlantilla(index) {
+    plantillaBase.splice(index, 1);
+    VitalStats.save('plantillaNutricional', JSON.stringify(plantillaBase));
+    renderizarPlantilla();
+}
+
+async function cargarPlantillaDesdeServidor() {
+    const user = JSON.parse(localStorage.getItem('vs_session'))?.user || "anonimo";
+    const varName = `VS_${user}_PLANTILLA`;
+    try {
+        await new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = `./diario/${varName}.js?t=${Date.now()}`;
+            s.onload = resolve;
+            s.onerror = reject;
+            document.head.appendChild(s);
+        });
+        if (window[varName]) {
+            plantillaBase = window[varName];
+            VitalStats.save('plantillaNutricional', JSON.stringify(plantillaBase));
+            renderizarPlantilla();
+        }
+    } catch (e) { console.log("ℹ️ Sin plantilla remota."); }
 }

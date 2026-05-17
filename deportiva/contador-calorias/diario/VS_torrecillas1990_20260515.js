@@ -46,5 +46,29 @@ window.VS_torrecillas1990_20260515 = [
         "prot": 1.88,
         "grasa": 0.24,
         "carb": 23.5
+    },
+    {
+        "id": 1779017045201,
+        "nombre": "Burguer King Steakhouse (385g/ml)",
+        "kcal": 1073.9959999999999,
+        "prot": 59.367,
+        "grasa": 71.071,
+        "carb": 53.1685
+    },
+    {
+        "id": 1779017058062,
+        "nombre": "Burguer King Patatas Fritas (218g/ml)",
+        "kcal": 530.0016,
+        "prot": 7.194,
+        "grasa": 21.930799999999998,
+        "carb": 74.0328
+    },
+    {
+        "id": 1779017063882,
+        "nombre": "Burguer King King Fusion Oreo (200g/ml)",
+        "kcal": 515,
+        "prot": 7.1,
+        "grasa": 25,
+        "carb": 64.1
     }
 ];

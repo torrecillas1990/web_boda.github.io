@@ -23,6 +23,9 @@ const productosMercadonaBase = [
 	{ categoria: "Preparado", nombre: "Patatas Fritas", kcal: 312, prot: 4, grasa: 15, carb: 41, obs: "Un plato grande 200g aprox." },
 	{ categoria: "Preparado", nombre: "Tortilla Patata Calabacin", kcal: 147, prot: 5.5, grasa: 8.4, carb: 12, obs: "(Mercadona listo para comer) Entera 1300g, mitad 650g, un cuarto 215g" },
 	{ categoria: "Preparado", nombre: "Tortilla Patata Cebolla", kcal: 153, prot: 5, grasa: 8.4, carb: 14, obs: "(Mercadona listo para comer) Entera 1300g, mitad 650g, un cuarto 215g" },
+	{ categoria: "Preparado", nombre: "Burguer King Steakhouse", kcal: 278.96, prot: 15.42, grasa: 18.46, carb: 13.81, obs: "Pesa 385g" },
+	{ categoria: "Preparado", nombre: "Burguer King Patatas Fritas", kcal: 243.12, prot: 3.3, grasa: 10.06, carb: 33.96, obs: "Pequeñas 90g, Medianas 159g, Grandes 218g y Gigantes 264g" },
+	{ categoria: "Preparado", nombre: "Burguer King King Fusion Oreo", kcal: 257.5, prot: 3.55, grasa: 12.5, carb: 32.05, obs: "200g" },
 	
     // --- LÁCTEOS Y PROTEÍNAS ---
     { categoria: "Proteina", nombre: "Yogur Proteínas Natural", kcal: 52, prot: 10, grasa: 0.1, carb: 3.1, obs: "un yogur de 120g." },

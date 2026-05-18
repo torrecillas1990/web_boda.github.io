@@ -22,24 +22,7 @@
 	<link rel="manifest" href="/manifest.json">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="../index.html" class="logo" target="_self">VitalStats</a>
-			<button class="menu-toggle" id="mobile-menu">
-				<span class="bar"></span>
-				<span class="bar"></span>
-				<span class="bar"></span>
-			</button>
-            <ul class="nav-links">
-                <li><a href="../index.html" target="_self">Inicio</a></li>
-                <li><a href="../contador-calorias/index.html" target="_self">Calorías</a></li>
-                <li><a href="../calculadora-grasa-corporal/index.html" target="_self">Grasa Corporal</a></li>
-                <li><a href="../calculadora-ritmo/index.html" target="_self">Ritmo Runner</a></li>
-            </ul>
-			<a href="../registro-premium/index.html" class="btn-nav" target="_self">Premium</a>
-			<a href="#" id="authBtn" class="btn-nav" target="_self">Cargando...</a>
-        </div>
-    </nav>
+	<nav class="navbar" id="navbar-js"></nav>
 	
     <div class="container">
 		<h1>Análisis Corporal Completo</h1>
@@ -154,79 +137,12 @@
 		</section>
     </div>
 	
-	<div id="authModal" class="modal">
-		<div class="modal-content perfil-card">
-			<div class="perfil-header">
-				<h2 id="perfilNombre">Identificarse</h2>
-			</div>
-			<input type="text" id="loginUser" placeholder="Usuario" style="width:100%; margin-bottom:10px; padding:10px;">
-			<input type="password" id="loginPass" placeholder="Contraseña" style="width:100%; margin-bottom:20px; padding:10px;">
-			<button onclick="intentarLogin()" style="background:#28a745; color:white; border:none; padding:10px 20px; cursor:pointer; width:100%; border-radius:5px;">Entrar</button>
-			<button onclick="cerrarLogin()" style="background:none; border:none; color:red; margin-top:10px; cursor:pointer;">Cancelar</button>
-		</div>
-	</div>
-	
-	<div id="perfilModal" class="modal">
-		<div class="modal-content perfil-card">
-			<span class="close-modal" id="closePerfil">&times;</span>
-			<div class="perfil-header">
-				<div class="avatar-circle" id="userAvatarModalPerfil">T</div>
-				<h2 id="perfilNombreModalPerfil">Usuario</h2>
-				<p class="user-status">Miembro VitalStats</p>
-			</div>
-			<hr>
-			<div class="perfil-stats">
-				<div class="stat-item">
-					<button id="theme-toggle" class="btn-theme" title="Cambiar modo">
-						<span id="theme-icon">🌙</span>
-					</button>
-				</div>
-				<div class="stat-item">
-					<span class="stat-value" id="statsDiasModalPerfil">0</span>
-					<span class="stat-label">Días Registrados</span>
-				</div>
-			</div>
-			<button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
-		</div>
-	</div>
-
-	<nav class="mobile-tab-bar">
-		<a href="../contador-calorias/index.html" class="tab-item" target="_self">
-			<span class="tab-icon">🍎</span>
-			<span class="tab-label">Calorías</span>
-		</a>
-		<a href="../calculadora-grasa-corporal/index.html" class="tab-item active" target="_self">
-			<span class="tab-icon">⚖️</span>
-			<span class="tab-label">Grasa</span>
-		</a>
-		<a href="../index.html" class="tab-item" target="_self">
-			<span class="tab-icon">🏠</span>
-			<span class="tab-label">Inicio</span>
-		</a>
-		<a href="../calculadora-ritmo/index.html" class="tab-item" target="_self">
-			<span class="tab-icon">🏃</span>
-			<span class="tab-label">Ritmo</span>
-		</a>
-		<a href="../registro-premium/index.html" class="tab-item" target="_self">
-			<span class="tab-icon">💎</span>
-			<span class="tab-label">Pro</span>
-		</a>
-	</nav>
-	
-	<div id="install-banner" class="install-banner" style="display: none;">
-		<div class="install-content">
-			<img src="recursos/icon-192.png" alt="VitalStats Logo" class="install-icon">
-			<div class="install-text">
-				<strong>Instalar VitalStats</strong>
-				<p>Acceso rápido y modo offline</p>
-			</div>
-		</div>
-		<div class="install-actions">
-			<button id="btn-install-no" class="btn-secondary">Ahora no</button>
-			<button id="btn-install-yes" class="btn-primary">Instalar</button>
-		</div>
-	</div>
+	<div id="authModal" class="modal"></div>
+	<div id="perfilModal" class="modal"></div>
+	<nav class="mobile-tab-bar" id="mobile-tab-bar-js"></nav>
+	<div id="install-banner" class="install-banner" style="display: none;"></div>
 </body>
+<script src="../navbar.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="../recursos/usuarios.js"></script>
 <script src="../script.js"></script>

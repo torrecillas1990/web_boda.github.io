@@ -194,7 +194,14 @@ const ENEMIGOS_SALVAJES = [
 
 let caja = [];
 let miPokemon = equipo[0];
-let inventario = { pociones: 5, bolas: 5, antidoto: 0, superball: 1 }; 
+// --- INVENTARIO INTEGRADO CON CONSUMIBLES ELEMENTALES ---
+let inventario = { 
+    pociones: 5, 
+    bolas: 5, 
+    curaQuemadura: 2,  // Cura el estado 'QUEMADO'
+    antiparaliz: 2,    // Cura el estado 'PARALIZADO'
+    elixir: 1          // Restaura al máximo los PP de todos los ataques del activo
+};
 
 let enemigoActual = null; 
 let turnoBloqueado = false;
@@ -204,9 +211,29 @@ let animacionCaptura = false;
 const NPCS = {
     exterior: [
         {
+            id: 'entrenador_chano',
+            esEntrenador: true,
+            derrotado: false,
+            direccion: 'abajo',  // Hacia dónde mira por defecto
+            rangoVision: 3,      // Cuántos tiles de distancia controla
+            gridX: 9, gridY: 1,  // Posición en el mapa
+            colCabeza: '#ffb300', colCuerpo: '#0288d1', // Gorra amarilla, shorts azules
+            dialogo: ["¡Nuestras miradas se han cruzado!", "¡Eso significa que debemos combatir!"],
+			equipoRival: [
+				{ 
+					nombre: 'Pikachu', tipo: 'ELECTRICO', estado: 'OK', hpMax: 35, hp: 35, nivel: 4, 
+					ataques: [{n:'Impactrueno', d:14, tipo:'ELECTRICO', pp:20, ppMax:20}] 
+				},
+				{ 
+					nombre: 'Squirtle', tipo: 'AGUA', estado: 'OK', hpMax: 40, hp: 40, nivel: 5, 
+					ataques: [{n:'Burbuja', d:12, tipo:'AGUA', pp:25, ppMax:25}] 
+				}
+			]
+        },
+        {
             id: 'anciano_sabio',
-            gridX: 7, gridY: 3, // Coordenadas en baldosas (tiles)
-            colCabeza: '#cfd8dc', colCuerpo: '#37474f', // Pelo canoso, abrigo oscuro
+            gridX: 7, gridY: 3,
+            colCabeza: '#cfd8dc', colCuerpo: '#37474f',
             dialogo: [
                 "¡Hola, joven aspirante!",
                 "Cuidado con la pista de hielo del norte, ¡es súper resbaladiza!",
@@ -217,8 +244,8 @@ const NPCS = {
     interior_casa: [
         {
             id: 'mama_pkmn',
-            gridX: 4, gridY: 4, // Al lado de la entrada
-            colCabeza: '#ff8a80', colCuerpo: '#c2185b', // Look hogareño
+            gridX: 4, gridY: 4,
+            colCabeza: '#ff8a80', colCuerpo: '#c2185b',
             dialogo: [
                 "¡Hola, cariño! Qué casa tan bonita estás programando.",
                 "Recuerda que puedes usar mi ORDENADOR para gestionar tus criaturas.",
@@ -227,6 +254,11 @@ const NPCS = {
         }
     ]
 };
+
+// Variables para segmentar las reglas de la batalla en curso
+let tipoBatalla = 'salvaje'; // Puede ser 'salvaje' o 'entrenador'
+let entrenadorActual = null;
+let indiceEnemigoActual = 0; // Rastrea el Pokémon actual del rival
 
 // Variables de control de flujo del texto
 let dialogoActual = null;
@@ -352,6 +384,9 @@ function actualizarMovimiento() {
             if (Math.random() < 0.006) iniciarBatalla();
         }
 
+		// INYECTAR AQUÍ EL ESCÁNER DE CAMPO VISUAL
+		comprobarVisionEntrenadores();
+
         if (propsNuevas.esInteractivo) {
             if (nuevoBloque === 70) { 
                 mapaActual = 'interior_casa';
@@ -365,6 +400,11 @@ function actualizarMovimiento() {
                 detenerFisicas();
             }
         }
+		
+		// INYECTAR AQUÍ EL INTERCEPTOR DE BORDES:
+        comprobarTransicionBordes();
+        
+        comprobarVisionEntrenadores();
     } else {
         jugador.dirX = 0;
         jugador.dirY = 0;
@@ -448,6 +488,113 @@ function finalizarDialogo() {
     dialogoActual = null;
     document.getElementById('dialogoUI').style.display = 'none';
     playTone(300, 'sine', 0.04);
+}
+
+function comprobarVisionEntrenadores() {
+    if (modo !== 'exploracion') return;
+
+    let npcsMapa = NPCS[mapaActual] || [];
+    let jugadorGridX = Math.floor((jugador.x + TILE_SIZE / 2) / TILE_SIZE);
+    let jugadorGridY = Math.floor((jugador.y + TILE_SIZE / 2) / TILE_SIZE);
+
+    for (let npc of npcsMapa) {
+        if (npc.esEntrenador && !npc.derrotado) {
+            let interceptado = false;
+
+            // Proyectar rayos visuales en línea recta según el rango configurado
+            for (let f = 1; f <= npc.rangoVision; f++) {
+                let celdaX = npc.gridX;
+                let celdaY = npc.gridY;
+
+                if (npc.direccion === 'abajo') celdaY += f;
+                if (npc.direccion === 'arriba') celdaY -= f;
+                if (npc.direccion === 'izquierda') celdaX -= f;
+                if (npc.direccion === 'derecha') celdaX += f;
+
+                if (celdaX === jugadorGridX && celdaY === jugadorGridY) {
+                    interceptado = true;
+                    break;
+                }
+            }
+
+            if (interceptado) {
+                modo = 'alerta'; // Congela los inputs normales de control
+                detenerFisicas();
+                playTone(580, 'sawtooth', 0.25); // ¡Sonido clásico de sorpresa "!"
+
+                // Pausa dramática antes de desplegar el diálogo del reto
+                setTimeout(() => {
+                    iniciarDialogo(npc.dialogo);
+                    
+                    // Sobrescribimos el cierre del diálogo para saltar directo a la batalla
+                    window.finalizarDialogo = () => {
+                        modo = 'exploracion';
+                        document.getElementById('dialogoUI').style.display = 'none';
+                        
+                        // Iniciar Combate bajo formato Profesional de Entrenador
+						// ... Dentro de comprobarVisionEntrenadores(), modifica la línea de arranque:
+						tipoBatalla = 'entrenador';
+						entrenadorActual = npc;
+						indiceEnemigoActual = 0; // <--- Inicializa siempre en el primer Pokémon
+						modo = 'batalla';
+                        reproducirMusica('batalla');
+                        
+                        enemigoActual = JSON.parse(JSON.stringify(npc.equipoRival[0]));
+                        document.getElementById('battleUI').style.display = 'block';
+                        document.getElementById('battleText').innerText = `¡El Entrenador te desafía con un ${enemigoActual.nombre} Nvl:${enemigoActual.nivel}!`;
+                        cerrarAtaques();
+                        
+                        // Restaurar la función original de cierre para futuros diálogos con NPCs normales
+                        window.finalizarDialogo = () => {
+                            modo = 'exploracion'; dialogoActual = null;
+                            document.getElementById('dialogoUI').style.display = 'none';
+                            playTone(300, 'sine', 0.04);
+                        };
+                    };
+                }, 600);
+                return;
+            }
+        }
+    }
+}
+
+// Transicion entre mapas
+function comprobarTransicionBordes() {
+    if (modo !== 'exploracion') return;
+
+    let mapa = MAPAS[mapaActual];
+    let gridX = Math.floor((jugador.x + TILE_SIZE / 2) / TILE_SIZE);
+    let gridY = Math.floor((jugador.y + TILE_SIZE / 2) / TILE_SIZE);
+    
+    let anchoMapa = mapa[0].length;
+    let altoMapa = mapa.length;
+
+    // TRANSICIÓN 1: De Exterior hacia el Este (Derecha)
+    if (mapaActual === 'exterior' && gridX >= anchoMapa - 1) {
+        ejecutarEfectoTransicionBorde('ruta_este', TILE_SIZE, jugador.y); // Aparece a la izquierda (x = 32)
+    }
+    // TRANSICIÓN 2: De Ruta Este de vuelta al Oeste (Izquierda)
+    else if (mapaActual === 'ruta_este' && gridX <= 0) {
+        ejecutarEfectoTransicionBorde('exterior', (anchoMapa - 2) * TILE_SIZE, jugador.y); // Aparece a la derecha
+    }
+}
+
+function ejecutarEfectoTransicionBorde(nuevoMapa, destinoX, destinoY) {
+    modo = 'transicion'; // Bloquea la lógica de juego un instante
+    detenerFisicas();
+    playTone(300, 'triangle', 0.1);
+
+    // Reubicación de coordenadas
+    mapaActual = nuevoMapa;
+    jugador.x = destinoX;
+    jugador.y = destinoY;
+
+    // Simular el clásico parpadeo de pantalla negra de las portátiles
+    canvas.style.opacity = '0';
+    setTimeout(() => {
+        canvas.style.opacity = '1';
+        modo = 'exploracion';
+    }, 300);
 }
 
 // ============================================================================
@@ -691,15 +838,45 @@ function procesarFinDeTurnoEnemigo() {
 // --- AUXILIARES REFACTORIZADOS DE FIN DE COMBATE ---
 function procesarVictoria() {
     playTone(600, 'square', 0.4);
-    document.getElementById('battleText').innerText = `¡El ${enemigoActual.nombre} salvaje se ha debilitado!`;
+    document.getElementById('battleText').innerText = `¡El ${enemigoActual.nombre} enemigo se ha debilitado!`;
+    
     setTimeout(() => {
         miPokemon.exp += 20;
         document.getElementById('battleText').innerText = `¡${miPokemon.nombre} ganó 20 Puntos de EXP!`;
+        
         if(miPokemon.exp >= miPokemon.nivel * 15) {
             miPokemon.nivel++; miPokemon.hpMax += 5; miPokemon.hp = miPokemon.hpMax;
             setTimeout(() => { document.getElementById('battleText').innerText = `¡Subiste al Nivel ${miPokemon.nivel}!`; }, 1000);
         }
-        setTimeout(finalizarBatalla, 2000);
+        
+        setTimeout(() => {
+            // VERIFICACIÓN TÁCTICA: ¿El entrenador tiene más Pokémon en su equipo?
+            if (tipoBatalla === 'entrenador' && entrenadorActual && (indiceEnemigoActual + 1) < entrenadorActual.equipoRival.length) {
+                indiceEnemigoActual++; // Avanzamos al siguiente slot
+                
+                // Clonamos y cargamos el nuevo rival
+                enemigoActual = JSON.parse(JSON.stringify(entrenadorActual.equipoRival[indiceEnemigoActual]));
+                
+                document.getElementById('battleText').innerText = `¡El Entrenador envía a ${enemigoActual.nombre} Nvl:${enemigoActual.nivel}!`;
+                playTone(400, 'square', 0.15);
+                
+                // Restablecer la interfaz de comandos para el jugador tras el despliegue
+                setTimeout(() => {
+                    document.getElementById('battleText').innerText = `¿Qué debe hacer ${miPokemon.nombre}?`;
+                    turnoBloqueado = false; 
+                    cerrarAtaques();
+                }, 1500);
+            } else {
+                // Cierre definitivo: El entrenador no tiene más criaturas
+                if (tipoBatalla === 'entrenador' && entrenadorActual) {
+                    entrenadorActual.derrotado = true;
+                    document.getElementById('battleText').innerText = "¡Has derrotado al Entrenador!";
+                    setTimeout(finalizarBatalla, 2000);
+                } else {
+                    finalizarBatalla();
+                }
+            }
+        }, 1500);
     }, 1500);
 }
 
@@ -710,6 +887,7 @@ function procesarDerrota() {
         equipo.forEach(p => { p.hp = p.hpMax; p.estado = 'OK'; });
         mapaActual = 'exterior';
         jugador.x = 2 * TILE_SIZE; jugador.y = 2 * TILE_SIZE; 
+        tipoBatalla = 'salvaje'; // Restaurar modo por defecto
         finalizarBatalla();
     }, 2500);
 }
@@ -778,13 +956,33 @@ function cerrarMenuPokemon() {
     document.getElementById('battleText').innerText = `¿Qué debe hacer ${miPokemon.nombre}?`;
 }
 
+// --- INVENTARIO DE COMBATE RENDEREADO DINÁMICAMENTE ---
 function abrirInventario() {
     if(turnoBloqueado) return;
     document.getElementById('menuOpciones').style.display = 'none';
-    document.getElementById('menuInventario').style.display = 'grid';
-    document.getElementById('btnPocion').innerText = `Poción (x${inventario.pociones})`;
-    document.getElementById('btnBola').innerText = `Bola (x${inventario.bolas})`;
-    document.getElementById('battleText').innerText = "¿Qué objeto quieres usar?";
+    
+    const menuInv = document.getElementById('menuInventario');
+    menuInv.style.display = 'grid'; // Usa la cuadrícula del CSS
+    menuInv.innerHTML = ''; // Limpiar render previo
+
+    // Generar un botón por cada objeto útil que poseamos
+    for (let objeto in inventario) {
+        if (inventario[objeto] > 0 || objeto === 'bolas') { 
+            let nombreFormateado = objeto.replace(/([A-Z])/g, ' $1').toUpperCase();
+            let btn = document.createElement('button');
+            btn.innerText = `${nombreFormateado} (x${inventario[objeto]})`;
+            btn.onclick = () => ejecutarObjetoBatalla(objeto);
+            menuInv.appendChild(btn);
+        }
+    }
+
+    // Botón nativo para salir del submenú
+    let btnVolver = document.createElement('button');
+    btnVolver.innerText = "VOLVER";
+    btnVolver.onclick = cerrarInventario;
+    menuInv.appendChild(btnVolver);
+    
+    document.getElementById('battleText').innerText = "¿Qué objeto quieres usar de la mochila?";
 }
 
 function cerrarInventario() {
@@ -793,40 +991,60 @@ function cerrarInventario() {
     document.getElementById('battleText').innerText = `¿Qué debe hacer ${miPokemon.nombre}?`;
 }
 
-function usarPocion() {
-    if (inventario.pociones <= 0) {
-        document.getElementById('battleText').innerText = "¡No te quedan Pociones!";
-        return;
-    }
-    if (miPokemon.hp === miPokemon.hpMax) {
-        document.getElementById('battleText').innerText = `¡La salud de ${miPokemon.nombre} ya está al máximo!`;
+// --- RESOLUTOR DE EFECTOS MEDICINALES Y REGLAS DE CAPTURA ---
+function ejecutarObjetoBatalla(objeto) {
+    if (inventario[objeto] <= 0) return;
+
+    // Regla Especial 1: Lanzamiento de bolas (Captura)
+    if (objeto === 'bolas') {
+        if (tipoBatalla === 'entrenador') {
+            document.getElementById('battleText').innerText = "¡No puedes robar los Pokémon de otro Entrenador!";
+            playTone(150, 'sine', 0.2);
+            return;
+        }
+        inventario.bolas--;
+        turnoBloqueado = true;
+        animacionCaptura = true;
+        cerrarInventario();
+        document.getElementById('battleText').innerText = `¡Lanzaste una BOLA!`;
+        playTone(350, 'triangle', 0.2);
+        setTimeout(() => calcularCaptura(), 1200);
         return;
     }
 
-    inventario.pociones--;
+    // Regla Especial 2: Medicinas Curativas
+    if (objeto === 'pociones') {
+        if (miPokemon.hp === miPokemon.hpMax) {
+            document.getElementById('battleText').innerText = "¡La salud de tu Pokémon ya está al máximo!"; return;
+        }
+        miPokemon.hp = Math.min(miPokemon.hpMax, miPokemon.hp + 25);
+        document.getElementById('battleText').innerText = `¡Usaste POCIÓN! ${miPokemon.nombre} recuperó 25 PS.`;
+    } 
+    else if (objeto === 'curaQuemadura') {
+        if (miPokemon.estado !== 'QUEMADO') {
+            document.getElementById('battleText').innerText = "¡Tu Pokémon no está quemado!"; return;
+        }
+        miPokemon.estado = 'OK';
+        document.getElementById('battleText').innerText = `¡Usaste CURA QUEMADURA! Tu Pokémon sanó de sus quemaduras.`;
+    } 
+    else if (objeto === 'antiparaliz') {
+        if (miPokemon.estado !== 'PARALIZADO') {
+            document.getElementById('battleText').innerText = "¡Tu Pokémon no sufre de parálisis!"; return;
+        }
+        miPokemon.estado = 'OK';
+        document.getElementById('battleText').innerText = `¡Usaste ANTIPARALIZ! Tu Pokémon recuperó la movilidad.`;
+    } 
+    else if (objeto === 'elixir') {
+        miPokemon.ataques.forEach(atk => atk.pp = atk.ppMax);
+        document.getElementById('battleText').innerText = "¡Usaste ELIXIR! Todos los PP del Pokémon se han restaurado.";
+    }
+
+    // Consumir stock, bloquear menús y ceder turno al enemigo
+    inventario[objeto]--;
     turnoBloqueado = true;
     cerrarInventario();
-    
-    miPokemon.hp = Math.min(miPokemon.hpMax, miPokemon.hp + 25);
-    document.getElementById('battleText').innerText = `¡Usaste una Poción! ${miPokemon.nombre} recuperó 25 PS.`;
-    playTone(550, 'sine', 0.1);
+    playTone(550, 'sine', 0.1); // Sonido de sanación
     setTimeout(turnoEnemigo, 1500);
-}
-
-function usarBola() {
-    if (inventario.bolas <= 0) {
-        document.getElementById('battleText').innerText = "¡No te quedan Bolas!";
-        return;
-    }
-
-    inventario.bolas--;
-    turnoBloqueado = true;
-    animacionCaptura = true;
-    cerrarInventario();
-    
-    document.getElementById('battleText').innerText = `¡Lanzaste una Bola!`;
-    playTone(350, 'triangle', 0.2);
-    setTimeout(() => calcularCaptura(), 1200);
 }
 
 function calcularCaptura() {
@@ -886,6 +1104,13 @@ function ejecutarTemblores(fase, probFinal) {
 
 function intentarHuir() {
     if(turnoBloqueado) return;
+    
+    if (tipoBatalla === 'entrenador') {
+        document.getElementById('battleText').innerText = "¡No puedes huir de un combate de Entrenador!";
+        playTone(150, 'sine', 0.2);
+        return;
+    }
+    
     document.getElementById('battleText').innerText = "¡Escapaste sin problemas!";
     playTone(800, 'triangle', 0.3);
     setTimeout(finalizarBatalla, 1000);
@@ -1197,6 +1422,7 @@ function loop() {
         ctx.beginPath(); ctx.ellipse(380, 110, 80, 20, 0, 0, Math.PI*2); ctx.fill();
         ctx.drawImage(assets.pkmnJugador, 80, 150);
         
+        // DIBUJADO DINÁMICO DEL ENEMIGO O LA BOLA
         if (animacionCaptura) {
             let bx = 372; let by = 72;
             ctx.fillStyle = '#e53935'; ctx.beginPath(); ctx.arc(bx, by, 16, Math.PI, 0); ctx.fill();
@@ -1210,28 +1436,26 @@ function loop() {
             ctx.drawImage(assets.pkmnEnemigo, 340, 40);
         }
 
+        // --- HUD REFACTORIZADO Y UNIFICADO (EVITA SOBREESCRITURA DE TEXTO) ---
         ctx.fillStyle = '#000'; ctx.font = 'bold 14px Courier New';
-        ctx.fillText(`${enemigoActual.nombre.toUpperCase()} Nvl:${enemigoActual.nivel}`, 40, 45);
+        
+        // 1. Datos e indicadores del Rival
+        let txtEnemigo = `${enemigoActual.nombre.toUpperCase()} Nvl:${enemigoActual.nivel}`;
+        if(enemigoActual.estado !== 'OK') txtEnemigo += ` [${enemigoActual.estado.substring(0,3)}]`;
+        ctx.fillText(txtEnemigo, 40, 45);
+        
         ctx.fillStyle = '#ddd'; ctx.fillRect(40, 55, 120, 6);
         ctx.fillStyle = '#4caf50'; ctx.fillRect(40, 55, 120 * (enemigoActual.hp / enemigoActual.hpMax), 6);
 
+        // 2. Datos e indicadores de tu Pokémon activo
         ctx.fillStyle = '#000';
-        ctx.fillText(`${miPokemon.nombre.toUpperCase()} Nvl:${miPokemon.nivel}`, 300, 165);
+        let txtJugador = `${miPokemon.nombre.toUpperCase()} Nvl:${miPokemon.nivel}`;
+        if(miPokemon.estado !== 'OK') txtJugador += ` [${miPokemon.estado.substring(0,3)}]`;
+        ctx.fillText(txtJugador, 300, 165);
+        
         ctx.fillStyle = '#ddd'; ctx.fillRect(300, 175, 120, 6);
         ctx.fillStyle = '#4caf50'; ctx.fillRect(300, 175, 120 * (miPokemon.hp / miPokemon.hpMax), 6);
         ctx.fillText(`HP: ${miPokemon.hp}/${miPokemon.hpMax}`, 300, 195);
-		
-		// HUD Enemigo: Dibujar Estado si no está OK
-		ctx.fillStyle = '#000'; ctx.font = 'bold 14px Courier New';
-		let txtEnemigo = `${enemigoActual.nombre.toUpperCase()} Nvl:${enemigoActual.nivel}`;
-		if(enemigoActual.estado !== 'OK') txtEnemigo += ` [${enemigoActual.estado.substring(0,3)}]`;
-		ctx.fillText(txtEnemigo, 40, 45);
-
-		// HUD Jugador: Dibujar Estado si no está OK
-		ctx.fillStyle = '#000';
-		let txtJugador = `${miPokemon.nombre.toUpperCase()} Nvl:${miPokemon.nivel}`;
-		if(miPokemon.estado !== 'OK') txtJugador += ` [${miPokemon.estado.substring(0,3)}]`;
-		ctx.fillText(txtJugador, 300, 165);
     }
     requestAnimationFrame(loop);
 }

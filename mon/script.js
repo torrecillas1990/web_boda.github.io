@@ -152,19 +152,49 @@ const jugador = {
 const ESPECIES_POKEDEX = ['Charmander', 'Bulbasaur', 'Squirtle', 'Pidgey', 'Pikachu'];
 let especiesAvistadas = { 'Charmander': true };
 
+// --- NUEVA TABLA DE EFECTIVIDADES ELEMENTALES ---
+const TABLA_TIPOS = {
+    FUEGO:    { PLANTA: 2.0, AGUA: 0.5, FUEGO: 0.5 },
+    AGUA:     { FUEGO: 2.0, PLANTA: 0.5, AGUA: 0.5 },
+    PLANTA:   { AGUA: 2.0, FUEGO: 0.5, PLANTA: 0.5, VOLADOR: 0.5 },
+    ELECTRICO:{ VOLADOR: 2.0, AGUA: 2.0, ELECTRICO: 0.5, PLANTA: 0.5 },
+    VOLADOR:  { PLANTA: 2.0, ELECTRICO: 0.5 }
+};
+
+// --- BASE DE DATOS ACTUALIZADA CON TIPOS, PP Y ESTADOS ---
 let equipo = [
-    { nombre: 'Charmander', hpMax: 50, hp: 50, nivel: 5, exp: 0, ataques: [{n:'Placaje', d:10}, {n:'Ascuas', d:18}] }
+    { 
+        nombre: 'Charmander', tipo: 'FUEGO', estado: 'OK',
+        hpMax: 50, hp: 50, nivel: 5, exp: 0, 
+        ataques: [
+            {n:'Placaje', d:10, tipo:'NORMAL', pp:35, ppMax:35}, 
+            {n:'Ascuas', d:18, tipo:'FUEGO', pp:25, ppMax:25}
+        ] 
+    }
 ];
+
+const ENEMIGOS_SALVAJES = [
+    { 
+        nombre: 'Bulbasaur', tipo: 'PLANTA', estado: 'OK', hpMax: 50, hp: 50, nivel: 5, 
+        ataques: [{n:'Látigo Cepa', d:14, tipo:'PLANTA', pp:25, ppMax:25}] 
+    },
+    { 
+        nombre: 'Squirtle', tipo: 'AGUA', estado: 'OK', hpMax: 50, hp: 50, nivel: 5, 
+        ataques: [{n:'Burbuja', d:14, tipo:'AGUA', pp:25, ppMax:25}] 
+    },
+    { 
+        nombre: 'Pidgey', tipo: 'VOLADOR', estado: 'OK', hpMax: 30, hp: 30, nivel: 3, 
+        ataques: [{n:'Tornado', d:10, tipo:'VOLADOR', pp:35, ppMax:35}] 
+    },
+    { 
+        nombre: 'Pikachu', tipo: 'ELECTRICO', estado: 'OK', hpMax: 35, hp: 35, nivel: 4, 
+        ataques: [{n:'Impactrueno', d:16, tipo:'ELECTRICO', pp:20, ppMax:20}] 
+    }
+];
+
 let caja = [];
 let miPokemon = equipo[0];
 let inventario = { pociones: 5, bolas: 5, antidoto: 0, superball: 1 }; 
-
-const ENEMIGOS_SALVAJES = [
-    { nombre: 'Bulbasaur', hpMax: 50, hp: 50, nivel: 5, ataques: [{n:'Latigo cepa', d:10}] },
-    { nombre: 'Squirtle', hpMax: 50, hp: 50, nivel: 5, ataques: [{n:'Burbuja', d:10}] },
-    { nombre: 'Pidgey', hpMax: 30, hp: 30, nivel: 3, ataques: [{n:'Placaje', d:6}] },
-    { nombre: 'Pikachu', hpMax: 35, hp: 35, nivel: 4, ataques: [{n:'Impactrueno', d:12}] }
-];
 
 let enemigoActual = null; 
 let turnoBloqueado = false;
@@ -503,14 +533,23 @@ function iniciarBatalla() {
     cerrarAtaques();
 }
 
+// --- RENDERIZADO DE ATAQUES CON PP ---
 function abrirAtaques() {
     if(turnoBloqueado) return;
     document.getElementById('menuOpciones').style.display = 'none';
     document.getElementById('menuAtaques').style.display = 'grid';
+    
     for(let i=0; i<3; i++) {
         let btn = document.getElementById(`btnAtk${i}`);
-        if(miPokemon.ataques[i]) { btn.innerText = miPokemon.ataques[i].n; btn.style.display = 'block'; }
-        else { btn.style.display = 'none'; }
+        let atk = miPokemon.ataques[i];
+        if(atk) { 
+            btn.innerText = `${atk.n} [${atk.pp}/${atk.ppMax}]`; 
+            btn.style.display = 'block'; 
+            // Deshabilitar botón si no quedan PP
+            btn.disabled = atk.pp <= 0;
+        } else { 
+            btn.style.display = 'none'; 
+        }
     }
 }
 
@@ -519,51 +558,160 @@ function cerrarAtaques() {
     document.getElementById('menuOpciones').style.display = 'grid';
 }
 
+// --- TURNO DEL JUGADOR CON VALIDACIÓN DE PP Y ESTADOS ---
 function ejecutarAtaque(indiceAtk) {
     if(turnoBloqueado) return;
     turnoBloqueado = true;
     let ataque = miPokemon.ataques[indiceAtk];
+    
+    // 1. Verificación de Paralización
+    if (miPokemon.estado === 'PARALIZADO' && Math.random() < 0.25) {
+        document.getElementById('battleText').innerText = `¡${miPokemon.nombre} está paralizado y no se puede mover!`;
+        playTone(150, 'sine', 0.3);
+        setTimeout(procesarFinDeTurnoJugador, 1500);
+        return;
+    }
+
+    // 2. Consumo de PP
+    ataque.pp--;
     document.getElementById('battleText').innerText = `¡${miPokemon.nombre} usó ${ataque.n}!`;
     playTone(440, 'sawtooth', 0.2);
 
     setTimeout(() => {
-        enemigoActual.hp = Math.max(0, enemigoActual.hp - ataque.d);
-        if (enemigoActual.hp <= 0) {
-            playTone(600, 'square', 0.4);
-            document.getElementById('battleText').innerText = `¡El ${enemigoActual.nombre} salvaje se ha debilitado!`;
-            setTimeout(() => {
-                miPokemon.exp += 20;
-                document.getElementById('battleText').innerText = `¡${miPokemon.nombre} ganó 20 Puntos de EXP!`;
-                if(miPokemon.exp >= miPokemon.nivel * 15) {
-                    miPokemon.nivel++; miPokemon.hpMax += 5; miPokemon.hp = miPokemon.hpMax;
-                    setTimeout(() => { document.getElementById('battleText').innerText = `¡Subiste al Nivel ${miPokemon.nivel}!`; }, 1000);
-                }
-                setTimeout(finalizarBatalla, 2000);
-            }, 1500);
-        } else { turnoEnemigo(); }
+        // 3. Cálculo de Efectividad de Tipo
+        let mult = 1.0;
+        if (TABLA_TIPOS[ataque.tipo] && TABLA_TIPOS[ataque.tipo][enemigoActual.tipo]) {
+            mult = TABLA_TIPOS[ataque.tipo][enemigoActual.tipo];
+        }
+
+        // Aplicar daño elemental
+        let danoFinal = Math.floor(ataque.d * mult);
+        enemigoActual.hp = Math.max(0, enemigoActual.hp - danoFinal);
+
+        // Chance de aplicar estado secundario (ej: Quemar con Fuego, Paralizar con Eléctrico)
+        if (mult > 1.0 && enemigoActual.hp > 0 && enemigoActual.estado === 'OK') {
+            if (ataque.tipo === 'FUEGO' && Math.random() < 0.4) {
+                enemigoActual.estado = 'QUEMADO';
+                setTimeout(() => { document.getElementById('battleText').innerText = `¡El ${enemigoActual.nombre} salvaje se ha quemado!`; }, 1000);
+            }
+            if (ataque.tipo === 'ELECTRICO' && Math.random() < 0.4) {
+                enemigoActual.estado = 'PARALIZADO';
+                setTimeout(() => { document.getElementById('battleText').innerText = `¡El ${enemigoActual.nombre} salvaje ha quedado paralizado!`; }, 1000);
+            }
+        }
+
+        // Mostrar feedback visual de efectividad
+        if (mult > 1.0) document.getElementById('battleText').innerText = "¡Es súper efectivo!";
+        else if (mult < 1.0) document.getElementById('battleText').innerText = "No es muy efectivo...";
+
+        setTimeout(() => {
+            if (enemigoActual.hp <= 0) {
+                procesarVictoria();
+            } else {
+                procesarFinDeTurnoJugador();
+            }
+        }, 1200);
     }, 1000);
 }
 
+// --- RESOLUCIÓN TÁCTICA DEL FIN DE TURNO ---
+function procesarFinDeTurnoJugador() {
+    // Aplicar daño por quemadura si corresponde
+    if (enemigoActual.estado === 'QUEMADO') {
+        let danoEntropia = Math.ceil(enemigoActual.hpMax * 0.1);
+        enemigoActual.hp = Math.max(0, enemigoActual.hp - danoEntropia);
+        document.getElementById('battleText').innerText = `¡El ${enemigoActual.nombre} salvaje sufre por la quemadura!`;
+        playTone(180, 'sine', 0.2);
+        
+        setTimeout(() => {
+            if (enemigoActual.hp <= 0) procesarVictoria();
+            else turnoEnemigo();
+        }, 1200);
+    } else {
+        turnoEnemigo();
+    }
+}
+
+// --- TURNO DEL ENEMIGO CON INTELIGENCIA ELEMENTAL Y ESTADOS ---
 function turnoEnemigo() {
+    // 1. Verificación de Paralización Enemiga
+    if (enemigoActual.estado === 'PARALIZADO' && Math.random() < 0.25) {
+        document.getElementById('battleText').innerText = `¡El ${enemigoActual.nombre} salvaje está paralizado y no puede atacar!`;
+        playTone(150, 'sine', 0.3);
+        setTimeout(procesarFinDeTurnoEnemigo, 1500);
+        return;
+    }
+
     let atkEnemigo = enemigoActual.ataques[Math.floor(Math.random() * enemigoActual.ataques.length)];
     document.getElementById('battleText').innerText = `¡${enemigoActual.nombre} salvaje usó ${atkEnemigo.n}!`;
     playTone(220, 'sine', 0.25);
 
     setTimeout(() => {
-        miPokemon.hp = Math.max(0, miPokemon.hp - atkEnemigo.d);
-        if(miPokemon.hp <= 0) {
-            document.getElementById('battleText').innerText = `¡Tu ${miPokemon.nombre} se debilitó! Volviendo a zona segura...`;
-            setTimeout(() => {
-                miPokemon.hp = miPokemon.hpMax;
-                mapaActual = 'exterior';
-                jugador.x = 2 * TILE_SIZE; jugador.y = 2 * TILE_SIZE; 
-                finalizarBatalla();
-            }, 2500);
-        } else {
-            document.getElementById('battleText').innerText = `¿Qué debe hacer ${miPokemon.nombre}?`;
-            turnoBloqueado = false; cerrarAtaques();
+        let mult = 1.0;
+        if (TABLA_TIPOS[atkEnemigo.tipo] && TABLA_TIPOS[atkEnemigo.tipo][miPokemon.tipo]) {
+            mult = TABLA_TIPOS[atkEnemigo.tipo][miPokemon.tipo];
         }
+
+        let danoFinal = Math.floor(atkEnemigo.d * mult);
+        miPokemon.hp = Math.max(0, miPokemon.hp - danoFinal);
+
+        if (mult > 1.0) document.getElementById('battleText').innerText = "¡Es súper efectivo!";
+        else if (mult < 1.0) document.getElementById('battleText').innerText = "No es muy efectivo...";
+
+        setTimeout(() => {
+            if(miPokemon.hp <= 0) {
+                procesarDerrota();
+            } else {
+                procesarFinDeTurnoEnemigo();
+            }
+        }, 1200);
     }, 1200);
+}
+
+function procesarFinDeTurnoEnemigo() {
+    if (miPokemon.estado === 'QUEMADO') {
+        let danoEntropia = Math.ceil(miPokemon.hpMax * 0.1);
+        miPokemon.hp = Math.max(0, miPokemon.hp - danoEntropia);
+        document.getElementById('battleText').innerText = `¡${miPokemon.nombre} sufre por la quemadura!`;
+        playTone(180, 'sine', 0.2);
+        
+        setTimeout(() => {
+            if (miPokemon.hp <= 0) procesarDerrota();
+            else {
+                document.getElementById('battleText').innerText = `¿Qué debe hacer ${miPokemon.nombre}?`;
+                turnoBloqueado = false; cerrarAtaques();
+            }
+        }, 1200);
+    } else {
+        document.getElementById('battleText').innerText = `¿Qué debe hacer ${miPokemon.nombre}?`;
+        turnoBloqueado = false; cerrarAtaques();
+    }
+}
+
+// --- AUXILIARES REFACTORIZADOS DE FIN DE COMBATE ---
+function procesarVictoria() {
+    playTone(600, 'square', 0.4);
+    document.getElementById('battleText').innerText = `¡El ${enemigoActual.nombre} salvaje se ha debilitado!`;
+    setTimeout(() => {
+        miPokemon.exp += 20;
+        document.getElementById('battleText').innerText = `¡${miPokemon.nombre} ganó 20 Puntos de EXP!`;
+        if(miPokemon.exp >= miPokemon.nivel * 15) {
+            miPokemon.nivel++; miPokemon.hpMax += 5; miPokemon.hp = miPokemon.hpMax;
+            setTimeout(() => { document.getElementById('battleText').innerText = `¡Subiste al Nivel ${miPokemon.nivel}!`; }, 1000);
+        }
+        setTimeout(finalizarBatalla, 2000);
+    }, 1500);
+}
+
+function procesarDerrota() {
+    document.getElementById('battleText').innerText = `¡Tu ${miPokemon.nombre} se debilitó! Volviendo a zona segura...`;
+    setTimeout(() => {
+        // Al debilitarse, limpiamos también el estado alterado
+        equipo.forEach(p => { p.hp = p.hpMax; p.estado = 'OK'; });
+        mapaActual = 'exterior';
+        jugador.x = 2 * TILE_SIZE; jugador.y = 2 * TILE_SIZE; 
+        finalizarBatalla();
+    }, 2500);
 }
 
 function abrirMenuPokemon() {
@@ -886,7 +1034,7 @@ function alternarMusica() {
     playTone(450, 'sine', 0.05);
 }
 
-function poolsConfirmarGuardar() {
+function pausaConfirmarGuardar() {
     try {
         const salvado = {
             jugadorX: jugador.x, jugadorY: jugador.y,
@@ -1012,7 +1160,7 @@ function loop() {
     actualizarMovimiento();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (modo === 'exploracion' || modo === 'pausa' || modo === 'ordenador') {
+    if (modo === 'exploracion' || modo === 'pausa' || modo === 'ordenador' || modo === 'dialogo') {
         let mapa = MAPAS[mapaActual];
         for (let r = 0; r < mapa.length; r++) {
             for (let c = 0; c < mapa[r].length; c++) {
@@ -1072,6 +1220,18 @@ function loop() {
         ctx.fillStyle = '#ddd'; ctx.fillRect(300, 175, 120, 6);
         ctx.fillStyle = '#4caf50'; ctx.fillRect(300, 175, 120 * (miPokemon.hp / miPokemon.hpMax), 6);
         ctx.fillText(`HP: ${miPokemon.hp}/${miPokemon.hpMax}`, 300, 195);
+		
+		// HUD Enemigo: Dibujar Estado si no está OK
+		ctx.fillStyle = '#000'; ctx.font = 'bold 14px Courier New';
+		let txtEnemigo = `${enemigoActual.nombre.toUpperCase()} Nvl:${enemigoActual.nivel}`;
+		if(enemigoActual.estado !== 'OK') txtEnemigo += ` [${enemigoActual.estado.substring(0,3)}]`;
+		ctx.fillText(txtEnemigo, 40, 45);
+
+		// HUD Jugador: Dibujar Estado si no está OK
+		ctx.fillStyle = '#000';
+		let txtJugador = `${miPokemon.nombre.toUpperCase()} Nvl:${miPokemon.nivel}`;
+		if(miPokemon.estado !== 'OK') txtJugador += ` [${miPokemon.estado.substring(0,3)}]`;
+		ctx.fillText(txtJugador, 300, 165);
     }
     requestAnimationFrame(loop);
 }

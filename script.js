@@ -64,6 +64,12 @@ const proyectos = [
         titulo: 'Contador de Calorías',
         descripcion: 'Herramienta para base de datos simplificada para productos específicos de Mercadona.',
         ruta: 'deportiva/contador-calorias/index.html'
+    },
+    {
+        categoria: 'juegos',
+        titulo: 'Juego RPG',
+        descripcion: 'Juego.',
+        ruta: 'mon/index.html'
     }
 ];
 

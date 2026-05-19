@@ -38,5 +38,45 @@ window.VS_torrecillas1990_20260518 = [
         "prot": 9.75,
         "grasa": 1.25,
         "carb": 12
+    },
+    {
+        "id": 1779111170462,
+        "nombre": "Kiwi Gold (230g/ml)",
+        "kcal": 124.2,
+        "prot": 2.07,
+        "grasa": 0.69,
+        "carb": 25.53
+    },
+    {
+        "id": 1779185624115,
+        "nombre": "Huevos duros (50g/ml)",
+        "kcal": 60.5,
+        "prot": 6.5,
+        "grasa": 3.85,
+        "carb": 0.25
+    },
+    {
+        "id": 1779185653199,
+        "nombre": "Lomo de cebo ibérico 50% raza ibérica (20g/ml)",
+        "kcal": 59.6,
+        "prot": 7.82,
+        "grasa": 3.1,
+        "carb": 0.14
+    },
+    {
+        "id": 1779185679016,
+        "nombre": "Tostadas 100% Espelta Integral (1 tostada 7g) (40g/ml)",
+        "kcal": 152.8,
+        "prot": 6.8,
+        "grasa": 2.56,
+        "carb": 23.6
+    },
+    {
+        "id": 1779185688292,
+        "nombre": "Tarta tres chocolates (150g/ml)",
+        "kcal": 531,
+        "prot": 6.6,
+        "grasa": 34.5,
+        "carb": 51
     }
 ];

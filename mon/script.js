@@ -2,6 +2,9 @@
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let bjpInterval;
 
+// Variable global para controlar el estado de la música
+let musicaEncendida = true;
+
 function playTone(freq, type, duration) {
     try {
         let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
@@ -15,14 +18,21 @@ function playTone(freq, type, duration) {
 
 function reproducirMusica(tipo) {
     clearInterval(bjpInterval);
-    if(tipo === 'exploracion') {
+    
+    // Si la música está apagada, cancelamos cualquier intento de reproducción
+    if (!musicaEncendida) return;
+    
+    // Si no se le pasa un tipo concreto, deduce cuál suena según el estado actual del juego
+    let tipoAHR = tipo || (modo === 'batalla' ? 'batalla' : 'exploracion');
+    
+    if(tipoAHR === 'exploracion') {
         let notas = [261, 293, 329, 349, 392, 349, 329, 293];
         let i = 0;
         bjpInterval = setInterval(() => {
             playTone(notas[i%notas.length], 'square', 0.2);
             i++;
         }, 250);
-    } else if (tipo === 'batalla') {
+    } else if (tipoAHR === 'batalla') {
         let i = 0;
         bjpInterval = setInterval(() => {
             playTone(i % 2 === 0 ? 150 : 110, 'sawtooth', 0.15);
@@ -282,6 +292,20 @@ function detenerFisicas() {
     for (let k in teclas) teclas[k] = false;
 }
 
+// --- BASE DE DATOS E HISTORIAL DEL MUNDO (DICCIONARIO DE ESPECIES) ---
+const ESPECIES_POKEDEX = ['Charmander', 'Bulbasaur', 'Squirtle', 'Pidgey', 'Pikachu'];
+let especiesAvistadas = { 'Charmander': true }; // Registro para el panel de la Pokédex
+
+// --- SISTEMA DE EQUIPO RESTRUCTURADO (MÁXIMO 6) Y CAJA ---
+let equipo = [
+    { nombre: 'Charmander', hpMax: 50, hp: 50, nivel: 5, exp: 0, ataques: [{n:'Placaje', d:10}, {n:'Ascuas', d:18}] }
+];
+let caja = []; // Destino de criaturas cuando equipo.length >= 6
+let miPokemon = equipo[0]; // Puntero al luchador activo
+
+// Modificación del inventario inicial para testear filtros
+let inventario = { pociones: 5, bolas: 5, antidoto: 0, superball: 1 }; 
+
 // --- SISTEMA DE COMBATE REFACTORIZADO ---
 const POKEDEX = [
     { nombre: 'Charmander', hpMax: 50, hp: 50, nivel: 5, exp: 0, ataques: [{n:'Placaje', d:10}, {n:'Ascuas', d:18}] },
@@ -293,10 +317,7 @@ const ENEMIGOS_SALVAJES = [
     { nombre: 'Pikachu', hpMax: 35, hp: 35, nivel: 4, ataques: [{n:'Impactrueno', d:12}] }
 ];
 
-let miPokemon = POKEDEX[0]; let enemigoActual = null; let turnoBloqueado = false;
-
-// Variable global para almacenar cantidades
-let inventario = { pociones: 5, bolas: 5 };
+let enemigoActual = null; let turnoBloqueado = false;
 
 let animacionCaptura = false; // Controla si dibujamos la bola o al enemigo
 
@@ -375,6 +396,7 @@ function turnoEnemigo() {
 }
 
 // --- NAVEGACIÓN DEL MENÚ POKÉMON ---
+
 function abrirMenuPokemon() {
     if(turnoBloqueado) return;
     
@@ -382,66 +404,67 @@ function abrirMenuPokemon() {
     document.getElementById('menuPokemon').style.display = 'grid';
     document.getElementById('battleText').innerText = "Selecciona un Pokémon para combatir:";
 
-    // Renderizar dinámicamente los botones según los Pokémon en la POKEDEX (Máx 3 en tu array)
-    for(let i = 0; i < 3; i++) {
+    // Renderizar usando 'equipo' (máximo 6, pero solo mostramos los que haya)
+    for(let i = 0; i < 6; i++) {
         let btn = document.getElementById(`btnPkmn${i}`);
-        let pkmn = POKEDEX[i];
+        if (!btn) continue; // Por si tu HTML solo tiene 3 botones todavía
+        
+        let pkmn = equipo[i]; // <--- CAMBIADO AQUÍ (Antes POKEDEX)
 
         if(pkmn) {
             btn.style.display = 'block';
             btn.innerText = `${pkmn.nombre} (${pkmn.hp}/${pkmn.hpMax})`;
             
-            // Estilo visual si está debilitado o es el activo
             if (pkmn === miPokemon) {
                 btn.innerText = `• ${pkmn.nombre} •`;
             } else if (pkmn.hp <= 0) {
                 btn.innerText = `${pkmn.nombre} (X_X)`;
             }
         } else {
-            btn.style.display = 'none'; // Oculta el botón si no tienes un 2º o 3º Pokémon capturado
+            btn.style.display = 'none';
         }
     }
+}
+
+function elegirPokemon(indice) {
+    let pokemonSeleccionado = equipo[indice]; // <--- CAMBIADO AQUÍ (Antes POKEDEX)
+
+    if (!pokemonSeleccionado) return;
+
+    if (pokemonSeleccionado === miPokemon) {
+        document.getElementById('battleText').innerText = `¡${pokemonSeleccionado.nombre} ya está en la arena!`;
+        return;
+    }
+
+    if (pokemonSeleccionado.hp <= 0) {
+        document.getElementById('battleText').innerText = `¡${pokemonSeleccionado.nombre} no tiene energías!`;
+        return;
+    }
+
+    turnoBloqueado = true;
+    document.getElementById('menuPokemon').style.display = 'none';
+    document.getElementById('battleText').innerText = `¡Regresa ${miPokemon.nombre}! ... ¡Adelante ${pokemonSeleccionado.nombre}!`;
+    
+    playTone(300, 'square', 0.1);
+    setTimeout(() => playTone(450, 'square', 0.15), 100);
+
+    miPokemon = pokemonSeleccionado;
+    setTimeout(() => { turnoEnemigo(); }, 2000);
+}
+
+function cambiarPokemon() {
+    if(turnoBloqueado) return;
+    let indexActual = equipo.indexOf(miPokemon); // <--- CAMBIADO AQUÍ (Antes POKEDEX)
+    miPokemon = equipo[(indexActual + 1) % equipo.length]; // <--- CAMBIADO AQUÍ
+    document.getElementById('battleText').innerText = `¡Adelante ${miPokemon.nombre}!`;
+    playTone(400, 'square', 0.1);
+    cerrarAtaques();
 }
 
 function cerrarMenuPokemon() {
     document.getElementById('menuPokemon').style.display = 'none';
     document.getElementById('menuOpciones').style.display = 'grid';
     document.getElementById('battleText').innerText = `¿Qué debe hacer ${miPokemon.nombre}?`;
-}
-
-// --- LÓGICA DE INTERCAMBIO ---
-function elegirPokemon(indice) {
-    let pokemonSeleccionado = POKEDEX[indice];
-
-    if (!pokemonSeleccionado) return;
-
-    // Validación 1: ¿Ya está combatiendo?
-    if (pokemonSeleccionado === miPokemon) {
-        document.getElementById('battleText').innerText = `¡${pokemonSeleccionado.nombre} ya está en la arena!`;
-        return;
-    }
-
-    // Validación 2: ¿Está debilitado?
-    if (pokemonSeleccionado.hp <= 0) {
-        document.getElementById('battleText').innerText = `¡${pokemonSeleccionado.nombre} no tiene energías para luchar!`;
-        return;
-    }
-
-    // Procesar el cambio de miembro
-    turnoBloqueado = true;
-    document.getElementById('menuPokemon').style.display = 'none';
-    
-    document.getElementById('battleText').innerText = `¡Regresa ${miPokemon.nombre}! ... ¡Adelante ${pokemonSeleccionado.nombre}!`;
-    playTone(300, 'square', 0.1);
-    setTimeout(() => playTone(450, 'square', 0.15), 100); // Sonido clásico de entrada/salida
-
-    // Intercambio de puntero de criatura activa
-    miPokemon = pokemonSeleccionado;
-
-    // Pausa dramática de envío antes del contraataque del rival
-    setTimeout(() => {
-        turnoEnemigo();
-    }, 2000);
 }
 
 // --- NAVEGACIÓN DEL INVENTARIO ---
@@ -551,7 +574,18 @@ function ejecutarTemblores(fase, probFinal) {
         nuevoAmigo.hp = nuevoAmigo.hpMax;
         nuevoAmigo.exp = 0;
         POKEDEX.push(nuevoAmigo);
+		
+		// Registrar especie en el historial de avistamientos
+		especiesAvistadas[nuevoAmigo.nombre] = true;
 
+		if (equipo.length < 6) {
+			equipo.push(nuevoAmigo);
+			document.getElementById('battleText').innerText = `¡${enemigoActual.nombre} se unió a tu EQUIPO!`;
+		} else {
+			caja.push(nuevoAmigo);
+			document.getElementById('battleText').innerText = `¡Equipo lleno! ${enemigoActual.nombre} fue enviado a la CAJA.`;
+		}
+	
         setTimeout(() => {
             document.getElementById('battleText').innerText = `¡${enemigoActual.nombre} se ha añadido a tu equipo!`;
             setTimeout(() => {
@@ -640,8 +674,210 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-reproducirMusica('exploracion');
+// Actualización del cargador automático de persistencia
+const partidaExistente = localStorage.getItem('pokemon_pro_save');
+if (partidaExistente) {
+    const datos = JSON.parse(partidaExistente);
+    jugador.x = datos.jugadorX;
+    jugador.y = datos.jugadorY;
+    mapaActual = datos.mapa;
+    inventario = datos.inventario;
+    especiesAvistadas = datos.especiesAvistadas || { 'Charmander': true };
+    
+    // Restaurar equipo
+    equipo.length = 0;
+    datos.equipo.forEach(p => equipo.push(p));
+    
+    // Restaurar caja externa
+    caja.length = 0;
+    if(datos.caja) datos.caja.forEach(p => caja.push(p));
+    
+    miPokemon = equipo[0];
+	
+	// Dentro del bloque 'if (partidaExistente)' al final de tu script:
+	if (datos.musicaEncendida !== undefined) {
+		musicaEncendida = datos.musicaEncendida;
+	}
+    console.log("Datos del equipo y caja vinculados desde la memoria local.");
+}
+
+//reproducirMusica('exploracion');
 loop();
+
+// --- CONTROL INTEGRADO DEL MENÚ DE PAUSA ---
+
+function abrirMenuPausa() {
+    modo = 'pausa';
+    detenerFisicas();
+    document.getElementById('contenedorPausa').style.display = 'block';
+    document.getElementById('menuPausa').style.display = 'flex';
+    ocultarTodosLosSubPaneles();
+    playTone(400, 'triangle', 0.05);
+}
+
+function cerrarMenuPausa() {
+    modo = 'exploracion';
+    document.getElementById('contenedorPausa').style.display = 'none';
+    playTone(300, 'triangle', 0.05);
+}
+
+function abrirSubPanel(idPanel) {
+    playTone(450, 'sine', 0.05);
+    document.getElementById('menuPausa').style.display = 'none';
+    ocultarTodosLosSubPaneles();
+    
+    const panel = document.getElementById(`panel${idPanel.charAt(0).toUpperCase() + idPanel.slice(1)}`);
+    panel.style.display = 'flex';
+
+    // RENDERIZADO DINÁMICO
+    if (idPanel === 'pokedex') construirPokedexUI();
+    if (idPanel === 'equipo') construirEquipoUI();
+    if (idPanel === 'mochila') construirMochilaUI();
+    if (idPanel === 'opciones') construirOpcionesUI();
+    if (idPanel === 'guardar') document.getElementById('txtGuardar').innerText = "¿Deseas guardar tu progreso actual?";
+}
+
+function regresarAlMenuPausa() {
+    playTone(350, 'sine', 0.05);
+    ocultarTodosLosSubPaneles();
+    document.getElementById('menuPausa').style.display = 'flex';
+}
+
+function ocultarTodosLosSubPaneles() {
+    const paneles = ['panelPokedex', 'panelEquipo', 'panelMochila', 'panelGuardar', 'panelOpciones'];
+    paneles.forEach(p => document.getElementById(p).style.display = 'none');
+}
+
+function alternarMenuPausa() {
+    if (modo === 'exploracion') abrirMenuPausa();
+    else if (modo === 'pausa') cerrarMenuPausa();
+}
+
+// --- CONSTRUCTORES DE CONTENIDO PIXEL-ART INDEPENDIENTES ---
+
+// 1. Render Pokédex (Cruza especies totales vs descubiertas)
+function construirPokedexUI() {
+    const contenedor = document.getElementById('listaPokedex');
+    contenedor.innerHTML = '';
+    
+    ESPECIES_POKEDEX.forEach((nombre, index) => {
+        let numero = String(index + 1).padStart(3, '0');
+        let capturado = especiesAvistadas[nombre];
+        
+        contenedor.innerHTML += `
+            <div class="fila-registro">
+                <span>Nº${numero} ${capturado ? nombre.toUpperCase() : '----------'}</span>
+                <span style="color: ${capturado ? '#4caf50' : '#ccc'}">${capturado ? '✓ ATRAP' : '???'}</span>
+            </div>`;
+    });
+}
+
+// 2. Render Equipo (Max 6) y Caja de Almacenamiento
+function construirEquipoUI() {
+    const conEquipo = document.getElementById('listaEquipoPausa');
+    const conCaja = document.getElementById('listaCajaPausa');
+    conEquipo.innerHTML = '';
+    conCaja.innerHTML = '';
+
+    equipo.forEach((pkmn, i) => {
+        conEquipo.innerHTML += `
+            <div class="fila-registro">
+                <span>${pkmn.nombre} (Nvl ${pkmn.nivel})</span>
+                <span>HP: ${pkmn.hp}/${pkmn.hpMax}</span>
+            </div>`;
+    });
+
+    if(caja.length === 0) {
+        conCaja.innerHTML = `<div style="color:#999; text-align:center; font-size:12px; padding:6px;">La caja está vacía</div>`;
+    } else {
+        caja.forEach((pkmn) => {
+            conCaja.innerHTML += `
+                <div class="fila-registro" style="color:#555;">
+                    <span>${pkmn.nombre} (Nvl ${pkmn.nivel})</span>
+                    <span>ALMACENADO</span>
+                </div>`;
+        });
+    }
+}
+
+// 3. Render Mochila (Muestra únicamente ítems con cantidad mayor o igual a 1)
+function construirMochilaUI() {
+    const contenedor = document.getElementById('listaMochilaPausa');
+    contenedor.innerHTML = '';
+    let totalItems = 0;
+
+    for (let objeto in inventario) {
+        if (inventario[objeto] >= 1) {
+            totalItems++;
+            // Capitalizar nombre del objeto visualmente
+            let nombreFormateado = objeto.charAt(0).toUpperCase() + objeto.slice(1);
+            contenedor.innerHTML += `
+                <div class="fila-registro">
+                    <span>• ${nombreFormateado}</span>
+                    <span>x${inventario[objeto]}</span>
+                </div>`;
+        }
+    }
+
+    if (totalItems === 0) {
+        contenedor.innerHTML = `<div style="color:#999; text-align:center; font-size:12px; padding:6px;">Mochila vacía</div>`;
+    }
+}
+
+// 4. Mecánica de Guardado Persistente en LocalStorage
+function pausaConfirmarGuardar() {
+    try {
+        const salvado = {
+            jugadorX: jugador.x, jugadorY: jugador.y,
+            mapa: mapaActual, inventario: inventario,
+            equipo: equipo, caja: caja,
+            especiesAvistadas: especiesAvistadas
+        };
+        localStorage.setItem('pokemon_pro_save', JSON.stringify(salvado));
+        
+        playTone(600, 'square', 0.08);
+        setTimeout(() => playTone(800, 'square', 0.15), 80);
+        
+        document.getElementById('txtGuardar').innerText = "¡Partida guardada con éxito!";
+    } catch(e) {
+        document.getElementById('txtGuardar').innerText = "Error al acceder a la memoria.";
+    }
+}
+
+// 5. Render Panel de Opciones e Interruptor de Música
+function construirOpcionesUI() {
+    const contenedor = document.getElementById('listaOpcionesPausa');
+    contenedor.innerHTML = `
+        <div style="padding: 10px; display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 14px;">
+                <span>MÚSICA DE FONDO</span>
+                <button onclick="alternarMusica()" style="width: 100px; padding: 6px; font-size: 11px; text-align: center;">
+                    ${musicaEncendida ? 'ENCENDIDA' : 'APAGADA'}
+                </button>
+            </div>
+            
+            <div style="font-size: 11px; color: #777; border-top: 1px dashed #ccc; padding-top: 12px; line-height: 1.5;">
+                • TEXTOS: RÁPIDO (Predeterminado)<br>
+                • SONIDO: MONO (Sintetizador WebAudio)<br>
+                • PANTALLA: AJUSTE AJUSTABLE
+            </div>
+        </div>
+    `;
+}
+
+// Lógica para encender/apagar y actualizar la UI
+function alternarMusica() {
+    musicaEncendida = !musicaEncendida;
+    
+    if (musicaEncendida) {
+        reproducirMusica(); // Enciende y detecta automáticamente si debe sonar exploración o batalla
+    } else {
+        clearInterval(bjpInterval); // Corta el bucle de sonido inmediatamente
+    }
+    
+    construirOpcionesUI(); // Redibuja el botón para cambiar el texto de ENCENDIDA a APAGADA
+    playTone(450, 'sine', 0.05); // Sonido sutil de confirmación de interfaz
+}
 
 // --- MAPEADO DE CONTROLES VIRTUALES PARA MÓVIL ---
 
@@ -669,21 +905,61 @@ mapeoMovimiento.forEach(control => {
 });
 
 // --- LÓGICA DE LOS BOTONES DE ACCIÓN (A / B / START / SELECT) ---
+// --- DETECTOR DE TECLADO RECONECTADO ---
+window.addEventListener('keydown', e => { 
+    teclas[e.key] = true; 
+    audioCtx.resume(); 
+
+    // Interceptar la barra espaciadora para el menú de pausa
+    if (e.key === ' ' || e.key === 'Spacebar') {
+        if (modo === 'exploracion' || modo === 'pausa') {
+            e.preventDefault(); // Evita que la página web haga scroll hacia abajo
+            alternarMenuPausa();
+        }
+    }
+
+    // Tecla opcional Escape o B para volver atrás en los subpaneles desde PC
+    if (e.key === 'Escape' || e.key.toLowerCase() === 'b') {
+        if (modo === 'pausa') {
+            // Si hay un subpanel abierto, volvemos al menú lateral; si no, cerramos la pausa
+            let algunoAbierto = false;
+            ['panelPokedex', 'panelEquipo', 'panelMochila', 'panelGuardar', 'panelOpciones'].forEach(p => {
+                if(document.getElementById(p).style.display === 'flex') algunoAbierto = true;
+            });
+            if (algunoAbierto) regresarAlMenuPausa();
+            else cerrarMenuPausa();
+        }
+    }
+});
+
+window.addEventListener('keyup', e => teclas[e.key] = false);
+
+
+// --- BOTONES DE ACCIÓN MÓVIL RECONECTADOS ---
 
 document.getElementById('btnVA').addEventListener('touchstart', (e) => {
     e.preventDefault();
     audioCtx.resume();
-    
-    // Si estamos en combate, el botón A puede confirmar o interactuar.
-    // Al estar los menús en HTML, el usuario también puede tocarlos directamente en la pantalla.
     playTone(400, 'sine', 0.05);
+    // Aquí podrías añadir lógica para interactuar con NPCs del mapa en el futuro
 });
 
 document.getElementById('btnVB').addEventListener('touchstart', (e) => {
     e.preventDefault();
     audioCtx.resume();
     
-    // Función de cancelación inteligente en menús de batalla
+    // Si estamos en pausa, el botón B físico del móvil actúa como "VOLVER"
+    if (modo === 'pausa') {
+        let algunoAbierto = false;
+        ['panelPokedex', 'panelEquipo', 'panelMochila', 'panelGuardar', 'panelOpciones'].forEach(p => {
+            if(document.getElementById(p).style.display === 'flex') algunoAbierto = true;
+        });
+        if (algunoAbierto) regresarAlMenuPausa();
+        else cerrarMenuPausa();
+        return;
+    }
+    
+    // Cancelación en menús de batalla
     if(modo === 'batalla' && !turnoBloqueado) {
         playTone(250, 'sine', 0.05);
         cerrarAtaques();
@@ -692,10 +968,13 @@ document.getElementById('btnVB').addEventListener('touchstart', (e) => {
     }
 });
 
+// ¡VINCULACIÓN DEL START MÓVIL!
 document.getElementById('btnVStart').addEventListener('touchstart', (e) => {
     e.preventDefault();
-    playTone(500, 'triangle', 0.08);
-    // Ideal para un futuro Menú de Pausa / Guardado en exploración
+    audioCtx.resume();
+    if (modo === 'exploracion' || modo === 'pausa') {
+        alternarMenuPausa();
+    }
 });
 
 document.getElementById('btnVSelect').addEventListener('touchstart', (e) => {

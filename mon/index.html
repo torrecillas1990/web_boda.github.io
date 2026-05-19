@@ -67,8 +67,65 @@
         <b>FÍSICAS AVANZADAS (01-99):</b> 🧊 Hielo (80) | ➡️ Cinta (81) | 🌀 Remolino Agua (82) | 🕳️ Torbellino Arena (83)<br>
         <b>BLOQUES:</b> 21 Piedra Sólida | 32 Baldosa | 40 Suelo Cueva | 50 Agua (Entra por Orilla 60) | 70 Entrar | 71 Salir
     </div>
+	
+	<!-- MENÚ DE PAUSA GENERAL Y SUBPANELES INTEGRADOS -->
+	<div id="contenedorPausa">
+		<!-- Menú Principal Lateral -->
+		<div id="menuPausa">
+			<div class="menu-pausa-titulo">MENÚ</div>
+			<button onclick="abrirSubPanel('pokedex')">POKÉDEX</button>
+			<button onclick="abrirSubPanel('equipo')">EQUIPO</button>
+			<button onclick="abrirSubPanel('mochila')">MOCHILA</button>
+			<button onclick="abrirSubPanel('guardar')">GUARDAR</button>
+			<button onclick="abrirSubPanel('opciones')">OPCIONES</button>
+			<button onclick="cerrarMenuPausa()" style="border-top: 2px dashed #ccc; margin-top: 5px;">CERRAR</button>
+		</div>
 
-    <!-- NUEVO: Consola de mandos virtual para móviles -->
+		<!-- Subpanel 1: Pokédex -->
+		<div id="panelPokedex" class="subpanel-pausa">
+			<div class="panel-header">REGISTRO POKÉDEX</div>
+			<div id="listaPokedex" class="panel-contenido"><!-- Se llena con JS --></div>
+			<button class="btn-volver-pausa" onclick="regresarAlMenuPausa()">VOLVER</button>
+		</div>
+
+		<!-- Subpanel 2: Equipo y Caja -->
+		<div id="panelEquipo" class="subpanel-pausa">
+			<div class="panel-header">EQUIPO ACTUAL (Máx 6)</div>
+			<div id="listaEquipoPausa" class="panel-contenido"><!-- Se llena con JS --></div>
+			<div class="panel-header" style="margin-top:10px;">ALMACENAMIENTO (CAJA)</div>
+			<div id="listaCajaPausa" class="panel-contenido"><!-- Se llena con JS --></div>
+			<button class="btn-volver-pausa" onclick="regresarAlMenuPausa()">VOLVER</button>
+		</div>
+
+		<!-- Subpanel 3: Inventario Filtrado -->
+		<div id="panelMochila" class="subpanel-pausa">
+			<div class="panel-header">MOCHILA</div>
+			<div id="listaMochilaPausa" class="panel-contenido"><!-- Se llena con JS --></div>
+			<button class="btn-volver-pausa" onclick="regresarAlMenuPausa()">VOLVER</button>
+		</div>
+
+		<!-- Subpanel 4: Guardar Partida -->
+		<div id="panelGuardar" class="subpanel-pausa">
+			<div class="panel-header">GUARDAR PARTIDA</div>
+			<div class="panel-contenido" style="text-align:center; padding-top:20px;">
+				<p id="txtGuardar">¿Deseas guardar tu progreso actual en la tarjeta de memoria?</p>
+				<button id="btnConfirmarGuardar" onclick="pausaConfirmarGuardar()" style="width:80px; text-align:center; margin:10px;">SÍ</button>
+			</div>
+			<button class="btn-volver-pausa" onclick="regresarAlMenuPausa()">VOLVER</button>
+		</div>
+
+		<!-- Subpanel 5: Opciones -->
+		<div id="panelOpciones" class="subpanel-pausa">
+			<div class="panel-header">CONFIGURACIÓN</div>
+			<div id="listaOpcionesPausa" class="panel-contenido">
+				<!-- Se llena dinámicamente con JS -->
+				<span style="font-size:11px; italic; color:#999;">(Ajustes disponibles en la próxima actualización)</span>
+			</div>
+			<button class="btn-volver-pausa" onclick="regresarAlMenuPausa()">VOLVER</button>
+		</div>
+	</div>
+
+    <!-- Consola de mandos virtual para móviles -->
     <div id="virtualGamepad">
         <div class="gamepad-top">
             <!-- Cruceta Direccional Izquierda -->

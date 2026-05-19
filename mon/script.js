@@ -170,6 +170,38 @@ let enemigoActual = null;
 let turnoBloqueado = false;
 let animacionCaptura = false;
 
+// --- BASE DE DATOS DE NPCs POR MAPA ---
+const NPCS = {
+    exterior: [
+        {
+            id: 'anciano_sabio',
+            gridX: 7, gridY: 3, // Coordenadas en baldosas (tiles)
+            colCabeza: '#cfd8dc', colCuerpo: '#37474f', // Pelo canoso, abrigo oscuro
+            dialogo: [
+                "¡Hola, joven aspirante!",
+                "Cuidado con la pista de hielo del norte, ¡es súper resbaladiza!",
+                "Si te quedas atrapado, deslízate hacia una roca sólida para frenar."
+            ]
+        }
+    ],
+    interior_casa: [
+        {
+            id: 'mama_pkmn',
+            gridX: 4, gridY: 4, // Al lado de la entrada
+            colCabeza: '#ff8a80', colCuerpo: '#c2185b', // Look hogareño
+            dialogo: [
+                "¡Hola, cariño! Qué casa tan bonita estás programando.",
+                "Recuerda que puedes usar mi ORDENADOR para gestionar tus criaturas.",
+                "Y no olvides GUARDAR la partida en el menú START antes de salir."
+            ]
+        }
+    ]
+};
+
+// Variables de control de flujo del texto
+let dialogoActual = null;
+let indiceLineaDialogo = 0;
+
 // ============================================================================
 // 4. MOTOR DE FÍSICAS, MOVIMIENTO Y COLISIONES
 // ============================================================================
@@ -198,6 +230,7 @@ function comprobarColision(futuroX, futuroY) {
         {x: futuroX + TILE_SIZE - margen, y: futuroY + TILE_SIZE - margen}
     ];
 
+    // 1. Colisión con la matriz física del mapa
     let mapa = MAPAS[mapaActual];
     for (let e of esquinas) {
         let gridX = Math.floor(e.x / TILE_SIZE);
@@ -209,6 +242,18 @@ function comprobarColision(futuroX, futuroY) {
         if (props.esSolidoNonatural || props.esSolidoNatural || props.esOrdenador) return true;
         if (props.esAgua && jugador.estadoEstilo === 'normal') return true;
     }
+
+    // 2. NUEVO: Colisión con NPCs del mapa actual
+    let npcsMapa = NPCS[mapaActual] || [];
+    for (let npc of npcsMapa) {
+        let jugadorGridX_Futuro = Math.floor((futuroX + TILE_SIZE / 2) / TILE_SIZE);
+        let jugadorGridY_Futuro = Math.floor((futuroY + TILE_SIZE / 2) / TILE_SIZE);
+        
+        if (npc.gridX === jugadorGridX_Futuro && npc.gridY === jugadorGridY_Futuro) {
+            return true; // Sólido, no puedes atravesar al NPC
+        }
+    }
+    
     return false;
 }
 
@@ -309,12 +354,24 @@ function intentarInteractuar() {
     let centroY = Math.floor((jugador.y + TILE_SIZE / 2) / TILE_SIZE);
 
     let vecinos = [
-        {x: centroX, y: centroY - 1},
-        {x: centroX, y: centroY + 1},
-        {x: centroX - 1, y: centroY},
-        {x: centroX + 1, y: centroY} 
+        {x: centroX, y: centroY - 1}, // Arriba
+        {x: centroX, y: centroY + 1}, // Abajo
+        {x: centroX - 1, y: centroY}, // Izquierda
+        {x: centroX + 1, y: centroY}  // Derecha
     ];
 
+    // 1. Verificar si hay un NPC en los azulejos vecinos
+    let npcsMapa = NPCS[mapaActual] || [];
+    for (let npc of npcsMapa) {
+        for (let v of vecinos) {
+            if (npc.gridX === v.x && npc.gridY === v.y) {
+                iniciarDialogo(npc.dialogo);
+                return;
+            }
+        }
+    }
+
+    // 2. Verificar si hay un Bloque Ordenador (Lógica anterior)
     for (let v of vecinos) {
         if (mapa[v.y] && mapa[v.y][v.x] !== undefined) {
             let idBloque = mapa[v.y][v.x];
@@ -325,6 +382,42 @@ function intentarInteractuar() {
             }
         }
     }
+}
+
+// --- MAQUINA DE ESTADOS DEL SISTEMA DE DIÁLOGOS ---
+
+function iniciarDialogo(lineas) {
+    modo = 'dialogo';
+    detenerFisicas();
+    dialogoActual = lineas;
+    indiceLineaDialogo = 0;
+    
+    document.getElementById('dialogoUI').style.display = 'flex';
+    mostrarTextoDialogo();
+    playTone(400, 'sine', 0.04);
+}
+
+function mostrarTextoDialogo() {
+    document.getElementById('dialogoTexto').innerText = dialogoActual[indiceLineaDialogo];
+}
+
+function avanzarDialogo() {
+    indiceLineaDialogo++;
+    playTone(450, 'sine', 0.03);
+    
+    // Si quedan líneas, las muestra; de lo contrario, apaga la interfaz
+    if (indiceLineaDialogo < dialogoActual.length) {
+        mostrarTextoDialogo();
+    } else {
+        finalizarDialogo();
+    }
+}
+
+function finalizarDialogo() {
+    modo = 'exploracion';
+    dialogoActual = null;
+    document.getElementById('dialogoUI').style.display = 'none';
+    playTone(300, 'sine', 0.04);
 }
 
 // ============================================================================
@@ -837,8 +930,9 @@ window.addEventListener('keydown', e => {
     }
     
     if (e.key.toLowerCase() === 'a' || e.key === 'Enter') {
-        if (modo === 'exploracion') intentarInteractuar();
-    }
+		if (modo === 'exploracion') intentarInteractuar();
+		else if (modo === 'dialogo') avanzarDialogo();
+	}
     
     if ((e.key.toLowerCase() === 'b' || e.key === 'Escape') && modo === 'ordenador') {
         cerrarMenuOrdenador();
@@ -872,7 +966,9 @@ if(document.getElementById('btnVA')) {
     document.getElementById('btnVA').addEventListener('touchstart', (e) => {
         e.preventDefault(); audioCtx.resume();
         playTone(400, 'sine', 0.05);
+        
         if (modo === 'exploracion') intentarInteractuar();
+        else if (modo === 'dialogo') avanzarDialogo();
     });
 }
 
@@ -929,6 +1025,21 @@ function loop() {
         if (jugador.estadoEstilo === 'surf') spriteElegido = assets.playerSurf;
         if (jugador.estadoEstilo === 'hielo') spriteElegido = assets.playerHielo;
         
+		// Renderizado dinámico de NPCs del mapa activo
+		let npcsMapa = NPCS[mapaActual] || [];
+		npcsMapa.forEach(npc => {
+			// Dibujamos cabeza
+			ctx.fillStyle = npc.colCabeza; 
+			ctx.fillRect(npc.gridX * TILE_SIZE + 8, npc.gridY * TILE_SIZE + 4, 16, 12); 
+			// Dibujamos cuerpo
+			ctx.fillStyle = npc.colCuerpo; 
+			ctx.fillRect(npc.gridX * TILE_SIZE + 6, npc.gridY * TILE_SIZE + 16, 20, 14); 
+			// Dibujamos ojos negros clásicos
+			ctx.fillStyle = '#000'; 
+			ctx.fillRect(npc.gridX * TILE_SIZE + 10, npc.gridY * TILE_SIZE + 8, 3, 3); 
+			ctx.fillRect(npc.gridX * TILE_SIZE + 19, npc.gridY * TILE_SIZE + 8, 3, 3);
+		});
+
         ctx.drawImage(spriteElegido, jugador.x, jugador.y);
 
     } else if (modo === 'batalla') {

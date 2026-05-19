@@ -642,3 +642,63 @@ function loop() {
 
 reproducirMusica('exploracion');
 loop();
+
+// --- MAPEADO DE CONTROLES VIRTUALES PARA MÓVIL ---
+
+const mapeoMovimiento = [
+    { id: 'btnVUp', tecla: 'ArrowUp' },
+    { id: 'btnVDown', tecla: 'ArrowDown' },
+    { id: 'btnVLeft', tecla: 'ArrowLeft' },
+    { id: 'btnVRight', tecla: 'ArrowRight' }
+];
+
+// Enlazar eventos táctiles a la cruceta
+mapeoMovimiento.forEach(control => {
+    const boton = document.getElementById(control.id);
+    
+    boton.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        audioCtx.resume(); // Desbloquea el audio en navegadores móviles
+        teclas[control.tecla] = true;
+    });
+    
+    boton.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        teclas[control.tecla] = false;
+    });
+});
+
+// --- LÓGICA DE LOS BOTONES DE ACCIÓN (A / B / START / SELECT) ---
+
+document.getElementById('btnVA').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    audioCtx.resume();
+    
+    // Si estamos en combate, el botón A puede confirmar o interactuar.
+    // Al estar los menús en HTML, el usuario también puede tocarlos directamente en la pantalla.
+    playTone(400, 'sine', 0.05);
+});
+
+document.getElementById('btnVB').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    audioCtx.resume();
+    
+    // Función de cancelación inteligente en menús de batalla
+    if(modo === 'batalla' && !turnoBloqueado) {
+        playTone(250, 'sine', 0.05);
+        cerrarAtaques();
+        cerrarInventario();
+        cerrarMenuPokemon();
+    }
+});
+
+document.getElementById('btnVStart').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    playTone(500, 'triangle', 0.08);
+    // Ideal para un futuro Menú de Pausa / Guardado en exploración
+});
+
+document.getElementById('btnVSelect').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    playTone(450, 'triangle', 0.08);
+});

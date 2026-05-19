@@ -68,6 +68,31 @@
         <b>BLOQUES:</b> 21 Piedra Sólida | 32 Baldosa | 40 Suelo Cueva | 50 Agua (Entra por Orilla 60) | 70 Entrar | 71 Salir
     </div>
 
+    <!-- NUEVO: Consola de mandos virtual para móviles -->
+    <div id="virtualGamepad">
+        <div class="gamepad-top">
+            <!-- Cruceta Direccional Izquierda -->
+            <div class="d-pad">
+                <button class="d-btn up" id="btnVUp">▲</button>
+                <button class="d-btn left" id="btnVLeft">◀</button>
+                <button class="d-btn right" id="btnVRight">▶</button>
+                <button class="d-btn down" id="btnVDown">▼</button>
+            </div>
+
+            <!-- Botones de Acción Derechos -->
+            <div class="action-buttons">
+                <button class="a-btn b-btn" id="btnVB">B</button>
+                <button class="a-btn" id="btnVA">A</button>
+            </div>
+        </div>
+
+        <div class="gamepad-bottom">
+            <!-- Botones de Sistema Inferiores -->
+            <button class="sys-btn" id="btnVSelect">SELECT</button>
+            <button class="sys-btn" id="btnVStart">START</button>
+        </div>
+    </div>
+
 </body>
 <script src="mapas.js"></script>
 <script src="script.js"></script>

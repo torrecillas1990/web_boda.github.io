@@ -26,3 +26,121 @@ button {
 }
 button:hover { background: #000; color: #fff; }
 #instrucciones { margin-top: 12px; color: #aaa; font-size: 12px; text-align: center; max-width: 600px; line-height: 1.4; }
+
+/* --- CONSOLA VIRTUAL (OCULTA POR DEFECTO EN PC) --- */
+#virtualGamepad {
+    display: none;
+}
+
+/* --- VISTA MÓVIL (RESPONSIVE SPLIT-SCREEN) --- */
+@media (max-width: 768px) {
+    body {
+        justify-content: flex-start;
+        background: #1a1a1a;
+    }
+
+    /* Pantalla en la mitad superior */
+    #gameContainer {
+        width: 100vw;
+        height: 50vh;
+        border: none;
+        border-radius: 0;
+        border-bottom: 4px solid #000;
+    }
+
+    canvas {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* Mantiene la proporción del juego intacta */
+    }
+
+    #instrucciones {
+        display: none; /* Ocultamos textos sobrantes en móvil */
+    }
+
+    /* Controles en la mitad inferior */
+    #virtualGamepad {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100vw;
+        height: 50vh;
+        background: #252525;
+        padding: 24px 16px;
+        box-sizing: border-box;
+    }
+
+    .gamepad-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex: 1;
+    }
+
+    /* Diseño Avanzado de la Cruceta (D-Pad) */
+    .d-pad {
+        display: grid;
+        grid-template-areas: 
+            ".    up    ."
+            "left .     right"
+            ".    down  .";
+        gap: 2px;
+        width: 130px;
+        height: 130px;
+    }
+    .d-btn {
+        background: #333;
+        color: #fff;
+        border: 3px solid #000;
+        border-radius: 6px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .d-btn:active { background: #555; }
+    .d-btn.up { grid-area: up; border-bottom: none; border-radius: 8px 8px 0 0; }
+    .d-btn.left { grid-area: left; border-right: none; border-radius: 8px 0 0 8px; }
+    .d-btn.right { grid-area: right; border-left: none; border-radius: 0 8px 8px 0; }
+    .d-btn.down { grid-area: down; border-top: none; border-radius: 0 0 8px 8px; }
+
+    /* Botones de Acción Estilo Retro (A / B) */
+    .action-buttons {
+        display: flex;
+        gap: 16px;
+        transform: rotate(-15deg); /* Inclinación clásica */
+    }
+    .a-btn {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background: #b71c1c;
+        color: #fff;
+        border: 4px solid #000;
+        font-family: inherit;
+        font-size: 20px;
+        font-weight: bold;
+        box-shadow: 0 4px 0 #000;
+    }
+    .a-btn:active { transform: translateY(4px); box-shadow: none; }
+    .a-btn.b-btn { background: #424242; } /* El botón B en gris oscuro */
+
+    /* Botones Inferiores (Select / Start) */
+    .gamepad-bottom {
+        display: flex;
+        justify-content: center;
+        gap: 32px;
+        padding-bottom: 8px;
+    }
+    .sys-btn {
+        width: 65px;
+        height: 18px;
+        background: #757575;
+        border: 2px solid #000;
+        border-radius: 10px;
+        font-size: 9px;
+        font-weight: bold;
+        color: #000;
+    }
+    .sys-btn:active { background: #9e9e9e; }
+}

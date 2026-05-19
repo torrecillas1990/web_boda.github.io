@@ -295,6 +295,11 @@ const ENEMIGOS_SALVAJES = [
 
 let miPokemon = POKEDEX[0]; let enemigoActual = null; let turnoBloqueado = false;
 
+// Variable global para almacenar cantidades
+let inventario = { pociones: 5, bolas: 5 };
+
+let animacionCaptura = false; // Controla si dibujamos la bola o al enemigo
+
 function iniciarBatalla() {
     modo = 'batalla';
     detenerFisicas();
@@ -369,22 +374,192 @@ function turnoEnemigo() {
     }, 1200);
 }
 
-function usarObjeto() {
+// --- NAVEGACIÓN DEL MENÚ POKÉMON ---
+function abrirMenuPokemon() {
     if(turnoBloqueado) return;
+    
+    document.getElementById('menuOpciones').style.display = 'none';
+    document.getElementById('menuPokemon').style.display = 'grid';
+    document.getElementById('battleText').innerText = "Selecciona un Pokémon para combatir:";
+
+    // Renderizar dinámicamente los botones según los Pokémon en la POKEDEX (Máx 3 en tu array)
+    for(let i = 0; i < 3; i++) {
+        let btn = document.getElementById(`btnPkmn${i}`);
+        let pkmn = POKEDEX[i];
+
+        if(pkmn) {
+            btn.style.display = 'block';
+            btn.innerText = `${pkmn.nombre} (${pkmn.hp}/${pkmn.hpMax})`;
+            
+            // Estilo visual si está debilitado o es el activo
+            if (pkmn === miPokemon) {
+                btn.innerText = `• ${pkmn.nombre} •`;
+            } else if (pkmn.hp <= 0) {
+                btn.innerText = `${pkmn.nombre} (X_X)`;
+            }
+        } else {
+            btn.style.display = 'none'; // Oculta el botón si no tienes un 2º o 3º Pokémon capturado
+        }
+    }
+}
+
+function cerrarMenuPokemon() {
+    document.getElementById('menuPokemon').style.display = 'none';
+    document.getElementById('menuOpciones').style.display = 'grid';
+    document.getElementById('battleText').innerText = `¿Qué debe hacer ${miPokemon.nombre}?`;
+}
+
+// --- LÓGICA DE INTERCAMBIO ---
+function elegirPokemon(indice) {
+    let pokemonSeleccionado = POKEDEX[indice];
+
+    if (!pokemonSeleccionado) return;
+
+    // Validación 1: ¿Ya está combatiendo?
+    if (pokemonSeleccionado === miPokemon) {
+        document.getElementById('battleText').innerText = `¡${pokemonSeleccionado.nombre} ya está en la arena!`;
+        return;
+    }
+
+    // Validación 2: ¿Está debilitado?
+    if (pokemonSeleccionado.hp <= 0) {
+        document.getElementById('battleText').innerText = `¡${pokemonSeleccionado.nombre} no tiene energías para luchar!`;
+        return;
+    }
+
+    // Procesar el cambio de miembro
+    turnoBloqueado = true;
+    document.getElementById('menuPokemon').style.display = 'none';
+    
+    document.getElementById('battleText').innerText = `¡Regresa ${miPokemon.nombre}! ... ¡Adelante ${pokemonSeleccionado.nombre}!`;
+    playTone(300, 'square', 0.1);
+    setTimeout(() => playTone(450, 'square', 0.15), 100); // Sonido clásico de entrada/salida
+
+    // Intercambio de puntero de criatura activa
+    miPokemon = pokemonSeleccionado;
+
+    // Pausa dramática de envío antes del contraataque del rival
+    setTimeout(() => {
+        turnoEnemigo();
+    }, 2000);
+}
+
+// --- NAVEGACIÓN DEL INVENTARIO ---
+function abrirInventario() {
+    if(turnoBloqueado) return;
+    
+    // Cambiamos la vista de los menús
+    document.getElementById('menuOpciones').style.display = 'none';
+    document.getElementById('menuInventario').style.display = 'grid';
+    
+    // Actualizamos el texto de los botones con la cantidad actual
+    document.getElementById('btnPocion').innerText = `Poción (x${inventario.pociones})`;
+    document.getElementById('btnBola').innerText = `Bola (x${inventario.bolas})`;
+    
+    document.getElementById('battleText').innerText = "¿Qué objeto quieres usar?";
+}
+
+function cerrarInventario() {
+    document.getElementById('menuInventario').style.display = 'none';
+    document.getElementById('menuOpciones').style.display = 'grid';
+    document.getElementById('battleText').innerText = `¿Qué debe hacer ${miPokemon.nombre}?`;
+}
+
+// --- EFECTOS DE LOS OBJETOS ---
+
+function usarPocion() {
+    if (inventario.pociones <= 0) {
+        document.getElementById('battleText').innerText = "¡No te quedan Pociones!";
+        return;
+    }
+    if (miPokemon.hp === miPokemon.hpMax) {
+        document.getElementById('battleText').innerText = `¡La salud de ${miPokemon.nombre} ya está al máximo!`;
+        return;
+    }
+
+    // Consumir poción y curar
+    inventario.pociones--;
+    turnoBloqueado = true;
+    cerrarInventario();
+    
     miPokemon.hp = Math.min(miPokemon.hpMax, miPokemon.hp + 25);
     document.getElementById('battleText').innerText = `¡Usaste una Poción! ${miPokemon.nombre} recuperó 25 PS.`;
-    playTone(550, 'sine', 0.1);
-    turnoBloqueado = true;
+    playTone(550, 'sine', 0.1); // Sonido de curación
+    
+    // Pasa el turno al enemigo tras usar la poción
     setTimeout(turnoEnemigo, 1500);
 }
 
-function cambiarPokemon() {
-    if(turnoBloqueado) return;
-    let indexActual = POKEDEX.indexOf(miPokemon);
-    miPokemon = POKEDEX[(indexActual + 1) % POKEDEX.length];
-    document.getElementById('battleText').innerText = `¡Adelante ${miPokemon.nombre}!`;
-    playTone(400, 'square', 0.1);
-    cerrarAtaques();
+function usarBola() {
+    if (inventario.bolas <= 0) {
+        document.getElementById('battleText').innerText = "¡No te quedan Bolas!";
+        return;
+    }
+
+    // Consumir bola e iniciar captura
+    inventario.bolas--;
+    turnoBloqueado = true;
+    animacionCaptura = true; // Activa el dibujo de la bola en el Canvas
+    cerrarInventario();
+    
+    document.getElementById('battleText').innerText = `¡Lanzaste una Bola!`;
+    playTone(350, 'triangle', 0.2); // Sonido de lanzamiento
+
+    // Llama al sistema de probabilidades que creamos anteriormente
+    setTimeout(() => calcularCaptura(), 1200);
+}
+
+function calcularCaptura() {
+    // Probabilidad Base (ej. 30%) + Bonus por Daño (hasta 50% extra)
+    let probBase = 0.3; 
+    let ratioSalud = enemigoActual.hp / enemigoActual.hpMax;
+    let probFinal = probBase + ((1 - ratioSalud) * 0.5); 
+
+    ejecutarTemblores(0, probFinal);
+}
+
+function ejecutarTemblores(fase, probFinal) {
+    if (fase < 3) {
+        // Animación de temblor
+        document.getElementById('battleText').innerText = "...";
+        playTone(120, 'sawtooth', 0.1); // Sonido de temblor seco
+
+        // Comprobamos si el Pokémon rompe la bola en este temblor
+        let tirada = Math.random();
+        if (tirada > probFinal + 0.15) { // Damos un pequeño margen extra en cada temblor
+            setTimeout(() => {
+                animacionCaptura = false; // El enemigo vuelve a aparecer
+                document.getElementById('battleText').innerText = "¡Oh no! ¡El Pokémon se escapó!";
+                playTone(150, 'square', 0.4);
+                setTimeout(turnoEnemigo, 1500);
+            }, 1000);
+            return;
+        }
+
+        // Si no se escapa, pasamos al siguiente temblor
+        setTimeout(() => ejecutarTemblores(fase + 1, probFinal), 1000);
+        
+    } else {
+        // FASE 3 SUPERADA: CAPTURA EXITOSA
+        document.getElementById('battleText').innerText = `¡Genial! ¡${enemigoActual.nombre} fue capturado!`;
+        playTone(600, 'square', 0.1);
+        setTimeout(() => playTone(800, 'square', 0.2), 150);
+        setTimeout(() => playTone(1000, 'square', 0.4), 300); // Canción de victoria rápida
+
+        // Curamos al Pokémon capturado y lo añadimos al equipo
+        let nuevoAmigo = JSON.parse(JSON.stringify(enemigoActual));
+        nuevoAmigo.hp = nuevoAmigo.hpMax;
+        nuevoAmigo.exp = 0;
+        POKEDEX.push(nuevoAmigo);
+
+        setTimeout(() => {
+            document.getElementById('battleText').innerText = `¡${enemigoActual.nombre} se ha añadido a tu equipo!`;
+            setTimeout(() => {
+                animacionCaptura = false;
+                finalizarBatalla();
+            }, 2000);
+        }, 2000);
+    }
 }
 
 function intentarHuir() {
@@ -428,7 +603,27 @@ function loop() {
         ctx.beginPath(); ctx.ellipse(120, 220, 80, 20, 0, 0, Math.PI*2); ctx.fill();
         ctx.beginPath(); ctx.ellipse(380, 110, 80, 20, 0, 0, Math.PI*2); ctx.fill();
         ctx.drawImage(assets.pkmnJugador, 80, 150);
-        ctx.drawImage(assets.pkmnEnemigo, 340, 40);
+		
+        // DIBUJADO DINÁMICO DEL ENEMIGO O LA BOLA
+		if (animacionCaptura) {
+			// Coordenadas centrales donde estaría el enemigo
+			let bx = 372; let by = 72;
+			
+			// Mitad superior (Roja)
+			ctx.fillStyle = '#e53935'; ctx.beginPath(); ctx.arc(bx, by, 16, Math.PI, 0); ctx.fill();
+			// Mitad inferior (Blanca)
+			ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(bx, by, 16, 0, Math.PI); ctx.fill();
+			// Borde negro y línea central
+			ctx.lineWidth = 2; ctx.strokeStyle = '#000';
+			ctx.beginPath(); ctx.arc(bx, by, 16, 0, Math.PI*2); ctx.stroke();
+			ctx.beginPath(); ctx.moveTo(bx - 16, by); ctx.lineTo(bx + 16, by); ctx.stroke();
+			// Botón central
+			ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(bx, by, 6, 0, Math.PI*2); ctx.fill();
+			ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(bx, by, 3, 0, Math.PI*2); ctx.fill();
+		} else {
+			// Dibujo normal del enemigo
+			ctx.drawImage(assets.pkmnEnemigo, 340, 40);
+		}
 
 		// HUD COMPLETADO CON BARRAS DE VIDA DINÁMICAS
         ctx.fillStyle = '#000'; ctx.font = 'bold 14px Courier New';

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Pokémon - Sistema de Bloques Pro (01-99)</title>
+    <title>Mon</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="./recursos/favicon.ico">
 	
@@ -25,22 +25,39 @@
         <!-- UI de Combate -->
         <div id="battleUI">
             <div class="battle-grid">
-                <div id="battleText">¡Un Pokémon salvaje apareció!</div>
+                <div id="battleText">¡Un Mon salvaje apareció!</div>
                 
                 <!-- Menú Principal de Batalla -->
-                <div id="menuOpciones">
-                    <button onclick="abrirAtaques()">LUCHAR</button>
-                    <button onclick="usarObjeto()">MOCHILA</button>
-                    <button onclick="cambiarPokemon()">POKÉMON</button>
-                    <button onclick="intentarHuir()">HUIR</button>
-                </div>
-                
-                <!-- Menú de Ataques -->
-                <div id="menuAtaques">
-                    <button id="btnAtk0" onclick="ejecutarAtaque(0)">-</button>
-                    <button id="btnAtk1" onclick="ejecutarAtaque(1)">-</button>
-                    <button id="btnAtk2" onclick="ejecutarAtaque(2)">-</button>
-                    <button id="volverMenu" onclick="cerrarAtaques()" style="font-size:11px;">VOLVER</button>
+				<div id="menuOpciones">
+					<button onclick="abrirAtaques()">LUCHAR</button>
+					<button onclick="abrirInventario()">MOCHILA</button> <!-- Modificado aquí -->
+					<button onclick="abrirMenuPokemon()">MON</button>
+					<button onclick="intentarHuir()">HUIR</button>
+				</div>
+
+				<!-- Menú de Ataques (dejalo tal cual lo tienes) -->
+				<div id="menuAtaques">
+					<button id="btnAtk0" onclick="ejecutarAtaque(0)">-</button>
+					<button id="btnAtk1" onclick="ejecutarAtaque(1)">-</button>
+					<button id="btnAtk2" onclick="ejecutarAtaque(2)">-</button>
+					<button id="volverMenu" onclick="cerrarAtaques()" style="font-size:11px;">VOLVER</button>
+				</div>
+
+				<!-- NUEVO: Menú de Selección de Pokémon -->
+				<div id="menuPokemon">
+					<button id="btnPkmn0" onclick="elegirPokemon(0)">-</button>
+					<button id="btnPkmn1" onclick="elegirPokemon(1)">-</button>
+					<button id="btnPkmn2" onclick="elegirPokemon(2)">-</button>
+					<button onclick="cerrarMenuPokemon()" style="font-size:11px;">VOLVER</button>
+				</div>
+				
+				<!-- NUEVO: Menú de Inventario -->
+				<div id="menuInventario">
+					<button id="btnPocion" onclick="usarPocion()">Poción</button>
+					<button id="btnBola" onclick="usarBola()">Bola</button>
+					<button style="visibility: hidden;">-</button> <!-- Botón invisible para mantener la cuadrícula -->
+					<button onclick="cerrarInventario()" style="font-size:11px;">VOLVER</button>
+				</div>
                 </div>
             </div>
         </div>

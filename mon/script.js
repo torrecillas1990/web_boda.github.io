@@ -160,6 +160,8 @@ let miPokemon = equipo[0];
 let inventario = { pociones: 5, bolas: 5, antidoto: 0, superball: 1 }; 
 
 const ENEMIGOS_SALVAJES = [
+    { nombre: 'Bulbasaur', hpMax: 50, hp: 50, nivel: 5, ataques: [{n:'Latigo cepa', d:10}] },
+    { nombre: 'Squirtle', hpMax: 50, hp: 50, nivel: 5, ataques: [{n:'Burbuja', d:10}] },
     { nombre: 'Pidgey', hpMax: 30, hp: 30, nivel: 3, ataques: [{n:'Placaje', d:6}] },
     { nombre: 'Pikachu', hpMax: 35, hp: 35, nivel: 4, ataques: [{n:'Impactrueno', d:12}] }
 ];
